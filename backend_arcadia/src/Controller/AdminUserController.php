@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\{Utils, StringHelper};
 use App\DTO\UserDTO;
-use App\Repository\UserRepository;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -20,27 +20,23 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/admin', name: 'app_api_admin_')]
 final class AdminUserController extends AbstractController
 {
-    public function __construct(
-        private Security $security,
-        private EntityManagerInterface $entityManager,
-        private UserRepository $repository,
-        private SerializerInterface $serializer,
-        private UserPasswordHasherInterface $passwordHasher,
-        private ValidatorInterface $validator
-    ) {
-    }
-
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createUser(
         Request $request,
+        EntityManagerInterface $entityManager,
+        Security $security,
+        UserPasswordHasherInterface $passwordHasher,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
     ): JsonResponse {
-        $admin = $this->getUser();
+
+        $admin = $security->getUser();
         if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
             throw new AccessDeniedException('Accès refusé.');
         }
 
         try {
-            $userDTO = $this->serializer->deserialize($request->getContent(), UserDTO::class, 'json');
+            $userDTO = $serializer->deserialize($request->getContent(), UserDTO::class, 'json');
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 'Format JSON invalide'], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -55,13 +51,13 @@ final class AdminUserController extends AbstractController
 
         $plainPassword = Utils::randomPassword();
 
-        $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
+        $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
 
         $user->setCreatedAt(new \DateTimeImmutable());
         $user->setMustChangePassword(true);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         return new JsonResponse([
             'message' => 'Utilisateur créé avec succès',
@@ -71,35 +67,41 @@ final class AdminUserController extends AbstractController
         ], JsonResponse::HTTP_CREATED);
     }
 
-    #[Route('/reset-password/{id}', name: 'reset_password', methods: 'POST')]
+    #[Route('/reset-password/{id}', name: 'reset_password', methods: ['POST'])]
     public function resetPassword(
         int $id,
+        EntityManagerInterface $entityManager,
+        Security $security,
+        UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
-        $admin = $this->getUser();
+
+        $admin = $security->getUser();
         if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
-            throw new AccessDeniedException('Accès refusé');
+            throw new AccessDeniedException('Accès refusé.');
         }
 
-        $user = $this->repository->findOneBy(['id' => $id]);
+        $user = $entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
             return new JsonResponse(['error' => 'Utilisateur non trouvé'], JsonResponse::HTTP_NOT_FOUND);
         }
 
+        // Génération du nouveau mot de passe
         $plainPassword = Utils::randomPassword();
-        $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
+        $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
         $user->setMustChangePassword(true);
         $user->setUpdatedAt(new \DateTimeImmutable());
 
-        $this->entityManager->flush();
+        $entityManager->flush();
 
         return new JsonResponse([
             'message' => 'Mot de passe réinitialisé avec succès',
-            'email' => $user->getUserIdentifier(),
-            'password' => $plainPassword,
-            'roles' => $user->getRoles()
+            'email' => $user->getEmail(),
+            'password' => $plainPassword
         ], JsonResponse::HTTP_OK);
     }
 }
+
+
 
 ?>
