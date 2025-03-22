@@ -100,8 +100,29 @@ final class AdminUserController extends AbstractController
             'password' => $plainPassword
         ], JsonResponse::HTTP_OK);
     }
+
+    #[Route('/delete-user/{id}', name: 'delete_user', methods: 'DELETE')]
+    public function deleteUser(
+        int $id,
+        EntityManagerInterface $entityManager,
+        Security $security
+    ): JsonResponse {
+        $admin = $security->getUser();
+        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
+            throw new AccessDeniedException('Accès refusé.');
+        }
+
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'Utilisateur non trouvé'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Utilisateur suppriumé avec succès'], JsonResponse::HTTP_OK);
+    }
 }
-
-
 
 ?>
