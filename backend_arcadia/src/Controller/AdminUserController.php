@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\{Utils, StringHelper};
-use App\DTO\UserDTO;
+use App\DTO\{UserCreateDTO, UserUpdateDTO};
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,7 +36,7 @@ final class AdminUserController extends AbstractController
         }
 
         try {
-            $userDTO = $serializer->deserialize($request->getContent(), UserDTO::class, 'json');
+            $userDTO = $serializer->deserialize($request->getContent(), UserCreateDTO::class, 'json');
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 'Format JSON invalide'], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -122,6 +122,63 @@ final class AdminUserController extends AbstractController
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Utilisateur suppriumé avec succès'], JsonResponse::HTTP_OK);
+    }
+
+    #[Route('/update/{id}', name: 'update_user', methods: 'PUT')]
+    public function updateUser(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Security $security,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        $admin = $security->getUser();
+        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
+            throw new AccessDeniedException('Accès refusé.');
+        }
+
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'Utilisateur non trouvé'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $userDTO = $serializer->deserialize($request->getContent(), UserUpdateDTO::class, 'json');
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Format JSON invalide'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        if ($userDTO->firstName !== null) {
+            $user->setFirstName($userDTO->firstName);
+        }
+
+        if ($userDTO->lastName !== null) {
+            $user->setLastName($userDTO->lastName);
+        }
+
+        if ($userDTO->role !== null) {
+            $user->setRoles([$userDTO->role]);
+        }
+
+        $user->setUpdatedAt(new \DateTimeImmutable());
+
+        $errors = $validator->validate($user);
+        if (count($errors) > 0) {
+            return new JsonResponse(['error' => (string) $errors], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse([
+            'message' => 'Utilisateur mis à jour avec succès',
+            'id' => $user->getId(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'email' => $user->getUserIdentifier(),
+            'roles' => $user->getRoles()
+        ], JsonResponse::HTTP_OK);
     }
 }
 

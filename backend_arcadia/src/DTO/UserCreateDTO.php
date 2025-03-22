@@ -4,7 +4,7 @@ namespace App\DTO;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UserDTO
+class UserCreateDTO
 {
     #[Assert\NotBlank(message: "firstname is mandatory")]
     #[Assert\Length(max: 32, maxMessage: "firstname can't exceed 32 char")]
