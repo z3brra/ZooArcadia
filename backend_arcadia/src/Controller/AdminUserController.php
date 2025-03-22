@@ -5,14 +5,16 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\{Utils, StringHelper};
 use App\DTO\{UserCreateDTO, UserUpdateDTO};
-
+use App\Exception\ValidationException;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse, Response};
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -20,165 +22,239 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api/admin', name: 'app_api_admin_')]
 final class AdminUserController extends AbstractController
 {
+
+    public function __construct (
+        private EntityManagerInterface $entityManager,
+        private UserRepository $userRepository,
+        private SerializerInterface $serializer
+    ) {
+    }
+
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createUser(
         Request $request,
-        EntityManagerInterface $entityManager,
-        Security $security,
         UserPasswordHasherInterface $passwordHasher,
-        SerializerInterface $serializer,
         ValidatorInterface $validator
     ): JsonResponse {
 
-        $admin = $security->getUser();
-        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
-            throw new AccessDeniedException('Accès refusé.');
-        }
-
         try {
-            $userDTO = $serializer->deserialize($request->getContent(), UserCreateDTO::class, 'json');
+            try {
+                $userCreateDTO = $this->serializer->deserialize(
+                    data: $request->getContent(),
+                    type: UserCreateDTO::class,
+                    format: 'json'
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestException("Invalid JSON format");
+            }
+
+            $errors = $validator->validate($userCreateDTO);
+            if (count($errors) > 0) {
+                $validationErrors = [];
+                foreach ($errors as $error) {
+                    $validationErrors[] = $error->getMessage();
+                }
+                throw new ValidationException($validationErrors);
+            }
+
+            $user = new User();
+            $user->setFirstName($userCreateDTO->firstName);
+            $user->setLastName($userCreateDTO->lastName);
+            $user->setRoles([$userCreateDTO->role]);
+
+            $email = StringHelper::generateEmail($userCreateDTO->firstName, $userCreateDTO->lastName);
+            $user->setEmail($email);
+
+            $plainPassword = Utils::randomPassword();
+            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+
+            $user->setPassword($hashedPassword);
+
+            $user->setCreatedAt(new \DateTimeImmutable());
+            $user->setMustChangePassword(true);
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return new JsonResponse([
+                'message' => 'Utilisateur créé avec succès',
+                'email' => $user->getUserIdentifier(),
+                'password' => $plainPassword,
+                'roles' => $user->getRoles()
+            ], JsonResponse::HTTP_CREATED);
+
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Format JSON invalide'], JsonResponse::HTTP_BAD_REQUEST);
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $user = new User();
-        $user->setFirstName($userDTO->firstName);
-        $user->setLastName($userDTO->lastName);
-        $user->setRoles([$userDTO->role]);
-
-        $email = StringHelper::generateEmail($userDTO->firstName, $userDTO->lastName);
-        $user->setEmail($email);
-
-        $plainPassword = Utils::randomPassword();
-
-        $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-
-        $user->setCreatedAt(new \DateTimeImmutable());
-        $user->setMustChangePassword(true);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        return new JsonResponse([
-            'message' => 'Utilisateur créé avec succès',
-            'email' => $user->getUserIdentifier(),
-            'password' => $plainPassword,
-            'roles' => $user->getRoles()
-        ], JsonResponse::HTTP_CREATED);
     }
 
-    #[Route('/reset-password/{id}', name: 'reset_password', methods: ['POST'])]
+    #[Route('/reset-password/{uuid}', name: 'reset_password', methods: ['POST'])]
     public function resetPassword(
-        int $id,
-        EntityManagerInterface $entityManager,
-        Security $security,
+        string $uuid,
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
 
-        $admin = $security->getUser();
-        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
-            throw new AccessDeniedException('Accès refusé.');
+        try {
+            $user = $this->userRepository->findOneBy(['uuid' => $uuid]);
+            if (!$user) {
+                throw new UserNotFoundException('User not found or does not exist');
+            }
+
+            $plainPassword = Utils::randomPassword();
+            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+
+            $user->setPassword($hashedPassword);
+            $user->setMustChangePassword(true);
+            $user->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->flush();
+
+            return new JsonResponse([
+                'message' => 'Password successfully reset',
+                'email' => $user->getEmail(),
+                'password' => $plainPassword,
+                'message' => "The new password has been sent to the user"
+            ], JsonResponse::HTTP_OK);
+
+        } catch (UserNotFoundException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $user = $entityManager->getRepository(User::class)->find($id);
-
-        if (!$user) {
-            return new JsonResponse(['error' => 'Utilisateur non trouvé'], JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        // Génération du nouveau mot de passe
-        $plainPassword = Utils::randomPassword();
-        $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
-        $user->setMustChangePassword(true);
-        $user->setUpdatedAt(new \DateTimeImmutable());
-
-        $entityManager->flush();
-
-        return new JsonResponse([
-            'message' => 'Mot de passe réinitialisé avec succès',
-            'email' => $user->getEmail(),
-            'password' => $plainPassword
-        ], JsonResponse::HTTP_OK);
     }
 
-    #[Route('/delete-user/{id}', name: 'delete_user', methods: 'DELETE')]
+    #[Route('/delete-user/{uuid}', name: 'delete_user', methods: 'DELETE')]
     public function deleteUser(
-        int $id,
-        EntityManagerInterface $entityManager,
-        Security $security
+        string $uuid,
     ): JsonResponse {
-        $admin = $security->getUser();
-        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
-            throw new AccessDeniedException('Accès refusé.');
+        try {
+            $user = $this->userRepository->findOneBy(['uuid' => $uuid]);
+            if (!$user) {
+                throw new UserNotFoundException('User not found or does not exist');
+            }
+
+            $this->entityManager->remove($user);
+            $this->entityManager->flush();
+
+            return new JsonResponse(
+                data: ['message' => 'User successfully deleted'],
+                status: JsonResponse::HTTP_OK
+            );
+
+        } catch (UserNotFoundException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $user = $entityManager->getRepository(User::class)->find($id);
-
-        if (!$user) {
-            return new JsonResponse(['error' => 'Utilisateur non trouvé'], JsonResponse::HTTP_NOT_FOUND);
-        }
-
-        $entityManager->remove($user);
-        $entityManager->flush();
-
-        return new JsonResponse(['message' => 'Utilisateur suppriumé avec succès'], JsonResponse::HTTP_OK);
     }
 
-    #[Route('/update/{id}', name: 'update_user', methods: 'PUT')]
+    #[Route('/update-user/{uuid}', name: 'update_user', methods: 'PUT')]
     public function updateUser(
-        int $id,
+        string $uuid,
         Request $request,
-        EntityManagerInterface $entityManager,
-        Security $security,
-        SerializerInterface $serializer,
         ValidatorInterface $validator
     ): JsonResponse {
-        $admin = $security->getUser();
-        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles())) {
-            throw new AccessDeniedException('Accès refusé.');
-        }
-
-        $user = $entityManager->getRepository(User::class)->find($id);
-
-        if (!$user) {
-            return new JsonResponse(['error' => 'Utilisateur non trouvé'], JsonResponse::HTTP_NOT_FOUND);
-        }
 
         try {
-            $userDTO = $serializer->deserialize($request->getContent(), UserUpdateDTO::class, 'json');
+            $user = $this->userRepository->findOneBy(['uuid' => $uuid]);
+            if (!$user) {
+                throw new UserNotFoundException('User not found or does not exist');
+            }
+
+            try {
+                $userUpdateDTO = $this->serializer->deserialize(
+                    data: $request->getContent(),
+                    type: UserUpdateDTO::class,
+                    format: 'json'
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestException("Invalid JSON format");
+            }
+
+            if ($userUpdateDTO->isEmpty()) {
+                throw new BadRequestException("No data to update");
+            }
+
+            $errors = $validator->validate($userUpdateDTO);
+            if (count($errors) > 0) {
+                $validationErrors = [];
+                foreach ($errors as $error) {
+                    $validationErrors[] = $error->getMessage();
+                }
+                throw new ValidationException($validationErrors);
+            }
+
+            if ($userUpdateDTO->firstName !== null) {
+                $user->setFirstName($userUpdateDTO->firstName);
+            }
+
+            if ($userUpdateDTO->lastName !== null) {
+                $user->setLastName($userUpdateDTO->lastName);
+            }
+
+            if ($userUpdateDTO->role !== null) {
+                $user->setRoles([$userUpdateDTO->role]);
+            }
+
+            $user->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->flush();
+
+            return new JsonResponse([
+                'message' => 'User successfully updated',
+                'id' => $user->getId(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'email' => $user->getUserIdentifier(),
+                'roles' => $user->getRoles()
+            ], JsonResponse::HTTP_OK);
+
+        } catch (UserNotFoundException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Format JSON invalide'], JsonResponse::HTTP_BAD_REQUEST);
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        if ($userDTO->firstName !== null) {
-            $user->setFirstName($userDTO->firstName);
-        }
-
-        if ($userDTO->lastName !== null) {
-            $user->setLastName($userDTO->lastName);
-        }
-
-        if ($userDTO->role !== null) {
-            $user->setRoles([$userDTO->role]);
-        }
-
-        $user->setUpdatedAt(new \DateTimeImmutable());
-
-        $errors = $validator->validate($user);
-        if (count($errors) > 0) {
-            return new JsonResponse(['error' => (string) $errors], JsonResponse::HTTP_BAD_REQUEST);
-        }
-
-        $entityManager->flush();
-
-        return new JsonResponse([
-            'message' => 'Utilisateur mis à jour avec succès',
-            'id' => $user->getId(),
-            'firstName' => $user->getFirstName(),
-            'lastName' => $user->getLastName(),
-            'email' => $user->getUserIdentifier(),
-            'roles' => $user->getRoles()
-        ], JsonResponse::HTTP_OK);
     }
 }
 
