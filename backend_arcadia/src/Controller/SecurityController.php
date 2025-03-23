@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller;
 
 use App\Repository\UserRepository;
@@ -9,7 +8,6 @@ use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse, Response};
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
@@ -46,11 +44,22 @@ final class SecurityController extends AbstractController
 
             return new JsonResponse([
                 'message' => 'Login successful',
-                'email' => $user->getEmail(),
+                'email' => $user->getUserIdentifier(),
+                'mustChangePassword' => $user->isMustChangePassword(),
                 'apiToken' => $user->getApiToken(),
-                'roles' => $user->getRoles(),
+                'roles' => $user->getRoles()
             ], JsonResponse::HTTP_OK);
 
+        } catch (BadRequestException | NotEncodableValueException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (BadCredentialsException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_UNAUTHORIZED
+            );
         } catch (\Exception $e) {
             return new JsonResponse(
                 data: ['error' => "An internal server error as occured"],
