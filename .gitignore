@@ -5,3 +5,4 @@ var/
 .env.local
 dist/
 
+user.txt
