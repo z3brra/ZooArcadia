@@ -6,6 +6,7 @@ use App\Repository\AnimalRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Annotation\Groups;
 use Ramsey\Uuid\Uuid;
 
 #[ORM\Entity(repositoryClass: AnimalRepository::class)]
@@ -17,37 +18,48 @@ class Animal
     private ?int $id = null;
 
     #[ORM\Column(length: 36)]
+    #[Groups(['animal:read'])]
     private ?string $uuid = null;
 
     #[ORM\Column(length: 36)]
+    #[Groups(['animal:read', 'species:with-animals'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['animal:read', 'species:with-animals'])]
     private ?bool $isMale = null;
 
     #[ORM\Column]
+    #[Groups(['animal:read', 'species:with-animals'])]
     private ?int $size = null;
 
     #[ORM\Column]
+    #[Groups(['animal:read', 'species:with-animals'])]
     private ?int $weight = null;
 
     #[ORM\Column]
+    #[Groups(['animal:read'])]
     private ?bool $isFertile = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['animal:read'])]
     private ?\DateTimeInterface $birthDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['animal:read'])]
     private ?\DateTimeInterface $arrivalDate = null;
 
     #[ORM\Column]
+    #[Groups(['animal:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['animal:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'animals')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['animal:read'])]
     private ?Species $species = null;
 
     /** @throws Exception */

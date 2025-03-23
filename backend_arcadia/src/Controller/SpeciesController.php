@@ -80,13 +80,13 @@ final class SpeciesController extends AbstractController
     ): JsonResponse {
 
         try {
-            $species = $this->repository->findOneBy(['uuid' => $uuid]);
+            $species = $this->repository->findOneByUuid($uuid);
 
             if (!$species) {
                 throw new NotFoundHttpException("Species not found or does not exist");
             }
 
-            $responseData = $this->serializer->serialize($species, 'json');
+            $responseData = $this->serializer->serialize($species, 'json', ['groups' => ['species:read']]);
             return new JsonResponse(
                 $responseData,
                 JsonResponse::HTTP_OK,
@@ -105,6 +105,39 @@ final class SpeciesController extends AbstractController
                 status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
 
+    #[Route('/{uuid}/animals', name: 'show_animals', methods: 'GET')]
+    public function showAnimals(
+        string $uuid
+    ): JsonResponse {
+        try {
+            $species = $this->repository->findOneByUuid($uuid);
+            
+            if (!$species) {
+                throw new NotFoundHttpException("Species not found or does not exist");
+            }
+
+            $animals = $species->getAnimals();
+            $responseData = $this->serializer->serialize($animals, 'json', ['groups' => ['animal:read']]);
+
+            return new JsonResponse(
+                $responseData,
+                JsonResponse::HTTP_OK,
+                [],
+                true
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }
