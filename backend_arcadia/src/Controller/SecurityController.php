@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTO\UserUpdateDTO;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +27,7 @@ final class SecurityController extends AbstractController
     #[Route('/login', name: 'login', methods: 'POST')]
     public function login(
         Request $request,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
     ): JsonResponse {
 
         try {
@@ -126,17 +125,15 @@ final class SecurityController extends AbstractController
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new NotEncodableValueException("Invalid JSON format.");
             }
-    
+
             if (empty($data['oldPassword']) || empty($data['newPassword'])) {
                 throw new BadRequestException("Old and new password are required.");
             }
-    
-            // Vérifier si l'ancien mot de passe est valide
+
             if (!$passwordHasher->isPasswordValid($user, $data['oldPassword'])) {
                 throw new BadCredentialsException("Incorrect old password.");
             }
 
-            // Vérification de la complexité du nouveau mot de passe
             if (strlen($data['newPassword']) < 8) {
                 throw new BadRequestException("New password must be at least 8 characters long.");
             }
@@ -148,10 +145,10 @@ final class SecurityController extends AbstractController
 
             $this->entityManager->flush();
 
-            return new JsonResponse(
-                ['message' => 'Password changed successfully'],
-                JsonResponse::HTTP_OK
-            );
+            return new JsonResponse([
+                'message'  => 'Password changed successfully',
+                'apiToken' => $user->getApiToken()
+            ],JsonResponse::HTTP_OK);
 
 
         } catch (AccessDeniedHttpException $e) {
