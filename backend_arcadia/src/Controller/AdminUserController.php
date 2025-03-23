@@ -77,7 +77,7 @@ final class AdminUserController extends AbstractController
             $this->entityManager->flush();
 
             return new JsonResponse([
-                'message' => 'Utilisateur créé avec succès',
+                'message' => 'User successfully created',
                 'email' => $user->getUserIdentifier(),
                 'password' => $plainPassword,
                 'roles' => $user->getRoles()
