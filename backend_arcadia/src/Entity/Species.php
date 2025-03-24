@@ -20,35 +20,27 @@ class Species
     private ?int $id = null;
 
     #[ORM\Column(length: 36)]
-    #[Groups(['species:read'])]
     private ?string $uuid = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['species:read'])]
     private ?string $commonName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['species:read'])]
     private ?string $scientificName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['species:read'])]
     private ?string $lifespan = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['species:read'])]
     private ?string $diet = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['species:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['species:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['species:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**

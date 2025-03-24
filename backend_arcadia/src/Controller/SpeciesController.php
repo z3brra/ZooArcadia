@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\DTO\SpeciesCreateDTO;
-use App\DTO\SpeciesUpdateDTO;
-use App\Entity\Species;
+use App\DTO\SpeciesDTO;
 use App\Exception\ValidationException;
 use App\Repository\SpeciesRepository;
+use App\Service\SpeciesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse, Response};
@@ -21,6 +20,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 final class SpeciesController extends AbstractController
 {
     public function __construct(
+        private SpeciesService $speciesService,
         private EntityManagerInterface $entityManager,
         private SpeciesRepository $repository,
         private SerializerInterface $serializer,
@@ -30,44 +30,35 @@ final class SpeciesController extends AbstractController
     #[Route('/create', name: 'create', methods: 'POST')]
     public function create(
         Request $request,
-        ValidatorInterface $validator
     ): JsonResponse {
-
         try {
             try {
                 $speciesCreateDTO = $this->serializer->deserialize(
                     $request->getContent(),
-                    SpeciesCreateDTO::class,
+                    SpeciesDTO::class,
                     'json'
                 );
             } catch (\Exception $e) {
                 throw new BadRequestException("Invalid JSON format");
             }
 
-            $errors = $validator->validate($speciesCreateDTO);
-            if (count($errors) > 0) {
-                $validationErrors = [];
-                foreach ($errors as $error) {
-                    $validationErrors[] = $error->getMessage();
-                }
-                throw new ValidationException($validationErrors);
-            }
+            $speciesReadDTO = $this->speciesService->createSpecies($speciesCreateDTO);
 
-            $species = new Species();
-            $species->setCommonName($speciesCreateDTO->commonName);
-            $species->setScientificName($speciesCreateDTO->scientificName);
-            $species->setLifespan($speciesCreateDTO->lifespan);
-            $species->setDiet($speciesCreateDTO->diet);
-            $species->setDescription($speciesCreateDTO->description);
-
-            $species->setCreatedAt(new \DateTimeImmutable());
-
-            $this->entityManager->persist($species);
-            $this->entityManager->flush();
-
+            $responseData = $this->serializer->serialize(
+                data: $speciesReadDTO,
+                format: 'json',
+                context: ['groups' => ['species:read']]
+            );
+            $location = $this->urlGenerator->generate(
+                name: 'app_api_species_show',
+                parameters: ['uuid' => $speciesReadDTO->uuid],
+                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            );
             return new JsonResponse(
-                data: ['message' => 'Species successfully created'],
-                status: JsonResponse::HTTP_CREATED
+                data: $responseData,
+                status: JsonResponse::HTTP_CREATED,
+                headers: ['Location' => $location],
+                json: true
             );
 
         } catch (BadRequestException $e) {
@@ -94,16 +85,14 @@ final class SpeciesController extends AbstractController
     ): JsonResponse {
 
         try {
-            $species = $this->repository->findOneByUuid($uuid);
-
-            if (!$species) {
-                throw new NotFoundHttpException("Species not found or does not exist");
-            }
+            $speciesReadDTO = $this->speciesService->showSpecies($uuid);
 
             $responseData = $this->serializer->serialize(
-                data: $species,
+                data: $speciesReadDTO,
                 format: 'json',
-                context: ['groups' => ['species:read']]);
+                context: ['groups' => ['species:read']]
+            );
+
             return new JsonResponse(
                 data: $responseData,
                 status: JsonResponse::HTTP_OK,
@@ -129,13 +118,8 @@ final class SpeciesController extends AbstractController
         string $uuid
     ): JsonResponse {
         try {
-            $species = $this->repository->findOneByUuid($uuid);
-            
-            if (!$species) {
-                throw new NotFoundHttpException("Species not found or does not exist");
-            }
+            $animals = $this->speciesService->showSpeciesAnimals($uuid);
 
-            $animals = $species->getAnimals();
             $responseData = $this->serializer->serialize(
                 data: $animals,
                 format: 'json',
@@ -168,63 +152,20 @@ final class SpeciesController extends AbstractController
         ValidatorInterface $validator
     ): JsonResponse {
         try {
-            $species = $this->repository->findOneByUuid($uuid);
-
-            if (!$species) {
-                throw new NotFoundHttpException("Species not found or does not exist");
-            }
-
             try {
                 $speciesUpdateDTO = $this->serializer->deserialize(
                     data: $request->getContent(),
-                    type: SpeciesUpdateDTO::class,
+                    type: SpeciesDTO::class,
                     format: 'json'
                 );
             } catch (\Exception $e) {
                 throw new BadRequestException("Invalid JSON format");
             }
 
-            if ($speciesUpdateDTO->isEmpty()) {
-                throw new BadRequestException("No data to update");
-            }
-
-            $errors = $validator->validate($speciesUpdateDTO);
-            if (count($errors) > 0) {
-                $validationErrors = [];
-                foreach ($errors as $error) {
-                    $validationErrors[] = $error->getMessage();
-                }
-                throw new ValidationException($validationErrors);
-            }
-
-            $commonName = $speciesUpdateDTO->commonName;
-            $scientificName = $speciesUpdateDTO->scientificName;
-            $lifespan = $speciesUpdateDTO->lifespan;
-            $diet = $speciesUpdateDTO->diet;
-            $description = $speciesUpdateDTO->description;
-
-            if ($commonName !== null) {
-                $species->setCommonName($commonName);
-            }
-            if ($scientificName !== null) {
-                $species->setScientificName($scientificName);
-            }
-            if ($lifespan !== null) {
-                $species->setLifespan($lifespan);
-            }
-            if ($diet !== null) {
-                $species->setDiet($diet);
-            }
-            if ($description !== null) {
-                $species->setDescription($description);
-            }
-
-            $species->setUpdatedAt(new \DateTimeImmutable());
-
-            $this->entityManager->flush();
+            $speciesReadDTO = $this->speciesService->updateSpecies($uuid, $speciesUpdateDTO);
 
             $responseData = $this->serializer->serialize(
-                data: $species,
+                data: $speciesReadDTO,
                 format: 'json',
                 context: ['groups' => ['species:read']]
             );
@@ -268,14 +209,7 @@ final class SpeciesController extends AbstractController
         string $uuid
     ): JsonResponse {
         try {
-            $species = $this->repository->findOneByUuid($uuid);
-
-            if (!$species) {
-                throw new NotFoundHttpException("Species not found or does not exist");
-            }
-
-            $this->entityManager->remove($species);
-            $this->entityManager->flush();
+            $this->speciesService->deleteSpecies($uuid);
 
             return new JsonResponse(
                 data: ['message' => 'Species successfully deleted'],
