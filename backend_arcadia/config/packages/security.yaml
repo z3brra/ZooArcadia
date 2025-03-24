@@ -22,6 +22,7 @@ security:
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\ApiTokenAuthenticator
+            access_denied_handler: App\Security\AccessDeniedHandler
             stateless: true
 
             # activate different ways to authenticate
