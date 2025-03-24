@@ -7,15 +7,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SpeciesCreateDTO
 {
     #[Assert\NotBlank(message: "Common name is required.")]
-    #[Assert\Length(max: 255, maxMessage: "The common name cannot exceed 255 characters.")]
+    #[Assert\Length(min: 2, minMessage: "Common name must have at least 2 chars.", max: 255, maxMessage: "The common may not exceed 255 characters.")]
     public string $commonName;
 
     #[Assert\NotBlank(message: "Scientific name is required.")]
-    #[Assert\Length(max: 255, maxMessage: "The scientific name may not exceed 255 characters.")]
+    #[Assert\Length(min: 2, minMessage: "Scientific name must have at least 2 chars.", max: 255, maxMessage: "The scientific name may not exceed 255 characters.")]
     public string $scientificName;
 
     #[Assert\NotBlank(message: "Lifespan is required.")]
-    #[Assert\Length(max: 255, maxMessage: "Lifespan may not exceed 255 characters.")]
+    #[Assert\Length(min:2, minMessage: "Lifespan must have at least 2 chars.", max: 255, maxMessage: "Lifespan may not exceed 255 characters.")]
     public string $lifespan;
 
     #[Assert\NotBlank(message: "Diet is required.")]

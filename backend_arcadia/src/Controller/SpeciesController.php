@@ -3,14 +3,17 @@
 namespace App\Controller;
 
 use App\DTO\SpeciesCreateDTO;
+use App\DTO\SpeciesUpdateDTO;
 use App\Entity\Species;
 use App\Exception\ValidationException;
 use App\Repository\SpeciesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse, Response};
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -20,7 +23,8 @@ final class SpeciesController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager,
         private SpeciesRepository $repository,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
+        private UrlGeneratorInterface $urlGenerator
     ){}
 
     #[Route('/create', name: 'create', methods: 'POST')]
@@ -30,11 +34,15 @@ final class SpeciesController extends AbstractController
     ): JsonResponse {
 
         try {
-            $speciesCreateDTO = $this->serializer->deserialize(
-                $request->getContent(),
-                SpeciesCreateDTO::class,
-                'json'
-            );
+            try {
+                $speciesCreateDTO = $this->serializer->deserialize(
+                    $request->getContent(),
+                    SpeciesCreateDTO::class,
+                    'json'
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestException("Invalid JSON format");
+            }
 
             $errors = $validator->validate($speciesCreateDTO);
             if (count($errors) > 0) {
@@ -57,10 +65,16 @@ final class SpeciesController extends AbstractController
             $this->entityManager->persist($species);
             $this->entityManager->flush();
 
-            return new JsonResponse([
-                'message' => 'Species successfully created',
-            ], JsonResponse::HTTP_CREATED);
+            return new JsonResponse(
+                data: ['message' => 'Species successfully created'],
+                status: JsonResponse::HTTP_CREATED
+            );
 
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
         } catch (ValidationException $e) {
             return new JsonResponse(
                 data: json_decode($e->getMessage(), true),
@@ -86,12 +100,15 @@ final class SpeciesController extends AbstractController
                 throw new NotFoundHttpException("Species not found or does not exist");
             }
 
-            $responseData = $this->serializer->serialize($species, 'json', ['groups' => ['species:read']]);
+            $responseData = $this->serializer->serialize(
+                data: $species,
+                format: 'json',
+                context: ['groups' => ['species:read']]);
             return new JsonResponse(
-                $responseData,
-                JsonResponse::HTTP_OK,
-                [],
-                true
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
             );
 
         } catch (NotFoundHttpException $e) {
@@ -119,15 +136,151 @@ final class SpeciesController extends AbstractController
             }
 
             $animals = $species->getAnimals();
-            $responseData = $this->serializer->serialize($animals, 'json', ['groups' => ['animal:read']]);
+            $responseData = $this->serializer->serialize(
+                data: $animals,
+                format: 'json',
+                context: ['groups' => ['animal:read']]);
 
             return new JsonResponse(
-                $responseData,
-                JsonResponse::HTTP_OK,
-                [],
-                true
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
             );
 
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}', name: 'update', methods: 'PUT')]
+    public function update(
+        string $uuid,
+        Request $request,
+        ValidatorInterface $validator
+    ): JsonResponse {
+        try {
+            $species = $this->repository->findOneByUuid($uuid);
+
+            if (!$species) {
+                throw new NotFoundHttpException("Species not found or does not exist");
+            }
+
+            try {
+                $speciesUpdateDTO = $this->serializer->deserialize(
+                    data: $request->getContent(),
+                    type: SpeciesUpdateDTO::class,
+                    format: 'json'
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestException("Invalid JSON format");
+            }
+
+            if ($speciesUpdateDTO->isEmpty()) {
+                throw new BadRequestException("No data to update");
+            }
+
+            $errors = $validator->validate($speciesUpdateDTO);
+            if (count($errors) > 0) {
+                $validationErrors = [];
+                foreach ($errors as $error) {
+                    $validationErrors[] = $error->getMessage();
+                }
+                throw new ValidationException($validationErrors);
+            }
+
+            $commonName = $speciesUpdateDTO->commonName;
+            $scientificName = $speciesUpdateDTO->scientificName;
+            $lifespan = $speciesUpdateDTO->lifespan;
+            $diet = $speciesUpdateDTO->diet;
+            $description = $speciesUpdateDTO->description;
+
+            if ($commonName !== null) {
+                $species->setCommonName($commonName);
+            }
+            if ($scientificName !== null) {
+                $species->setScientificName($scientificName);
+            }
+            if ($lifespan !== null) {
+                $species->setLifespan($lifespan);
+            }
+            if ($diet !== null) {
+                $species->setDiet($diet);
+            }
+            if ($description !== null) {
+                $species->setDescription($description);
+            }
+
+            $species->setUpdatedAt(new \DateTimeImmutable());
+
+            $this->entityManager->flush();
+
+            $responseData = $this->serializer->serialize(
+                data: $species,
+                format: 'json',
+                context: ['groups' => ['species:read']]
+            );
+            $location = $this->urlGenerator->generate(
+                name: 'app_api_species_show',
+                parameters: ['uuid' => $uuid],
+                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: ['Location' => $location],
+                json: true
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
+    public function delete(
+        string $uuid
+    ): JsonResponse {
+        try {
+            $species = $this->repository->findOneByUuid($uuid);
+
+            if (!$species) {
+                throw new NotFoundHttpException("Species not found or does not exist");
+            }
+
+            $this->entityManager->remove($species);
+            $this->entityManager->flush();
+
+            return new JsonResponse(
+                data: ['message' => 'Species successfully deleted'],
+                status: JsonResponse::HTTP_OK
+            );
         } catch (NotFoundHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],

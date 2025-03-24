@@ -17,9 +17,9 @@ class UserUpdateDTO
 
     public function isEmpty(): bool
     {
-        return $this->firstName === null
-            && $this->lastName  === null
-            && $this->role      === null;
+        return $this->firstName === null &&
+               $this->lastName  === null&&
+               $this->role      === null;
     }
 }
 
