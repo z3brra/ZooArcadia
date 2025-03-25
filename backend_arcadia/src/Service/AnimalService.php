@@ -141,6 +141,16 @@ class AnimalService
         return AnimalReadDTO::fromEntity($animal);
     }
 
+    public function deleteAnimal(string $uuid): void
+    {
+        $animal = $this->animalRepository->findOneByUuid($uuid);
+        if (!$animal) {
+            throw new NotFoundHttpException("Animal not found or does not exist");
+        }
+
+        $this->entityManager->remove($animal);
+        $this->entityManager->flush();
+    }
 
 }
 

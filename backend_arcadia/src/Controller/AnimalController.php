@@ -169,5 +169,29 @@ final class AnimalController extends AbstractController
             );
         }
     }
+
+    #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
+    public function delete(
+        string $uuid
+    ): JsonResponse {
+        try {
+            $this->animalService->deleteAnimal($uuid);
+
+            return new JsonResponse(
+                data: ['message' => 'Animal successfully deleted'],
+                status: JsonResponse::HTTP_OK
+            );
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
 ?>
