@@ -6,7 +6,6 @@ use App\Repository\AnimalRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Annotation\Groups;
 use Ramsey\Uuid\Uuid;
 
 #[ORM\Entity(repositoryClass: AnimalRepository::class)]
@@ -50,6 +49,10 @@ class Animal
     #[ORM\ManyToOne(inversedBy: 'animals')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Species $species = null;
+
+    #[ORM\ManyToOne(inversedBy: 'animals')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Habitat $habitat = null;
 
     /** @throws Exception */
     public function __construct()
@@ -190,6 +193,18 @@ class Animal
     public function setSpecies(?Species $species): static
     {
         $this->species = $species;
+
+        return $this;
+    }
+
+    public function getHabitat(): ?Habitat
+    {
+        return $this->habitat;
+    }
+
+    public function setHabitat(?Habitat $habitat): static
+    {
+        $this->habitat = $habitat;
 
         return $this;
     }

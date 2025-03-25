@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Annotation\Groups;
 use Ramsey\Uuid\Uuid;
 
 #[ORM\Entity(repositoryClass: SpeciesRepository::class)]
