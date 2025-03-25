@@ -43,6 +43,8 @@ class AnimalDTO
     #[Assert\NotBlank(message: "Species uuid is required.", groups: ['create'])]
     public ?string $speciesUuid = null;
 
+    public ?string $habitatUuid = null;
+
     public function isEmpty(): bool
     {
         return $this->name        === null &&
@@ -52,7 +54,8 @@ class AnimalDTO
                $this->isFertile   === null &&
                $this->birthDate   === null &&
                $this->arrivalDate === null &&
-               $this->speciesUuid === null;
+               $this->speciesUuid === null &&
+               $this->habitatUuid === null;
     }
 }
 

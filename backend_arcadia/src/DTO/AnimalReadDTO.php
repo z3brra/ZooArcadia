@@ -42,6 +42,9 @@ class AnimalReadDTO
     #[Groups(['animal:read'])]
     public string $speciesUuid;
 
+    #[Groups(['animal:read'])]
+    public string $habitatUuid;
+
     public function __construct(
         string $uuid,
         string $name,
@@ -53,7 +56,8 @@ class AnimalReadDTO
         DateTimeInterface $arrivalDate,
         DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt = null,
-        string $speciesUuid
+        string $speciesUuid,
+        ?string $habitatUuid = null
     ) {
         $this->uuid = $uuid;
         $this->name = $name;
@@ -66,6 +70,7 @@ class AnimalReadDTO
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
         $this->speciesUuid = $speciesUuid;
+        $this->habitatUuid = $habitatUuid;
     }
 
     public static function fromEntity(Animal $animal): self
@@ -81,7 +86,8 @@ class AnimalReadDTO
             $animal->getArrivalDate(),
             $animal->getCreatedAt(),
             $animal->getUpdatedAt(),
-            $animal->getSpecies()->getUuid()
+            $animal->getSpecies()->getUuid(),
+            $animal->getHabitat()->getUuid()
         );
     }
 }

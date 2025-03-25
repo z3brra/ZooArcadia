@@ -2,13 +2,13 @@
 
 namespace App\Service;
 
-
 use App\Entity\Species;
 use App\Repository\SpeciesRepository;
 use App\DTO\SpeciesDTO;
 use App\DTO\SpeciesReadDTO;
 use App\DTO\AnimalReadDTO;
 use App\Exception\ValidationException;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -40,7 +40,7 @@ class SpeciesService
         $species->setDiet($speciesCreateDTO->diet);
         $species->setDescription($speciesCreateDTO->description);
 
-        $species->setCreatedAt(new \DateTimeImmutable());
+        $species->setCreatedAt(new DateTimeImmutable());
 
         $this->entityManager->persist($species);
         $this->entityManager->flush();

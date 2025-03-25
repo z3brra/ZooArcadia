@@ -2,13 +2,11 @@
 
 namespace App\Service;
 
-
 use App\Entity\Animal;
 use App\Repository\AnimalRepository;
 use App\DTO\AnimalDTO;
 use App\DTO\AnimalReadDTO;
 
-use App\Service\SpeciesService;
 use App\Repository\SpeciesRepository;
 
 use App\Exception\ValidationException;
@@ -16,7 +14,6 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AnimalService
