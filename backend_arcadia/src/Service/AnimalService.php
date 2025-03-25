@@ -152,6 +152,24 @@ class AnimalService
         $this->entityManager->flush();
     }
 
+    public function listAnimalPaginated(int $page, int $limit): array
+    {
+        $result = $this->animalRepository->findPaginated($page, $limit);
+
+        $animalDTOs = [];
+        foreach ($result['data'] as $animal) {
+            $animalDTOs[] = AnimalReadDTO::fromEntity($animal);
+        }
+
+        return [
+            'data' => $animalDTOs,
+            'total' => $result['total'],
+            'totalPages' => $result['totalPages'],
+            'currentPage' => $result['currentPage'],
+            'perPage' => $result['perPage']
+        ];
+    }
+
 }
 
 ?>

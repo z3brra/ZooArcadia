@@ -193,5 +193,35 @@ final class AnimalController extends AbstractController
             );
         }
     }
+
+    #[Route('', name: 'list', methods: 'GET')]
+    public function list(
+        Request $request
+    ): JsonResponse {
+        try {
+            $page = max(1, (int) $request->query->get('page', 1));
+            $limit = max(1, (int) $request->query->get('limit', 10));
+
+            $animalPaginated = $this->animalService->listAnimalPaginated($page, $limit);
+
+            $responseData = $this->serializer->serialize(
+                data: $animalPaginated,
+                format: 'json',
+                context: ['groups' => ['animal:read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                json: true
+            );
+
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
 ?>
