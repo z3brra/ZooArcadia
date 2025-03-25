@@ -41,7 +41,7 @@ security:
         - { path: ^/api/species/create, roles: ROLE_ADMIN }
         - { path: ^/api/species, roles: ROLE_ADMIN, methods: [DELETE, PUT] }
 
-        - { path: ^/api/species, roles: [ROLE_ADMIN, ROLE_EMPLOYEE], methods: [GET] }
+        # - { path: ^/api/species, roles: [ROLE_ADMIN, ROLE_EMPLOYEE], methods: [GET] }
 
         - { path: ^/api/animal/create, roles: ROLE_ADMIN }
         - { path: ^/api/animal, roles: ROLE_ADMIN, methods: [DELETE, PUT] }

@@ -43,7 +43,7 @@ class AnimalService
 
         $species = $this->speciesRepository->findOneByUuid($animalCreateDTO->speciesUuid);
         if (!$species) {
-            throw new NotFoundHttpException("Species not foud with UUID : " . $animalCreateDTO->speciesUuid);
+            throw new NotFoundHttpException("Species not found with UUID : " . $animalCreateDTO->speciesUuid);
         }
 
         $animal = new Animal();
@@ -71,6 +71,72 @@ class AnimalService
         if (!$animal) {
             throw new NotFoundHttpException("Animal not found or does not exist");
         }
+
+        return AnimalReadDTO::fromEntity($animal);
+    }
+
+    public function updateAnimal(string $uuid, AnimalDTO $animalUpdateDTO): AnimalReadDTO
+    {
+        $animal = $this->animalRepository->findOneByUuid($uuid);
+        if (!$animal) {
+            throw new NotFoundHttpException("Animal not found or does not exist");
+        }
+
+        if ($animalUpdateDTO->isEmpty()) {
+            throw new BadRequestException("No data to update");
+        }
+
+        $errors = $this->validator->validate($animalUpdateDTO);
+        if (count($errors) > 0) {
+            $validationErrors = [];
+            foreach ($errors as $error) {
+                $validationErrors[] = $error->getMessage();
+            }
+            throw new ValidationException($validationErrors);
+        }
+
+        $name = $animalUpdateDTO->name;
+        $isMale = $animalUpdateDTO->isMale;
+        $size = $animalUpdateDTO->size;
+        $weight = $animalUpdateDTO->weight;
+        $isFertile = $animalUpdateDTO->isFertile;
+        $birthDate = $animalUpdateDTO->birthDate;
+        $arrivalDate = $animalUpdateDTO->arrivalDate;
+        $speciesUuid = $animalUpdateDTO->speciesUuid;
+
+        if ($speciesUuid !== null) {
+            $species = $this->speciesRepository->findOneByUuid($speciesUuid);
+            if (!$species) {
+                throw new NotFoundHttpException("Species not found with UUID : " . $speciesUuid);
+            }
+            $animal->setSpecies($species);
+        }
+
+        if ($name !== null) {
+            $animal->setName($name);
+        }
+        if ($isMale !== null) {
+            $animal->setIsMale($isMale);
+        }
+        if ($size !== null) {
+            $animal->setSize($size);
+        }
+        if ($weight !== null) {
+            $animal->setWeight($weight);
+        }
+        if ($isFertile !== null) {
+            $animal->setIsFertile($isFertile);
+        }
+        if ($birthDate !== null) {
+            $animal->setBirthDate($birthDate);
+        }
+        if ($arrivalDate !== null) {
+            $animal->setArrivalDate($arrivalDate);
+        }
+        
+        $animal->setUpdatedAt(new DateTimeImmutable());
+
+        $this->entityManager->flush();
 
         return AnimalReadDTO::fromEntity($animal);
     }

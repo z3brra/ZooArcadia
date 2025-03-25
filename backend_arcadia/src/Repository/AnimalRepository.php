@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Animal;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,7 +21,28 @@ class AnimalRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['uuid' => $uuid]);
     }
-    
+
+    public function findPaginated(int $page = 1, int $limit = 10): array
+    {
+        $query= $this->createQueryBuilder('animal')
+            ->orderBy('animal.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery();
+        
+        $paginator = new Paginator($query);
+        $total = count($paginator);
+        $totalPages = (int) ceil($total / $limit);
+
+        return [
+            'data' => iterator_to_array($paginator->getIterator()),
+            'total' => count($paginator),
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'perPage' => $limit
+        ];
+    }
+
     //    /**
     //     * @return Animal[] Returns an array of Animal objects
     //     */

@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/species', name: 'app_api_species_')]
 final class SpeciesController extends AbstractController
@@ -145,7 +144,6 @@ final class SpeciesController extends AbstractController
     public function update(
         string $uuid,
         Request $request,
-        ValidatorInterface $validator
     ): JsonResponse {
         try {
             try {

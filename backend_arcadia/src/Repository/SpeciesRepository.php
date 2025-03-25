@@ -24,9 +24,9 @@ class SpeciesRepository extends ServiceEntityRepository
 
     public function findPaginated(int $page = 1, int $limit = 10): array
     {
-        $query = $this->createQueryBuilder('s')
-            ->orderBy('s.createdAt', 'DESC')
-            ->setFirstResult(($page - 1)  * $limit)
+        $query = $this->createQueryBuilder('species')
+            ->orderBy('species.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
             ->getQuery();
 
