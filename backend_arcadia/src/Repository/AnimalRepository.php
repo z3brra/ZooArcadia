@@ -15,7 +15,7 @@ class AnimalRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Animal::class);
     }
-
+    
     //    /**
     //     * @return Animal[] Returns an array of Animal objects
     //     */

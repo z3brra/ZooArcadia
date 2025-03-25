@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Species;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,6 +21,28 @@ class SpeciesRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['uuid' => $uuid]);
     }
+
+    public function findPaginated(int $page = 1, int $limit = 10): array
+    {
+        $query = $this->createQueryBuilder('s')
+            ->orderBy('s.createdAt', 'DESC')
+            ->setFirstResult(($page - 1)  * $limit)
+            ->setMaxResults($limit)
+            ->getQuery();
+
+        $paginator = new Paginator($query);
+        $total = count($paginator);
+        $totalPages = (int) ceil($total / $limit);
+
+        return [
+            'data' => iterator_to_array($paginator->getIterator()),
+            'total' => count($paginator),
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'perPage' => $limit,
+        ];
+    }
+
 
     //    /**
     //     * @return Species[] Returns an array of Species objects

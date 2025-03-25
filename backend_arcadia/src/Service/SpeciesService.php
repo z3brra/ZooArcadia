@@ -139,6 +139,24 @@ class SpeciesService
         $this->entityManager->remove($species);
         $this->entityManager->flush();
     }
+
+    public function listSpeciesPaginated(int $page, int $limit): array
+    {
+        $result = $this->speciesRepository->findPaginated($page, $limit);
+
+        $speciesDTOs = [];
+        foreach ($result['data'] as $species) {
+            $speciesDTOs[] = SpeciesReadDTO::fromEntity($species);
+        }
+
+        return [
+            'data' => $speciesDTOs,
+            'total' => $result['total'],
+            'totalPages' => $result['totalPages'],
+            'currentPage' => $result['currentPage'],
+            'perPage' => $result['perPage'],
+        ];
+    }
 }
 
 ?>

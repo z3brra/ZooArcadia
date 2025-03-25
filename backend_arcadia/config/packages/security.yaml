@@ -35,11 +35,13 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }    
+        # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
 
-        - { path: ^/api/species, roles: ROLE_ADMIN, methods: [DELETE, PUT] }
         - { path: ^/api/species/create, roles: ROLE_ADMIN }
+        - { path: ^/api/species, roles: ROLE_ADMIN, methods: [DELETE, PUT] }
+
+        - { path: ^/api/species, roles: [ROLE_ADMIN, ROLE_EMPLOYEE], methods: [GET] }
 
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: ROLE_USER }
