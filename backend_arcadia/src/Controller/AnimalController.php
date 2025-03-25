@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Controller;
+
+use App\DTO\AnimalDTO;
+use App\Exception\ValidationException;
+use App\Service\AnimalService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\{Request, JsonResponse};
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+
+#[Route('/api/animal', name: 'app_api_animal_')]
+final class AnimalController extends AbstractController
+{
+    public function __construct(
+        private AnimalService $animalService,
+        private SerializerInterface $serializer,
+        private UrlGeneratorInterface $urlGenerator
+    ) {}
+
+    #[Route('/create', name: 'create', methods: 'POST')]
+    public function createAnimal(
+        Request $request
+    ): JsonResponse {
+        try {
+            try {
+                $animalCreateDTO = $this->serializer->deserialize(
+                    $request->getContent(),
+                    AnimalDTO::class,
+                    'json'
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestException("Invalid JSON format");
+            }
+
+            $animalReadDTO = $this->animalService->createAnimal($animalCreateDTO);
+
+            $responseData = $this->serializer->serialize(
+                data: $animalReadDTO,
+                format: 'json',
+                context: ['groups' => ['animal:read']]
+            );
+
+            $location = $this->urlGenerator->generate(
+                name: 'app_api_animal_show',
+                parameters: ['uuid' => $animalReadDTO->uuid],
+                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_CREATED,
+                headers: ['Location' => $location],
+                json: true
+            );
+
+
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}', name: 'show', methods: 'GET')]
+    public function show(
+        string $uuid
+    ): JsonResponse {
+        try {
+            $animalReadDTO = $this->animalService->showAnimal($uuid);
+
+            $responseData = $this->serializer->serialize(
+                data: $animalReadDTO,
+                format: 'json',
+                context: ['groups' => ['animal:read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+}
+
+?>

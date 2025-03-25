@@ -4,11 +4,9 @@ namespace App\Controller;
 
 use App\DTO\SpeciesDTO;
 use App\Exception\ValidationException;
-use App\Repository\SpeciesRepository;
 use App\Service\SpeciesService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Request, JsonResponse, Response};
+use Symfony\Component\HttpFoundation\{Request, JsonResponse};
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -21,8 +19,6 @@ final class SpeciesController extends AbstractController
 {
     public function __construct(
         private SpeciesService $speciesService,
-        private EntityManagerInterface $entityManager,
-        private SpeciesRepository $repository,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ){}

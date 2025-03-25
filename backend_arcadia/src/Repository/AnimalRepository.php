@@ -15,6 +15,11 @@ class AnimalRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Animal::class);
     }
+
+    public function findOneByUuid(string $uuid): ?Animal
+    {
+        return $this->findOneBy(['uuid' => $uuid]);
+    }
     
     //    /**
     //     * @return Animal[] Returns an array of Animal objects
