@@ -15,7 +15,7 @@ use App\Exception\ValidationException;
 use App\Repository\HabitatRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\Void_;
+
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -179,9 +179,9 @@ class AnimalService
         $pictureCreateDTO->associatedEntityUuid = $uuid;
         $pictureCreateDTO->filename = $file->getClientOriginalName();
 
-        $picture = $this->pictureService->createPicture($pictureCreateDTO);
+        $pictureReadDTO = $this->pictureService->createPicture($pictureCreateDTO);
 
-        return PictureReadDTO::fromEntity($picture);
+        return $pictureReadDTO;
     }
 
     public function listAnimalPaginated(int $page, int $limit): array

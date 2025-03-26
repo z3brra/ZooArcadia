@@ -11,7 +11,6 @@ use App\Repository\AnimalRepository;
 
 use App\DTO\PictureDTO;
 use App\DTO\PictureReadDTO;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -30,7 +29,7 @@ class PictureService
         private ValidatorInterface $validator
     ) {}
 
-    public function createPicture(PictureDTO $pictureCreateDTO): Picture
+    public function createPicture(PictureDTO $pictureCreateDTO): PictureReadDTO
     {
         $errors = $this->validator->validate($pictureCreateDTO, null, ['create']);
         if (count($errors) > 0) {
@@ -69,7 +68,7 @@ class PictureService
         $this->entityManager->persist($picture);
         $this->entityManager->flush();
 
-        return $picture;
+        return PictureReadDTO::fromEntity($picture);
     }
 
     private function generateSlugFromFilename(string $filename): string
