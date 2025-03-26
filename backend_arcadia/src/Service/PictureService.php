@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Service\StringHelper;
+
 use App\Entity\Picture;
 use App\Entity\Animal;
 use App\Entity\AnimalPicture;
@@ -15,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use App\Exception\ValidationException;
+use DateTime;
 use DateTimeImmutable;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\component\HttpKernel\Exception\NotFoundHttpException;
@@ -73,7 +76,9 @@ class PictureService
 
     private function generateSlugFromFilename(string $filename): string
     {
-        return strtolower(preg_replace('/[^a-z0-9]+/', '-', pathinfo($filename, PATHINFO_FILENAME)));
+        $slug = StringHelper::slugify(pathinfo($filename, PATHINFO_FILENAME));
+
+        return substr($slug, -255, strlen($slug));
     }
 }
 

@@ -26,6 +26,17 @@ class StringHelper
         $str = preg_replace('/[^a-zA-Z0-9 _-]/', '', $str);
         return strtolower(trim($str));
     }
+
+    public static function slugify($text) {
+        $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
+    
+        $text = preg_replace('/[^a-zA-Z0-9\s-]/', '', str_replace('_', '-', $text));
+        $text = preg_replace('/[\s-]+/', '-', $text);
+    
+        $text = trim($text, '-');
+    
+        return strtolower($text);
+    }
 }
 
 
