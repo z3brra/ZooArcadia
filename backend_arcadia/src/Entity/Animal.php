@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AnimalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -54,10 +56,17 @@ class Animal
     #[ORM\JoinColumn(nullable: true)]
     private ?Habitat $habitat = null;
 
+    /**
+     * @var Collection<int, AnimalPicture>
+     */
+    #[ORM\OneToMany(targetEntity: AnimalPicture::class, mappedBy: 'animal', orphanRemoval: true, cascade: ['remove'])]
+    private Collection $animalPictures;
+
     /** @throws Exception */
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
+        $this->animalPictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,6 +214,36 @@ class Animal
     public function setHabitat(?Habitat $habitat): static
     {
         $this->habitat = $habitat;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnimalPicture>
+     */
+    public function getAnimalPictures(): Collection
+    {
+        return $this->animalPictures;
+    }
+
+    public function addAnimalPicture(AnimalPicture $animalPicture): static
+    {
+        if (!$this->animalPictures->contains($animalPicture)) {
+            $this->animalPictures->add($animalPicture);
+            $animalPicture->setAnimal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnimalPicture(AnimalPicture $animalPicture): static
+    {
+        if ($this->animalPictures->removeElement($animalPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($animalPicture->getAnimal() === $this) {
+                $animalPicture->setAnimal(null);
+            }
+        }
 
         return $this;
     }
