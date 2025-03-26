@@ -43,7 +43,7 @@ class AnimalReadDTO
     public string $speciesUuid;
 
     #[Groups(['animal:read'])]
-    public string $habitatUuid;
+    public ?string $habitatUuid;
 
     public function __construct(
         string $uuid,
@@ -57,7 +57,7 @@ class AnimalReadDTO
         DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt = null,
         string $speciesUuid,
-        ?string $habitatUuid = null
+        ?string $habitatUuid = null,
     ) {
         $this->uuid = $uuid;
         $this->name = $name;
@@ -87,7 +87,7 @@ class AnimalReadDTO
             $animal->getCreatedAt(),
             $animal->getUpdatedAt(),
             $animal->getSpecies()->getUuid(),
-            $animal->getHabitat()->getUuid()
+            $animal->getHabitat() ? $animal->getHabitat()->getUuid() : null
         );
     }
 }

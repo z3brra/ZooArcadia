@@ -59,6 +59,11 @@ final class AnimalController extends AbstractController
             );
 
 
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
         } catch (BadRequestException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],

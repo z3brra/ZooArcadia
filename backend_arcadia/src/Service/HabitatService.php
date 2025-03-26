@@ -120,6 +120,10 @@ class HabitatService
             throw new NotFoundHttpException("Habitat not found or does not exist");
         }
 
+        foreach ($habitat->getAnimals() as $animal) {
+            $animal->setHabitat(null);
+        }
+
         $this->entityManager->remove($habitat);
         $this->entityManager->flush();
     }

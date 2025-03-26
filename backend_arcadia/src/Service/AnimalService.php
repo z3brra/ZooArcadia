@@ -10,6 +10,7 @@ use App\DTO\AnimalReadDTO;
 use App\Repository\SpeciesRepository;
 
 use App\Exception\ValidationException;
+use App\Repository\HabitatRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -23,6 +24,7 @@ class AnimalService
         private AnimalRepository $animalRepository,
 
         private SpeciesRepository $speciesRepository,
+        private HabitatRepository $habitatRepository,
 
         private ValidatorInterface $validator
     ) {}
@@ -43,6 +45,15 @@ class AnimalService
             throw new NotFoundHttpException("Species not found with UUID : " . $animalCreateDTO->speciesUuid);
         }
 
+        if ($animalCreateDTO->habitatUuid !== null) {
+            $habitat = $this->habitatRepository->findOneByUuid($animalCreateDTO->habitatUuid);
+            if (!$habitat) {
+                throw new NotFoundHttpException("Habitat not found with UUID : " . $animalCreateDTO->habitatUuid);
+            }
+        } else {
+            $habitat = $animalCreateDTO->habitatUuid;
+        }
+
         $animal = new Animal();
         $animal->setName($animalCreateDTO->name);
         $animal->setIsMale($animalCreateDTO->isMale);
@@ -52,6 +63,7 @@ class AnimalService
         $animal->setBirthDate($animalCreateDTO->birthDate);
         $animal->setArrivalDate($animalCreateDTO->arrivalDate);
         $animal->setSpecies($species);
+        $animal->setHabitat($habitat);
 
         $animal->setCreatedAt(new DateTimeImmutable());
 
