@@ -8,6 +8,8 @@ use App\Service\AnimalService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -175,6 +177,40 @@ final class AnimalController extends AbstractController
         }
     }
 
+    #[Route('/{uuid}/add-picture', name: 'add_picture', methods: 'POST')]
+    public function addPicture(
+        Request $request,
+        string $uuid
+    ): JsonResponse {
+        try {
+            $file = $request->files->get('image');
+            if (!$file instanceof UploadedFile) {
+                throw new BadRequestHttpException("No image uploaded");
+            }
+
+            $pictureReadDTO = $this->animalService->addPicture($uuid, $file);
+
+            $responseData = $this->serializer->serialize(
+                data: $pictureReadDTO,
+                format: 'json',
+                context: ['groups' => ['picture:read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
         string $uuid
@@ -190,6 +226,16 @@ final class AnimalController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Exception $e) {
             return new JsonResponse(

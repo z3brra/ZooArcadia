@@ -29,7 +29,7 @@ class Picture
     /**
      * @var Collection<int, AnimalPicture>
      */
-    #[ORM\OneToMany(targetEntity: AnimalPicture::class, mappedBy: 'picture', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: AnimalPicture::class, mappedBy: 'picture', cascade: ['persist', 'remove'])]
     private Collection $animalPictures;
 
     public function __construct()

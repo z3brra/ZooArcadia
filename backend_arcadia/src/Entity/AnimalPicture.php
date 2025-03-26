@@ -17,7 +17,7 @@ class AnimalPicture
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Animal $animal = null;
 
-    #[ORM\ManyToOne(targetEntity: Picture::class, inversedBy: 'animalPictures')]
+    #[ORM\ManyToOne(targetEntity: Picture::class, inversedBy: 'animalPictures', cascade: ['remove'])]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Picture $picture = null;
 

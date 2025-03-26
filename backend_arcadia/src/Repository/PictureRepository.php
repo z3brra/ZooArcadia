@@ -16,6 +16,16 @@ class PictureRepository extends ServiceEntityRepository
         parent::__construct($registry, Picture::class);
     }
 
+    public function findOneByUuid($uuid): ?Picture
+    {
+        return $this->findOneBy(['uuid' => $uuid]);
+    }
+
+    public function findOneBySlug($slug): ?Picture
+    {
+        return $this->findOneBy(['slug' => $slug]);
+    }
+
     //    /**
     //     * @return Picture[] Returns an array of Picture objects
     //     */

@@ -6,14 +6,18 @@ use App\Entity\Animal;
 use App\Repository\AnimalRepository;
 use App\DTO\AnimalDTO;
 use App\DTO\AnimalReadDTO;
-
+use App\DTO\PictureDTO;
+use App\DTO\PictureReadDTO;
 use App\Repository\SpeciesRepository;
+use App\Service\PictureService;
 
 use App\Exception\ValidationException;
 use App\Repository\HabitatRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Void_;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -25,6 +29,8 @@ class AnimalService
 
         private SpeciesRepository $speciesRepository,
         private HabitatRepository $habitatRepository,
+
+        private PictureService $pictureService,
 
         private ValidatorInterface $validator
     ) {}
@@ -159,6 +165,23 @@ class AnimalService
 
         $this->entityManager->remove($animal);
         $this->entityManager->flush();
+    }
+
+    public function addPicture(string $uuid, UploadedFile $file): PictureReadDTO
+    {
+        $animal = $this->animalRepository->findOneByUuid($uuid);
+        if (!$animal) {
+            throw new NotFoundHttpException("Animal not found or does not exist");
+        }
+
+        $pictureCreateDTO = new PictureDTO();
+        $pictureCreateDTO->associatedEntityType = 'animal';
+        $pictureCreateDTO->associatedEntityUuid = $uuid;
+        $pictureCreateDTO->filename = $file->getClientOriginalName();
+
+        $picture = $this->pictureService->createPicture($pictureCreateDTO);
+
+        return PictureReadDTO::fromEntity($picture);
     }
 
     public function listAnimalPaginated(int $page, int $limit): array
