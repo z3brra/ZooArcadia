@@ -179,7 +179,7 @@ class AnimalService
         $pictureCreateDTO->associatedEntityUuid = $uuid;
         $pictureCreateDTO->filename = $file->getClientOriginalName();
 
-        $pictureReadDTO = $this->pictureService->createPicture($pictureCreateDTO);
+        $pictureReadDTO = $this->pictureService->createPicture($pictureCreateDTO, $file);
 
         return $pictureReadDTO;
     }

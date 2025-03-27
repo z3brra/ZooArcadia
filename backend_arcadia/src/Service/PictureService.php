@@ -17,22 +17,33 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use App\Exception\ValidationException;
-use DateTime;
 use DateTimeImmutable;
+use Exception;
+use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\component\HttpKernel\Exception\NotFoundHttpException;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+
 class PictureService
 {
+    private string $uploadDir;
+    private string $uploadRelativeDir;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private PictureRepository $pictureRepository,
         private AnimalRepository $animalRepository,
+        private ValidatorInterface $validator,
+        private ParameterBagInterface $params
+    ) {
+        $this->uploadDir = $params->get('upload_directory');
+        $this->uploadRelativeDir =$params->get('upload_relative_directory');
+    }
 
-        private ValidatorInterface $validator
-    ) {}
-
-    public function createPicture(PictureDTO $pictureCreateDTO): PictureReadDTO
+    public function createPicture(PictureDTO $pictureCreateDTO, UploadedFile $file): PictureReadDTO
     {
         $errors = $this->validator->validate($pictureCreateDTO, null, ['create']);
         if (count($errors) > 0) {
@@ -56,8 +67,20 @@ class PictureService
                 break;
         }
 
+        $slug = $this->generateSlugFromFilename($pictureCreateDTO->filename);
+
+        $extension = pathinfo($pictureCreateDTO->filename, PATHINFO_EXTENSION);
+
+        $filename = $slug . '.' . $extension;
+
+        try {
+            $relativePath = $this->savePicture($filename, $file);
+        }  catch (RuntimeException $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
         $picture = new Picture();
-        $picture->setSlug($this->generateSlugFromFilename($pictureCreateDTO->filename));
+        $picture->setSlug($slug);
 
         if ($entity instanceof Animal) {
             $animalPicture = new AnimalPicture();
@@ -108,6 +131,23 @@ class PictureService
 
         $this->entityManager->remove($picture);
         $this->entityManager->flush();
+    }
+
+    private function savePicture(string $filename, UploadedFile $file): string
+    {
+        if (!$this->uploadDir) {
+            throw new RuntimeException("The upload directroy is not defined");
+        }
+
+        $relativePath = $this->uploadRelativeDir . $filename;
+
+        try {
+            $file->move($this->uploadDir, $filename);
+        } catch (Exception $e) {
+            throw new RuntimeException("File upload failed : " . $e->getMessage());
+        }
+
+        return $relativePath;
     }
 
     private function generateSlugFromFilename(string $filename): string
