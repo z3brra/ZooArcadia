@@ -99,6 +99,17 @@ class PictureService
 
     // }
 
+    private function deletePicture(string $uuid): void
+    {
+        $picture = $this->pictureRepository->findOneByUuid($uuid);
+        if (!$picture) {
+            throw new NotFoundHttpException("Picture not found or does not exist");
+        }
+
+        $this->entityManager->remove($picture);
+        $this->entityManager->flush();
+    }
+
     private function generateSlugFromFilename(string $filename): string
     {
         $slug = StringHelper::slugify(pathinfo($filename, PATHINFO_FILENAME));
