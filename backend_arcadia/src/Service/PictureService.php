@@ -81,6 +81,7 @@ class PictureService
 
         $picture = new Picture();
         $picture->setSlug($slug);
+        $picture->setPath($relativePath);
 
         if ($entity instanceof Animal) {
             $animalPicture = new AnimalPicture();
