@@ -219,7 +219,11 @@ final class AnimalController extends AbstractController
         try {
             $data = json_decode($request->getContent(), true);
 
-            if (!$data['pictureUuid']) {
+            if (empty($data)) {
+                throw new BadRequestException("Invalid JSON format");
+            }
+
+            if (empty($data['pictureUuid'])) {
                 throw new BadRequestException("Picture uuid is required");
             }
 
