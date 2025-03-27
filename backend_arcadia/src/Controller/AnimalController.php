@@ -211,6 +211,48 @@ final class AnimalController extends AbstractController
         }
     }
 
+    #[Route('/{uuid}/remove-picture', name: 'remove_picture', methods: ['POST'])]
+    public function removePicture(
+        Request $request,
+        string $uuid
+    ): JsonResponse {
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            if (!$data['pictureUuid']) {
+                throw new BadRequestException("Picture uuid is required");
+            }
+
+            $this->animalService->removePicture($uuid, $data['pictureUuid']);
+
+            return new JsonResponse(
+                data: ['message' => 'Picture successfully removed'],
+                status: JsonResponse::HTTP_OK
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
         string $uuid
@@ -258,7 +300,7 @@ final class AnimalController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $animalPaginated,
                 format: 'json',
-                context: ['groups' => ['animal:read']]
+                context: ['groups' => ['animal:read', 'picture:read']]
             );
 
             return new JsonResponse(

@@ -20,8 +20,7 @@ use App\Exception\ValidationException;
 use DateTimeImmutable;
 use Exception;
 use RuntimeException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -29,7 +28,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PictureService
 {
-    private string $uploadDir;
+    private string $publicDir;
     private string $uploadRelativeDir;
 
     public function __construct(
@@ -39,7 +38,7 @@ class PictureService
         private ValidatorInterface $validator,
         private ParameterBagInterface $params
     ) {
-        $this->uploadDir = $params->get('upload_directory');
+        $this->publicDir = $params->get('public_directory');
         $this->uploadRelativeDir =$params->get('upload_relative_directory');
     }
 
@@ -123,11 +122,18 @@ class PictureService
 
     // }
 
-    private function deletePicture(string $uuid): void
+    public function deletePicture(string $uuid): void
     {
         $picture = $this->pictureRepository->findOneByUuid($uuid);
         if (!$picture) {
             throw new NotFoundHttpException("Picture not found or does not exist");
+        }
+
+        $filepath = $this->publicDir . $picture->getPath();
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        } else {
+            throw new NotFoundHttpException("File picture not found or does not exist");
         }
 
         $this->entityManager->remove($picture);
@@ -136,14 +142,15 @@ class PictureService
 
     private function savePicture(string $filename, UploadedFile $file): string
     {
-        if (!$this->uploadDir) {
+        $uploadDir = $this->publicDir . $this->uploadRelativeDir;
+        if (!$uploadDir) {
             throw new RuntimeException("The upload directroy is not defined");
         }
 
         $relativePath = $this->uploadRelativeDir . $filename;
 
         try {
-            $file->move($this->uploadDir, $filename);
+            $file->move($uploadDir, $filename);
         } catch (Exception $e) {
             throw new RuntimeException("File upload failed : " . $e->getMessage());
         }

@@ -12,7 +12,9 @@ use App\Repository\SpeciesRepository;
 use App\Service\PictureService;
 
 use App\Exception\ValidationException;
+use App\Repository\AnimalPictureRepository;
 use App\Repository\HabitatRepository;
+use App\Repository\PictureRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -29,6 +31,9 @@ class AnimalService
 
         private SpeciesRepository $speciesRepository,
         private HabitatRepository $habitatRepository,
+        private AnimalPictureRepository $animalPictureRepository,
+        private PictureRepository $pictureRepository,
+
 
         private PictureService $pictureService,
 
@@ -182,6 +187,28 @@ class AnimalService
         $pictureReadDTO = $this->pictureService->createPicture($pictureCreateDTO, $file);
 
         return $pictureReadDTO;
+    }
+
+    public function removePicture(string $uuid, string $pictureUuid): void
+    {
+        $animal = $this->animalRepository->findOneByUuid($uuid);
+        if (!$animal) {
+            throw new NotFoundHttpException("Animal not found or does not exist");
+        }
+
+        $picture = $this->pictureRepository->findOneByUuid($pictureUuid);
+        if (!$picture) {
+            throw new NotFoundHttpException("Picture not found or does not exist with UUID : " . $pictureUuid);
+        }
+
+        $animalPicture = $this->animalPictureRepository->findOneBy([
+            'animal' => $animal,
+            'picture' => $picture
+        ]);
+        if (!$animalPicture) {
+            throw new BadRequestException("Picture is not linked to the specified animal");
+        }
+        $this->pictureService->deletePicture($pictureUuid);
     }
 
     public function listAnimalPaginated(int $page, int $limit): array
