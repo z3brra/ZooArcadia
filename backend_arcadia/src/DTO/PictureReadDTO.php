@@ -8,13 +8,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class PictureReadDTO
 {
-    #[Groups(['picture:read'])]
+    #[Groups(['picture:read', 'entity-with-picture: read'])]
     public string $uuid;
 
-    #[Groups(['picture:read'])]
+    #[Groups(['picture:read', 'entity-with-picture: read'])]
     public string $slug;
 
-    #[Groups(['picture:read'])]
+    #[Groups(['picture:read', 'entity-with-picture: read'])]
     public string $path;
 
     #[Groups(['picture:read'])]
@@ -23,10 +23,10 @@ class PictureReadDTO
     #[Groups(['picture:read'])]
     public string $associatedEntityUuid;
 
-    #[Groups(['picture:read'])]
+    #[Groups(['picture:read', 'entity-with-picture: read'])]
     public DateTimeImmutable $createdAt;
 
-    #[Groups(['picture:read'])]
+    #[Groups(['picture:read', 'entity-with-picture: read'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct(

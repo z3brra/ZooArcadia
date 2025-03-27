@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Exception\ValidationException;
 use DateTimeImmutable;
 use Exception;
+use PhpParser\ErrorHandler\Throwing;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 
@@ -97,30 +98,37 @@ class PictureService
         return PictureReadDTO::fromEntity($picture);
     }
 
-    // public function updatePicture(PictureDTO $pictureCreateDTO): PictureReadDTO
-    // {
-    //     $errors = $this->validator->validate($pictureCreateDTO, null, ['update']);
-    //     if (count($errors) > 0) {
-    //         $validationErrors = [];
-    //         foreach ($errors as $error) {
-    //             $validationErrors[] = $error->getMessage();
-    //         }
-    //         throw new ValidationException($validationErrors);
-    //     }
+    public function updatePicture(string $uuid, string $filename, UploadedFile $file): PictureReadDTO
+    {
+        $picture = $this->pictureRepository->findOneByUuid($uuid);
+        if (!$picture) {
+            throw new NotFoundHttpException("Picture not found or does not exist");
+        }
 
-    //     switch ($pictureCreateDTO->associatedEntityType) {
-    //         case 'animal':
-    //             $entity = $this->animalRepository->findOneByUuid($pictureCreateDTO->associatedEntityUuid);
-    //             if (!$entity) {
-    //                 throw new NotFoundHttpException("Animal not found with UUID : " . $pictureCreateDTO->associatedEntityUuid);
-    //             }
-    //             break;
-    //         default:
-    //         throw new BadRequestHttpException("Invalid associated entity type");
-    //             break;
-    //     }
+        // Delete old file with public dir concat (path in database : /uploads/<filename>.<ext>)
+        $oldFilePath = $this->publicDir . $picture->getPath();
+        if (file_exists($oldFilePath)) {
+            unlink($oldFilePath);
+        } else {
+            throw new NotFoundHttpException("File picture not found or does not exist");
+        }
 
-    // }
+        $slug = $this->generateSlugFromFilename($filename);
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $updatedFilename = $slug . '.' . $extension;
+
+        try {
+            $relativePath = $this->savePicture($updatedFilename, $file);
+        } catch (RuntimeException $e) {
+            throw new RuntimeException($e->getMessage());
+        }
+
+        $picture->setSlug($slug);
+        $picture->setPath($relativePath);
+        $picture->setUpdatedAt(new DateTimeImmutable());
+
+        return PictureReadDTO::fromEntity($picture);
+    }
 
     public function deletePicture(string $uuid): void
     {
