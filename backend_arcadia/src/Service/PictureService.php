@@ -74,6 +74,31 @@ class PictureService
         return PictureReadDTO::fromEntity($picture);
     }
 
+    // public function updatePicture(PictureDTO $pictureCreateDTO): PictureReadDTO
+    // {
+    //     $errors = $this->validator->validate($pictureCreateDTO, null, ['update']);
+    //     if (count($errors) > 0) {
+    //         $validationErrors = [];
+    //         foreach ($errors as $error) {
+    //             $validationErrors[] = $error->getMessage();
+    //         }
+    //         throw new ValidationException($validationErrors);
+    //     }
+
+    //     switch ($pictureCreateDTO->associatedEntityType) {
+    //         case 'animal':
+    //             $entity = $this->animalRepository->findOneByUuid($pictureCreateDTO->associatedEntityUuid);
+    //             if (!$entity) {
+    //                 throw new NotFoundHttpException("Animal not found with UUID : " . $pictureCreateDTO->associatedEntityUuid);
+    //             }
+    //             break;
+    //         default:
+    //         throw new BadRequestHttpException("Invalid associated entity type");
+    //             break;
+    //     }
+
+    // }
+
     private function generateSlugFromFilename(string $filename): string
     {
         $slug = StringHelper::slugify(pathinfo($filename, PATHINFO_FILENAME));

@@ -3,6 +3,9 @@
 namespace App\DTO;
 
 use App\Entity\Animal;
+
+use App\DTO\PictureReadDTO;
+
 use DateTimeImmutable;
 use DateTimeInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -45,6 +48,9 @@ class AnimalReadDTO
     #[Groups(['animal:read'])]
     public ?string $habitatUuid;
 
+    #[Groups(['animal:read'])]
+    public array $pictures = [];
+
     public function __construct(
         string $uuid,
         string $name,
@@ -58,6 +64,7 @@ class AnimalReadDTO
         ?DateTimeImmutable $updatedAt = null,
         string $speciesUuid,
         ?string $habitatUuid = null,
+        array $pictures = []
     ) {
         $this->uuid = $uuid;
         $this->name = $name;
@@ -71,10 +78,17 @@ class AnimalReadDTO
         $this->updatedAt = $updatedAt;
         $this->speciesUuid = $speciesUuid;
         $this->habitatUuid = $habitatUuid;
+        $this->pictures = $pictures;
     }
 
     public static function fromEntity(Animal $animal): self
     {
+        $animalPictures = $animal->getAnimalPictures();
+        $picturesDTOs = [];
+        foreach ($animalPictures as $animalPicture) {
+            $picturesDTOs[] = PictureReadDTO::fromEntity($animalPicture->getPicture());
+        }
+
         return new self(
             $animal->getUuid(),
             $animal->getName(),
@@ -87,7 +101,8 @@ class AnimalReadDTO
             $animal->getCreatedAt(),
             $animal->getUpdatedAt(),
             $animal->getSpecies()->getUuid(),
-            $animal->getHabitat() ? $animal->getHabitat()->getUuid() : null
+            $animal->getHabitat() ? $animal->getHabitat()->getUuid() : null,
+            $picturesDTOs
         );
     }
 }

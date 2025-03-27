@@ -94,7 +94,7 @@ final class AnimalController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $animalReadDTO,
                 format: 'json',
-                context: ['groups' => ['animal:read']]
+                context: ['groups' => ['animal:read', 'picture:read']]
             );
 
             return new JsonResponse(
