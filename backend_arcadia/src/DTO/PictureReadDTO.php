@@ -15,6 +15,9 @@ class PictureReadDTO
     public string $slug;
 
     #[Groups(['picture:read'])]
+    public string $path;
+
+    #[Groups(['picture:read'])]
     public string $associatedEntityType;
 
     #[Groups(['picture:read'])]
@@ -23,18 +26,25 @@ class PictureReadDTO
     #[Groups(['picture:read'])]
     public DateTimeImmutable $createdAt;
 
+    #[Groups(['picture:read'])]
+    public ?DateTimeImmutable $updatedAt;
+
     public function __construct(
         string $uuid,
         string $slug,
+        string $path,
         string $associatedEntityType,
         string $associatedEntityUuid,
-        DateTimeImmutable $createdAt
+        DateTimeImmutable $createdAt,
+        ?DateTimeImmutable $updatedAt = null
     ) {
         $this->uuid = $uuid;
         $this->slug = $slug;
+        $this->path = $path;
         $this->associatedEntityType = $associatedEntityType;
         $this->associatedEntityUuid = $associatedEntityUuid;
         $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
     }
 
     public static function fromEntity(Picture $picture): self
@@ -56,9 +66,11 @@ class PictureReadDTO
         return new self(
             uuid: $picture->getUuid(),
             slug: $picture->getSlug(),
+            path: $picture->getPath(),
             associatedEntityType: $entityType,
             associatedEntityUuid: $entityUuid,
-            createdAt: $picture->getCreatedAt()
+            createdAt: $picture->getCreatedAt(),
+            updatedAt: $picture->getUpdatedAt()
         );
     }
 }
