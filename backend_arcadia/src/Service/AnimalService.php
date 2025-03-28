@@ -11,17 +11,17 @@ use App\DTO\PictureReadDTO;
 use App\Repository\SpeciesRepository;
 use App\Service\PictureService;
 
-use App\Exception\ValidationException;
 use App\Repository\AnimalPictureRepository;
 use App\Repository\HabitatRepository;
 use App\Repository\PictureRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+
+use App\Exception\ValidationException;
+use Symfony\Component\HttpKernel\Exception\{NotFoundHttpException, BadRequestHttpException};
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AnimalService
 {
@@ -103,7 +103,7 @@ class AnimalService
         }
 
         if ($animalUpdateDTO->isEmpty()) {
-            throw new BadRequestException("No data to update");
+            throw new BadRequestHttpException("No data to update");
         }
 
         $errors = $this->validator->validate($animalUpdateDTO);
@@ -218,7 +218,7 @@ class AnimalService
             'picture' => $picture
         ]);
         if (!$animalPicture) {
-            throw new BadRequestException("Picture is not linked to the specified animal");
+            throw new BadRequestHttpException("Picture is not linked to the specified animal");
         }
         $this->pictureService->deletePicture($pictureUuid);
     }

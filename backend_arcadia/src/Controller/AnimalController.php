@@ -3,14 +3,14 @@
 namespace App\Controller;
 
 use App\DTO\AnimalDTO;
-use App\Exception\ValidationException;
 use App\Service\AnimalService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use App\Exception\ValidationException;
+use Symfony\Component\HttpKernel\Exception\{NotFoundHttpException, BadRequestHttpException};
+
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -36,7 +36,7 @@ final class AnimalController extends AbstractController
                     'json'
                 );
             } catch (\Exception $e) {
-                throw new BadRequestException("Invalid JSON format");
+                throw new BadRequestHttpException("Invalid JSON format");
             }
 
             $animalReadDTO = $this->animalService->createAnimal($animalCreateDTO);
@@ -66,7 +66,7 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
@@ -130,7 +130,7 @@ final class AnimalController extends AbstractController
                     format: 'json'
                 );
             } catch (\Exception $e) {
-                throw new BadRequestException("Invalid JSON format");
+                throw new BadRequestHttpException("Invalid JSON format");
             }
 
             $animalReadDTO = $this->animalService->updateAnimal($uuid, $animalUpdateDTO);
@@ -159,7 +159,7 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
@@ -185,7 +185,7 @@ final class AnimalController extends AbstractController
         try {
             $file = $request->files->get('image');
             if (!$file instanceof UploadedFile) {
-                throw new BadRequestException("No image uploaded");
+                throw new BadRequestHttpException("No image uploaded");
             }
 
             $pictureReadDTO = $this->animalService->addPicture($uuid, $file);
@@ -219,12 +219,12 @@ final class AnimalController extends AbstractController
         try {
             $file = $request->files->get('image');
             if (!$file instanceof UploadedFile) {
-                throw new BadRequestException("No image uploaded");
+                throw new BadRequestHttpException("No image uploaded");
             }
 
             $pictureUuid = $request->query->get('pictureUuid', null);
             if (!$pictureUuid) {
-                throw new BadRequestException("pictureUuid is required in URI parameter");
+                throw new BadRequestHttpException("pictureUuid is required in URI parameter");
             }
 
             $pictureReadDTO = $this->animalService->changePicture($uuid, $pictureUuid, $file);
@@ -246,7 +246,7 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
@@ -273,7 +273,7 @@ final class AnimalController extends AbstractController
         try {
             $pictureUuid = $request->query->get('pictureUuid', null);
             if (!$pictureUuid) {
-                throw new BadRequestException("pictureUuid is required in URI parameter");
+                throw new BadRequestHttpException("pictureUuid is required in URI parameter");
             }
 
             $this->animalService->removePicture($uuid, $pictureUuid);
@@ -288,7 +288,7 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
@@ -317,7 +317,7 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
