@@ -94,7 +94,7 @@ final class AnimalController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $animalReadDTO,
                 format: 'json',
-                context: ['groups' => ['animal:read', 'picture:read']]
+                context: ['groups' => ['animal:read', 'entity-with-picture: read']]
             );
 
             return new JsonResponse(
@@ -185,7 +185,7 @@ final class AnimalController extends AbstractController
         try {
             $file = $request->files->get('image');
             if (!$file instanceof UploadedFile) {
-                throw new BadRequestHttpException("No image uploaded");
+                throw new BadRequestException("No image uploaded");
             }
 
             $pictureReadDTO = $this->animalService->addPicture($uuid, $file);
@@ -193,7 +193,7 @@ final class AnimalController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $pictureReadDTO,
                 format: 'json',
-                context: ['groups' => ['picture:read']]
+                context: ['groups' => ['entity-with-picture: read']]
             );
 
             return new JsonResponse(
@@ -211,7 +211,75 @@ final class AnimalController extends AbstractController
         }
     }
 
-    #[Route('/{uuid}/remove-picture', name: 'remove_picture', methods: ['POST'])]
+    #[Route('/{uuid}/change-picture', name: 'change_picture', methods: 'POST')]
+    public function changePicture(
+        Request $request,
+        string $uuid
+    ): JsonResponse {
+        try {
+            // var_dump($request);
+            $file = $request->files->get('image');
+            if (!$file instanceof UploadedFile) {
+                throw new BadRequestException("No image uploaded");
+            }
+            // $metadataFile = $request->files->get('metadata');
+            // $jsonData = file_get_contents($metadataFile->getPathname());
+            // $data = json_decode($jsonData, true);
+            // $data = json_decode($jsonData, true);
+
+            // if (empty($data)) {
+            //     throw new BadRequestException("Invalid JSON format");
+            // }
+
+            // if (empty($data['pictureUuid'])) {
+            //     throw new BadRequestException("Picture uuid is required");
+            // }
+            $pictureUuid = $request->query->get('pictureUuid', null);
+            if (!$pictureUuid) {
+                throw new BadRequestException("Picture uuid is required");
+            }
+
+
+            $pictureReadDTO = $this->animalService->changePicture($uuid, $pictureUuid, $file);
+            // $pictureReadDTO = $this->animalService->changePicture($uuid, $pictureUuid, $file);
+
+            $responseData = $this->serializer->serialize(
+                data: $pictureReadDTO,
+                format: 'json',
+                context: ['groups' => ['entity-with-picture: read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+    }
+
+    #[Route('/{uuid}/remove-picture', name: 'remove_picture', methods: 'POST')]
     public function removePicture(
         Request $request,
         string $uuid
@@ -243,11 +311,6 @@ final class AnimalController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Exception $e) {
             return new JsonResponse(
@@ -304,7 +367,7 @@ final class AnimalController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $animalPaginated,
                 format: 'json',
-                context: ['groups' => ['animal:read', 'picture:read']]
+                context: ['groups' => ['animal:read', 'entity-with-picture: read']]
             );
 
             return new JsonResponse(

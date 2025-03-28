@@ -189,6 +189,18 @@ class AnimalService
         return $pictureReadDTO;
     }
 
+    public function changePicture(string $uuid, string $pictureUuid, UploadedFile $file): PictureReadDTO
+    {
+        $animal = $this->animalRepository->findOneByUuid($uuid);
+        if (!$animal) {
+            throw new NotFoundHttpException("Animal not found or does not exist");
+        }
+        $filename = $file->getClientOriginalName();
+        $pictureReadDTO = $this->pictureService->updatePicture($pictureUuid, $filename, $file);
+
+        return $pictureReadDTO;
+    }
+
     public function removePicture(string $uuid, string $pictureUuid): void
     {
         $animal = $this->animalRepository->findOneByUuid($uuid);

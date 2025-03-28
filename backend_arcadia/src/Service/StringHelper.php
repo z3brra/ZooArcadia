@@ -32,9 +32,9 @@ class StringHelper
     
         $text = preg_replace('/[^a-zA-Z0-9\s-]/', '', str_replace('_', '-', $text));
         $text = preg_replace('/[\s-]+/', '-', $text);
-    
+
         $text = trim($text, '-');
-    
+
         return strtolower($text);
     }
 }

@@ -127,6 +127,8 @@ class PictureService
         $picture->setPath($relativePath);
         $picture->setUpdatedAt(new DateTimeImmutable());
 
+        $this->entityManager->flush();
+
         return PictureReadDTO::fromEntity($picture);
     }
 
