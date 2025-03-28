@@ -11,7 +11,14 @@ final class ActivityController extends AbstractController
 {
     #[Route('/create', name: 'create', methods: 'POST')]
     public function create(
+        Request $request
+    ): JsonResponse {
 
+    }
+
+    #[Route('{uuid}', name: 'show', methods: 'GET')]
+    public function show(
+        string $uuid
     ): JsonResponse {
 
     }
