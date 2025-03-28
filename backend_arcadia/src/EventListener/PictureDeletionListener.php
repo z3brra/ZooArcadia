@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\Picture;
+use App\Service\PictureService;
 
 use Doctrine\ORM\Event\PostRemoveEventArgs;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -12,7 +13,9 @@ class PictureDeletionListener
     private string $publicDir;
 
     public function __construct(
+        private PictureService $pictureService,
         private ParameterBagInterface $params
+
     )
     {
         $this->publicDir = $params->get('public_directory');
@@ -24,12 +27,7 @@ class PictureDeletionListener
         if (!$entity instanceof Picture) {
             return;
         }
-        $filepath = $this->publicDir . $entity->getPath();
-
-        if (file_exists($filepath))
-        {
-            unlink($filepath);
-        }
+        $this->pictureService->deleteFilePicture($entity->getPath());
     }
 }
 
