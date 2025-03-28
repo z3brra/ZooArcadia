@@ -73,7 +73,7 @@ class PictureService
         $filename = $slug . '.' . $extension;
 
         try {
-            $relativePath = $this->savePicture($filename, $file);
+            $relativePath = $this->saveFilePicture($filename, $file);
         }  catch (RuntimeException $e) {
             throw new RuntimeException($e->getMessage());
         }
@@ -117,7 +117,7 @@ class PictureService
         $updatedFilename = $slug . '.' . $extension;
 
         try {
-            $relativePath = $this->savePicture($updatedFilename, $file);
+            $relativePath = $this->saveFilePicture($updatedFilename, $file);
         } catch (RuntimeException $e) {
             throw new RuntimeException($e->getMessage());
         }
@@ -138,10 +138,8 @@ class PictureService
             throw new NotFoundHttpException("Picture not found or does not exist");
         }
 
-        $filepath = $this->publicDir . $picture->getPath();
-        if (file_exists($filepath)) {
-            unlink($filepath);
-        } else {
+        $filepath = $picture->getPath();
+        if (!$this->deleteFilePicture($filepath)) {
             throw new NotFoundHttpException("File picture not found or does not exist");
         }
 
@@ -149,7 +147,7 @@ class PictureService
         $this->entityManager->flush();
     }
 
-    private function savePicture(string $filename, UploadedFile $file): string
+    private function saveFilePicture(string $filename, UploadedFile $file): string
     {
         $uploadDir = $this->publicDir . $this->uploadRelativeDir;
         if (!$uploadDir) {
@@ -167,7 +165,15 @@ class PictureService
         return $relativePath;
     }
 
-    
+    public function deleteFilePicture(string $filepath): bool
+    {
+        $filepath = $this->publicDir . $filepath;
+        if (file_exists($filepath)) {
+            unlink($filepath);
+            return true;
+        }
+        return false;
+    }
 
     private function generateSlugFromFilename(string $filename): string
     {

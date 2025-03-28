@@ -21,14 +21,14 @@ class PictureDeletionListener
     public function postRemove(PostRemoveEventArgs $args): void
     {
         $entity = $args->getObject();
-        if ($entity instanceof Picture) {
+        if (!$entity instanceof Picture) {
+            return;
+        }
+        $filepath = $this->publicDir . $entity->getPath();
 
-            $filepath = $this->publicDir . $entity->getPath();
-
-            if (file_exists($filepath))
-            {
-                unlink($filepath);
-            }
+        if (file_exists($filepath))
+        {
+            unlink($filepath);
         }
     }
 }
