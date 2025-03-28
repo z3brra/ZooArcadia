@@ -217,31 +217,17 @@ final class AnimalController extends AbstractController
         string $uuid
     ): JsonResponse {
         try {
-            // var_dump($request);
             $file = $request->files->get('image');
             if (!$file instanceof UploadedFile) {
                 throw new BadRequestException("No image uploaded");
             }
-            // $metadataFile = $request->files->get('metadata');
-            // $jsonData = file_get_contents($metadataFile->getPathname());
-            // $data = json_decode($jsonData, true);
-            // $data = json_decode($jsonData, true);
 
-            // if (empty($data)) {
-            //     throw new BadRequestException("Invalid JSON format");
-            // }
-
-            // if (empty($data['pictureUuid'])) {
-            //     throw new BadRequestException("Picture uuid is required");
-            // }
             $pictureUuid = $request->query->get('pictureUuid', null);
             if (!$pictureUuid) {
-                throw new BadRequestException("Picture uuid is required");
+                throw new BadRequestException("pictureUuid is required in URI parameter");
             }
 
-
             $pictureReadDTO = $this->animalService->changePicture($uuid, $pictureUuid, $file);
-            // $pictureReadDTO = $this->animalService->changePicture($uuid, $pictureUuid, $file);
 
             $responseData = $this->serializer->serialize(
                 data: $pictureReadDTO,
@@ -285,17 +271,12 @@ final class AnimalController extends AbstractController
         string $uuid
     ): JsonResponse {
         try {
-            $data = json_decode($request->getContent(), true);
-
-            if (empty($data)) {
-                throw new BadRequestException("Invalid JSON format");
+            $pictureUuid = $request->query->get('pictureUuid', null);
+            if (!$pictureUuid) {
+                throw new BadRequestException("pictureUuid is required in URI parameter");
             }
 
-            if (empty($data['pictureUuid'])) {
-                throw new BadRequestException("Picture uuid is required");
-            }
-
-            $this->animalService->removePicture($uuid, $data['pictureUuid']);
+            $this->animalService->removePicture($uuid, $pictureUuid);
 
             return new JsonResponse(
                 data: ['message' => 'Picture successfully removed'],
