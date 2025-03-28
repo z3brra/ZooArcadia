@@ -6,6 +6,8 @@ use App\Repository\ActivityRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use Ramsey\Uuid\Uuid;
+
 #[ORM\Entity(repositoryClass: ActivityRepository::class)]
 class Activity
 {
@@ -28,6 +30,12 @@ class Activity
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /** @throws Exception */
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid7()->toString();
+    }
 
     public function getId(): ?int
     {
