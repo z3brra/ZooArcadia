@@ -19,7 +19,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Exception\ValidationException;
 use DateTimeImmutable;
 use Exception;
-use PhpParser\ErrorHandler\Throwing;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 
@@ -167,6 +166,8 @@ class PictureService
 
         return $relativePath;
     }
+
+    
 
     private function generateSlugFromFilename(string $filename): string
     {
