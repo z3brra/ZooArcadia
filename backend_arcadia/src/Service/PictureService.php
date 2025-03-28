@@ -152,6 +152,10 @@ class PictureService
         $uploadDir = $this->publicDir . $this->uploadRelativeDir;
         if (!$uploadDir) {
             throw new RuntimeException("The upload directroy is not defined");
+        } else {
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir);
+            }
         }
 
         $relativePath = $this->uploadRelativeDir . $filename;

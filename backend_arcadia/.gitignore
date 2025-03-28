@@ -8,5 +8,5 @@
 /var/
 /vendor/
 
-public/uploads/*.*
+public/images/*.*
 ###< symfony/framework-bundle ###
