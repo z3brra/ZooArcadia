@@ -84,6 +84,17 @@ class ActivityService
         return ActivityReadDTO::fromEntity($activity);
     }
 
+    private function deleteActivity(string $uuid): void
+    {
+        $activity = $this->activityRepository->findOneByUuid($uuid);
+        if (!$activity) {
+            throw new NotFoundHttpException("Activity not found or does not exist");
+        }
+
+        $this->entityManager->remove($activity);
+        $this->entityManager->flush();
+    }
+
     private function validateDTO(ActivityDTO $dto, array $groups): array
     {
         $validationErrors = [];
