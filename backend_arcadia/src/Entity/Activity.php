@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ActivityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,10 +33,17 @@ class Activity
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, Rates>
+     */
+    #[ORM\OneToMany(targetEntity: Rates::class, mappedBy: 'activity', orphanRemoval: true)]
+    private Collection $rates;
+
     /** @throws Exception */
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
+        $this->rates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,6 +107,36 @@ class Activity
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rates>
+     */
+    public function getRates(): Collection
+    {
+        return $this->rates;
+    }
+
+    public function addRate(Rates $rate): static
+    {
+        if (!$this->rates->contains($rate)) {
+            $this->rates->add($rate);
+            $rate->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRate(Rates $rate): static
+    {
+        if ($this->rates->removeElement($rate)) {
+            // set the owning side to null (unless already changed)
+            if ($rate->getActivity() === $this) {
+                $rate->setActivity(null);
+            }
+        }
 
         return $this;
     }
