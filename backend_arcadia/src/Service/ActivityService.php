@@ -51,6 +51,39 @@ class ActivityService
         return ActivityReadDTO::fromEntity($activity);
     }
 
+    public function updateActivity(string $uuid, ActivityDTO $activityUpdateDTO): ActivityReadDTO
+    {
+        $activity = $this->activityRepository->findOneByUuid($uuid);
+        if (!$activity) {
+            throw new NotFoundHttpException("Activity not found or does not exist");
+        }
+
+        if ($activityUpdateDTO->isEmpty()) {
+            throw new BadRequestHttpException("No data to update");
+        }
+
+        $errors = $this->validateDTO($activityUpdateDTO, ['update']);
+        if (!empty($validationErrors)) {
+            throw new ValidationException($validationErrors);
+        }
+
+        $name = $activityUpdateDTO->name;
+        $description = $activityUpdateDTO->description;
+
+        if ($name !== null) {
+            $activity->setName($name);
+        }
+        if ($description !== null) {
+            $activity->setDescription($description);
+        }
+
+        $activity->setUpdatedAt(new DateTimeImmutable());
+
+        $this->entityManager->flush();
+
+        return ActivityReadDTO::fromEntity($activity);
+    }
+
     private function validateDTO(ActivityDTO $dto, array $groups): array
     {
         $validationErrors = [];
