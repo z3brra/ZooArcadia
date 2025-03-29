@@ -84,7 +84,7 @@ class ActivityService
         return ActivityReadDTO::fromEntity($activity);
     }
 
-    private function deleteActivity(string $uuid): void
+    public function deleteActivity(string $uuid): void
     {
         $activity = $this->activityRepository->findOneByUuid($uuid);
         if (!$activity) {

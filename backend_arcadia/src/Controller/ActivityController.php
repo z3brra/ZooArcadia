@@ -167,4 +167,29 @@ final class ActivityController extends AbstractController
             );
         }
     }
+
+    #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
+    public function delete(
+        string $uuid
+    ): JsonResponse {
+        try {
+            $this->activityService->deleteActivity($uuid);
+
+            return new JsonResponse(
+                data: ['message' => 'Activity successfully deleted'],
+                status: JsonResponse::HTTP_OK
+            );
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 }
