@@ -192,4 +192,34 @@ final class ActivityController extends AbstractController
         }
     }
 
+    #[Route('', name: 'list', methods: 'GET')]
+    public function list(
+        Request $request
+    ): JsonResponse {
+        try {
+            $page = max(1, (int) $request->query->get('page', 1));
+            $limit = max(1, (int) $request->query->get('limit', 10));
+
+            $activityPaginated = $this->activityService->listActivityPaginated($page, $limit);
+
+            $responseData = $this->serializer->serialize(
+                data: $activityPaginated,
+                format: 'json',
+                context: ['groups' => ['activity:read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                json: true
+            );
+
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 }

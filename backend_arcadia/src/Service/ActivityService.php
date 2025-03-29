@@ -95,6 +95,24 @@ class ActivityService
         $this->entityManager->flush();
     }
 
+    public function listActivityPaginated(int $page, int $limit): array
+    {
+        $result = $this->activityRepository->findPaginated($page, $limit);
+
+        $activityDTOs = [];
+        foreach ($result['data'] as $activity) {
+            $activityDTOs[] = ActivityReadDTO::fromEntity($activity);
+        }
+
+        return [
+            'data' => $activityDTOs,
+            'total' => $result['total'],
+            'totalPages' => $result['totalPages'],
+            'currentPage' => $result['currentPage'],
+            'perPage' => $result['perPage']
+        ];
+    }
+
     private function validateDTO(ActivityDTO $dto, array $groups): array
     {
         $validationErrors = [];
