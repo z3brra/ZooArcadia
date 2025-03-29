@@ -25,7 +25,7 @@ class ActivityService
     public function createActivity(ActivityDTO $activityCreateDTO): ActivityReadDTO
     {
         $validationErrors = $this->validateDTO($activityCreateDTO, ['create']);
-        if (empty($validationErrors)) {
+        if (!empty($validationErrors)) {
             throw new ValidationException($validationErrors);
         }
 
