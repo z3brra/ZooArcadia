@@ -20,10 +20,14 @@ class RatesDTO
     #[Assert\Positive(message: "Price must be a positive number.", groups: ['create', 'update'])]
     public ?float $price = null;
 
+    #[Assert\NotNull(message: "Activity uuid is required.", groups: ['create'])]
+    public ?string $activityUuid = null;
+
     public function isEmpty(): bool
     {
-        return $this->title === null &&
-               $this->price === null;
+        return $this->title        === null &&
+               $this->price        === null &&
+               $this->activityUuid === null;
     }
 }
 

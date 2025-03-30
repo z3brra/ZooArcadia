@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\RatesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Ramsey\Uuid\Uuid;
+
 #[ORM\Entity(repositoryClass: RatesRepository::class)]
 class Rates
 {
@@ -31,6 +33,12 @@ class Rates
     #[ORM\ManyToOne(inversedBy: 'rates')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Activity $activity = null;
+
+    /** @throws Exception */
+    public function __construct()
+    {
+        $this->uuid = Uuid::uuid7()->toString();
+    }
 
     public function getId(): ?int
     {
