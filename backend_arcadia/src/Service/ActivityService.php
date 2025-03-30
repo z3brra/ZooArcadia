@@ -38,7 +38,7 @@ class ActivityService
         $this->entityManager->persist($activity);
         $this->entityManager->flush();
 
-        return ActivityReadDTO::fromEntity($activity);
+        return ActivityReadDTO::fromEntity($activity, true);
     }
 
     public function showActivity(string $uuid): ActivityReadDTO
@@ -48,7 +48,7 @@ class ActivityService
             throw new NotFoundHttpException("Activity not found or does not exist");
         }
 
-        return ActivityReadDTO::fromEntity($activity);
+        return ActivityReadDTO::fromEntity($activity, true);
     }
 
     public function updateActivity(string $uuid, ActivityDTO $activityUpdateDTO): ActivityReadDTO
@@ -81,7 +81,7 @@ class ActivityService
 
         $this->entityManager->flush();
 
-        return ActivityReadDTO::fromEntity($activity);
+        return ActivityReadDTO::fromEntity($activity, true);
     }
 
     public function deleteActivity(string $uuid): void
@@ -101,7 +101,7 @@ class ActivityService
 
         $activityDTOs = [];
         foreach ($result['data'] as $activity) {
-            $activityDTOs[] = ActivityReadDTO::fromEntity($activity);
+            $activityDTOs[] = ActivityReadDTO::fromEntity($activity, false);
         }
 
         return [

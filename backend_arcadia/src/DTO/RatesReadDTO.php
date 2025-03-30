@@ -10,19 +10,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class RatesReadDTO
 {
-    #[Groups(['rates:read'])]
+    #[Groups(['rates:read', 'activity:with-rates'])]
     public string $uuid;
 
-    #[Groups(['rates:read'])]
+    #[Groups(['rates:read', 'activity:with-rates'])]
     public string $title;
 
-    #[Groups(['rates:read'])]
+    #[Groups(['rates:read', 'activity:with-rates'])]
     public float $price;
 
-    #[Groups(['rates:read'])]
+    #[Groups(['rates:read', 'activity:with-rates'])]
     public DateTimeImmutable $createdAt;
 
-    #[Groups(['rates:read'])]
+    #[Groups(['rates:read', 'activity:with-rates'])]
     public ?DateTimeImmutable $updatedAt;
 
     #[Groups(['rates:read'])]

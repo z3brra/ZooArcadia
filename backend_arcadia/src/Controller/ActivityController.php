@@ -44,7 +44,7 @@ final class ActivityController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
                 format: 'json',
-                context: ['groups' => ['activity:read']]
+                context: ['groups' => ['activity:read', 'activity:with-rates']]
             );
             $location = $this->urlGenerator->generate(
                 name: 'app_api_activity_show',
@@ -86,7 +86,7 @@ final class ActivityController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
                 format: 'json',
-                context: ['groups' => ['activity:read']]
+                context: ['groups' => ['activity:read', 'activity:with-rates']]
             );
 
             return new JsonResponse(
@@ -130,7 +130,7 @@ final class ActivityController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
                 format: 'json',
-                context: ['groups' => ['activity:read']]
+                context: ['groups' => ['activity:read', 'activity:with-rates']]
             );
             $location = $this->urlGenerator->generate(
                 name: 'app_api_activity_show',
