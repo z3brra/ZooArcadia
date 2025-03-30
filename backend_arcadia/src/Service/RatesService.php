@@ -62,6 +62,50 @@ class RatesService
         return RatesReadDTO::fromEntity($rates);
     }
 
+    public function updateRates(string $uuid, RatesDTO $ratesUpdateDTO): RatesReadDTO
+    {
+        $rates = $this->ratesRepository->findOneByUuid($uuid);
+        if (!$rates) {
+            throw new NotFoundHttpException("Rates not found or does not exist");
+        }
+
+        if ($ratesUpdateDTO->isEmpty()) {
+            throw new BadRequestHttpException("No data to update");
+        }
+
+        $validationErrors = $this->validateDTO($ratesUpdateDTO, ['update']);
+        if (!empty($validationErrors)) {
+            throw new ValidationException($validationErrors);
+        }
+
+        $title = $ratesUpdateDTO->title;
+        $price = $ratesUpdateDTO->price;
+
+        if ($title !== null) {
+            $rates->setTitle($title);
+        }
+        if ($price !== null) {
+            $rates->setPrice($price);
+        }
+
+        $rates->setUpdatedAt(new DateTimeImmutable());
+
+        $this->entityManager->flush();
+
+        return RatesReadDTO::fromEntity($rates);
+    }
+
+    public function deleteRates(string $uuid): void
+    {
+        $rates = $this->ratesRepository->findOneByUuid($uuid);
+        if (!$rates) {
+            throw new NotFoundHttpException("Rate not found or does not exist");
+        }
+
+        $this->entityManager->remove($rates);
+        $this->entityManager->flush();
+    }
+
     private function validateDTO(RatesDTO $dto, array $groups): array
     {
         $validationErrors = [];

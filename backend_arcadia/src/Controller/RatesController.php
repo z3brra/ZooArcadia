@@ -114,6 +114,91 @@ final class RatesController extends AbstractController
             );
         }
     }
+
+    #[Route('/{uuid}', name: 'update', methods: 'PUT')]
+    public function update(
+        Request $request,
+        string $uuid
+    ): JsonResponse {
+        try {
+            try {
+                $ratesUpdateDTO = $this->serializer->deserialize(
+                    data: $request->getContent(),
+                    type: RatesDTO::class,
+                    format: 'json'
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestHttpException("Invalid JSON format");
+            }
+
+            $ratesReadDTO = $this->ratesService->updateRates($uuid, $ratesUpdateDTO);
+
+            $responseData = $this->serializer->serialize(
+                data: $ratesReadDTO,
+                format: 'json',
+                context: ['groups' => ['rates:read']]
+            );
+            $location = $this->urlGenerator->generate(
+                name: 'app_api_rates_show',
+                parameters: ['uuid' => $uuid],
+                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: ['Location' => $location],
+                json: true
+            );
+
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (ValidationException $e) {
+            return new JsonResponse(
+                data: json_decode($e->getMessage(), true),
+                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
+    public function delete(
+        string $uuid
+    ): JsonResponse {
+        try {
+            $this->ratesService->deleteRates($uuid);
+
+            return new JsonResponse(
+                data: ['message' => 'Rates successfully deleted'],
+                status: JsonResponse::HTTP_OK
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
 
 
