@@ -27,11 +27,6 @@ class ActivityService
 
     public function createActivity(ActivityDTO $activityCreateDTO): ActivityReadDTO
     {
-        // $validationErrors = $this->validateDTO($activityCreateDTO, ['create']);
-        // if (!empty($validationErrors)) {
-        //     throw new ValidationException($validationErrors);
-        // }
-
         $this->validationService->validate($activityCreateDTO, ['create']);
 
         $activity = new Activity();
@@ -67,10 +62,7 @@ class ActivityService
             throw new BadRequestHttpException("No data to update");
         }
 
-        $errors = $this->validateDTO($activityUpdateDTO, ['update']);
-        if (!empty($validationErrors)) {
-            throw new ValidationException($validationErrors);
-        }
+        $this->validationService->validate($activityUpdateDTO, ['update']);
 
         $name = $activityUpdateDTO->name;
         $description = $activityUpdateDTO->description;
@@ -117,19 +109,6 @@ class ActivityService
             'perPage' => $result['perPage']
         ];
     }
-
-    private function validateDTO(ActivityDTO $dto, array $groups): array
-    {
-        $validationErrors = [];
-        $errors = $this->validator->validate($dto, null, $groups);
-        if (count($errors) > 0) {
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-        }
-        return $validationErrors;
-    }
-
 }
 
 ?>
