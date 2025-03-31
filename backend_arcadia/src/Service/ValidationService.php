@@ -19,7 +19,6 @@ class ValidationService
             foreach ($errors as $error) {
                 $validationErrors[] = $error->getMessage();
             }
-            // var_dump($validationErrors);
             throw new ValidationException($validationErrors);
         }
     }
