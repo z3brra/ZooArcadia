@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\HabitatDTO;
-use App\Entity\Habitat;
-use App\Exception\ValidationException;
 use App\Service\HabitatService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
@@ -63,16 +61,6 @@ final class HabitatController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -154,7 +142,6 @@ final class HabitatController extends AbstractController
                     data: $request->getContent(),
                     type: HabitatDTO::class,
                     format: 'json',
-                    // context: ['groups' => ['create']]
                 );
             } catch (\Exception $e) {
                 throw new BadRequestException("Invalid JSON format");
@@ -189,16 +176,6 @@ final class HabitatController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }

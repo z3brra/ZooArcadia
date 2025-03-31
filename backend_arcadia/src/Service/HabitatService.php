@@ -12,9 +12,7 @@ use App\DTO\HabitatReadDTO;
 
 use Doctrine\ORM\EntityManagerInterface;
 
-use App\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HabitatService
@@ -22,19 +20,12 @@ class HabitatService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private HabitatRepository $habitatRepository,
-        private ValidatorInterface $validator
+        private ValidationService $validationService
     ) {}
 
     public function createHabitat(HabitatDTO $habitatCreateDTO): HabitatReadDTO
     {
-        $errors = $this->validator->validate($habitatCreateDTO, null, ['create']);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        $this->validationService->validate($habitatCreateDTO, ['create']);
 
         $habitat = new Habitat();
         $habitat->setName($habitatCreateDTO->name);
@@ -86,14 +77,7 @@ class HabitatService
             throw new BadRequestException("No data to update");
         }
 
-        $errors = $this->validator->validate($habitatUpdateDTO, null, ['update']);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        $this->validationService->validate($habitatUpdateDTO, ['update']);
 
         $name = $habitatUpdateDTO->name;
         $description = $habitatUpdateDTO->description;
