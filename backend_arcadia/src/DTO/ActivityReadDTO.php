@@ -44,12 +44,6 @@ class ActivityReadDTO
 
     public static function fromEntity(Activity $activity, bool $withRates): self
     {
-        $rates = $activity->getRates();
-        $ratesDTOs = [];
-        foreach ($rates as $rate) {
-            $ratesDTOs[] = RatesReadDTO::fromEntity($rate);
-        }
-
         if ($withRates) {
             $rates = $activity->getRates();
             $ratesDTOs = [];
