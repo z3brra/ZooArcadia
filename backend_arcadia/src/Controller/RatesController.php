@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\RatesDTO;
-use App\Entity\Rates;
 use App\Service\RatesService;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,11 +66,6 @@ final class RatesController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -155,11 +149,6 @@ final class RatesController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
