@@ -11,9 +11,6 @@ use App\Repository\ActivityRepository;
 use DateTimeImmutable;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-
-use App\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 
 class RatesService
@@ -24,15 +21,13 @@ class RatesService
         private RatesRepository $ratesRepository,
         private ActivityRepository $activityRepository,
 
-        private ValidatorInterface $validator
+        private ValidationService $validationService
     ) {}
 
     public function createRates(RatesDTO $ratesCreateDTO): RatesReadDTO
     {
-        $validationErrors = $this->validateDTO($ratesCreateDTO, ['create']);
-        if (!empty($validationErrors)) {
-            throw new ValidationException($validationErrors);
-        }
+        $this->validationService->validate($ratesCreateDTO, ['create']);
+
 
         $activity = $this->activityRepository->findOneByUuid($ratesCreateDTO->activityUuid);
         if (!$activity) {
@@ -73,10 +68,7 @@ class RatesService
             throw new BadRequestHttpException("No data to update");
         }
 
-        $validationErrors = $this->validateDTO($ratesUpdateDTO, ['update']);
-        if (!empty($validationErrors)) {
-            throw new ValidationException($validationErrors);
-        }
+        $this->validationService->validate($ratesUpdateDTO, ['update']);
 
         $title = $ratesUpdateDTO->title;
         $price = $ratesUpdateDTO->price;
@@ -104,18 +96,6 @@ class RatesService
 
         $this->entityManager->remove($rates);
         $this->entityManager->flush();
-    }
-
-    private function validateDTO(RatesDTO $dto, array $groups): array
-    {
-        $validationErrors = [];
-        $errors = $this->validator->validate($dto, null, $groups);
-        if (count($errors) > 0) {
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-        }
-        return $validationErrors;
     }
 }
 

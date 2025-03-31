@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-use App\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 
 #[Route('/api/rates', name: 'app_api_rates_')]
@@ -68,11 +67,6 @@ final class RatesController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Exception $e) {
             return new JsonResponse(
@@ -161,11 +155,6 @@ final class RatesController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Exception $e) {
             return new JsonResponse(

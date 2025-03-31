@@ -7,9 +7,7 @@ use App\Repository\ActivityRepository;
 use App\DTO\{ActivityDTO, ActivityReadDTO};
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-use App\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 
 use DateTimeImmutable;
@@ -19,8 +17,7 @@ class ActivityService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ActivityRepository $activityRepository,
-        
-        private ValidatorInterface $validator,
+
         private ValidationService $validationService
 
     ) {}
