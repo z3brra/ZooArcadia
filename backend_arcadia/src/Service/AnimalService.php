@@ -35,20 +35,11 @@ class AnimalService
 
         private PictureService $pictureService,
 
-        // private ValidatorInterface $validator
         private ValidationService $validationService
     ) {}
 
     public function createAnimal(AnimalDTO $animalCreateDTO): AnimalReadDTO
     {
-        // $errors = $this->validator->validate($animalCreateDTO, null, ['create']);
-        // if (count($errors) > 0) {
-        //     $validationErrors = [];
-        //     foreach ($errors as $error) {
-        //         $validationErrors[] = $error->getMessage();
-        //     }
-        //     throw new ValidationException($validationErrors);
-        // }
         $this->validationService->validate($animalCreateDTO, ['create']);
 
         $species = $this->speciesRepository->findOneByUuid($animalCreateDTO->speciesUuid);
@@ -106,14 +97,6 @@ class AnimalService
             throw new BadRequestHttpException("No data to update");
         }
 
-        // $errors = $this->validator->validate($animalUpdateDTO);
-        // if (count($errors) > 0) {
-        //     $validationErrors = [];
-        //     foreach ($errors as $error) {
-        //         $validationErrors[] = $error->getMessage();
-        //     }
-        //     throw new ValidationException($validationErrors);
-        // }
         $this->validationService->validate($animalUpdateDTO, ['update']);
 
         $name = $animalUpdateDTO->name;

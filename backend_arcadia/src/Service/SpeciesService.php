@@ -22,14 +22,6 @@ class SpeciesService
 
     public function createSpecies(SpeciesDTO $speciesCreateDTO): SpeciesReadDTO
     {
-        // $errors = $this->validator->validate($speciesCreateDTO, null, ['create']);
-        // if (count($errors) > 0) {
-        //     $validationErrors = [];
-        //     foreach ($errors as $error) {
-        //         $validationErrors[] = $error->getMessage();
-        //     }
-        //     throw new ValidationException($validationErrors);
-        // }
         $this->validationService->validate($speciesCreateDTO, ['create']);
 
         $species = new Species();
@@ -88,14 +80,6 @@ class SpeciesService
             throw new BadRequestException("No data to update");
         }
 
-        // $errors = $this->validator->validate($speciesUpdateDTO);
-        // if (count($errors) > 0) {
-        //     $validationErrors = [];
-        //     foreach ($errors as $error) {
-        //         $validationErrors[] = $error->getMessage();
-        //     }
-        //     throw new ValidationException($validationErrors);
-        // }
         $this->validationService->validate($speciesUpdateDTO, ['update']);
 
         $commonName = $speciesUpdateDTO->commonName;
