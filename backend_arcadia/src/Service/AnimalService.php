@@ -18,10 +18,8 @@ use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 
 
-use App\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{NotFoundHttpException, BadRequestHttpException};
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AnimalService
 {
@@ -37,19 +35,21 @@ class AnimalService
 
         private PictureService $pictureService,
 
-        private ValidatorInterface $validator
+        // private ValidatorInterface $validator
+        private ValidationService $validationService
     ) {}
 
     public function createAnimal(AnimalDTO $animalCreateDTO): AnimalReadDTO
     {
-        $errors = $this->validator->validate($animalCreateDTO, null, ['create']);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        // $errors = $this->validator->validate($animalCreateDTO, null, ['create']);
+        // if (count($errors) > 0) {
+        //     $validationErrors = [];
+        //     foreach ($errors as $error) {
+        //         $validationErrors[] = $error->getMessage();
+        //     }
+        //     throw new ValidationException($validationErrors);
+        // }
+        $this->validationService->validate($animalCreateDTO, ['create']);
 
         $species = $this->speciesRepository->findOneByUuid($animalCreateDTO->speciesUuid);
         if (!$species) {
@@ -106,14 +106,15 @@ class AnimalService
             throw new BadRequestHttpException("No data to update");
         }
 
-        $errors = $this->validator->validate($animalUpdateDTO);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        // $errors = $this->validator->validate($animalUpdateDTO);
+        // if (count($errors) > 0) {
+        //     $validationErrors = [];
+        //     foreach ($errors as $error) {
+        //         $validationErrors[] = $error->getMessage();
+        //     }
+        //     throw new ValidationException($validationErrors);
+        // }
+        $this->validationService->validate($animalUpdateDTO, ['update']);
 
         $name = $animalUpdateDTO->name;
         $isMale = $animalUpdateDTO->isMale;
@@ -240,7 +241,6 @@ class AnimalService
             'perPage' => $result['perPage']
         ];
     }
-
 }
 
 ?>

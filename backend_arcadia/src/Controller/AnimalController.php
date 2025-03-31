@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use App\Exception\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{NotFoundHttpException, BadRequestHttpException};
 
 use Symfony\Component\Routing\Attribute\Route;
@@ -70,16 +69,6 @@ final class AnimalController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -164,16 +153,6 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
             );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
-            );
         }
     }
 
@@ -251,18 +230,7 @@ final class AnimalController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
             );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
-            );
         }
-
     }
 
     #[Route('/{uuid}/remove-picture', name: 'remove_picture', methods: 'POST')]
@@ -316,16 +284,6 @@ final class AnimalController extends AbstractController
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
-            );
-        } catch (BadRequestHttpException $e) {
-            return new JsonResponse(
-                data: ['error' => $e->getMessage()],
-                status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
             );
         } catch (\Exception $e) {
             return new JsonResponse(

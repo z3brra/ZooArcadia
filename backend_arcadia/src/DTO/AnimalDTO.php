@@ -13,7 +13,7 @@ class AnimalDTO
         minMessage: "Name must have at least 2 chars.",
         max: 36,
         maxMessage: "Name may not exceed 36 characters.",
-        groups: ['create']
+        groups: ['create', 'update']
     )]
     public ?string $name = null;
     
@@ -21,23 +21,23 @@ class AnimalDTO
     public ?bool $isMale = null;
     
     #[Assert\NotNull(message: "Size is required.", groups: ['create'])]
-    #[Assert\Positive(message: "Size must be a positive number.", groups: ['create'])]
+    #[Assert\Positive(message: "Size must be a positive number.", groups: ['create', 'update'])]
     public ?int $size = null;
     
     #[Assert\NotNull(message: "Weight is required.", groups: ['create'])]
-    #[Assert\Positive(message: "Weight must be a positive number.", groups: ['create'])]
+    #[Assert\Positive(message: "Weight must be a positive number.", groups: ['create', 'update'])]
     public ?int $weight = null;
     
     #[Assert\NotNull(message: "Is fertile is required.", groups: ['create'])]
     public ?bool $isFertile = null;
     
     #[Assert\NotNull(message: "Birth date is required.", groups: ['create'])]
-    #[Assert\Type(DateTimeInterface::class, message: "Birth date must be a valid date.", groups: ['create'])]
+    #[Assert\Type(DateTimeInterface::class, message: "Birth date must be a valid date.", groups: ['create', 'update'])]
     public ?DateTimeInterface $birthDate = null;
     
     #[Assert\NotNull(message: "Arrival date is required.", groups: ['create'])]
-    #[Assert\Type(DateTimeInterface::class, message: "Birth date must be a valid date.", groups: ['create'])]
-    #[Assert\LessThanOrEqual("today", message: "Birth date cannot be in the future.", groups: ['create'])]
+    #[Assert\Type(DateTimeInterface::class, message: "Birth date must be a valid date.", groups: ['create', 'update'])]
+    #[Assert\LessThanOrEqual("today", message: "Birth date cannot be in the future.", groups: ['create', 'update'])]
     public ?DateTimeInterface $arrivalDate = null;
     
     #[Assert\NotBlank(message: "Species uuid is required.", groups: ['create'])]
