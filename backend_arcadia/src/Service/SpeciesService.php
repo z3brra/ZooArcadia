@@ -7,11 +7,9 @@ use App\Repository\SpeciesRepository;
 use App\DTO\SpeciesDTO;
 use App\DTO\SpeciesReadDTO;
 use App\DTO\AnimalReadDTO;
-use App\Exception\ValidationException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SpeciesService
@@ -19,19 +17,20 @@ class SpeciesService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private SpeciesRepository $speciesRepository,
-        private ValidatorInterface $validator
+        private ValidationService $validationService
     ) {}
 
     public function createSpecies(SpeciesDTO $speciesCreateDTO): SpeciesReadDTO
     {
-        $errors = $this->validator->validate($speciesCreateDTO, null, ['create']);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        // $errors = $this->validator->validate($speciesCreateDTO, null, ['create']);
+        // if (count($errors) > 0) {
+        //     $validationErrors = [];
+        //     foreach ($errors as $error) {
+        //         $validationErrors[] = $error->getMessage();
+        //     }
+        //     throw new ValidationException($validationErrors);
+        // }
+        $this->validationService->validate($speciesCreateDTO, ['create']);
 
         $species = new Species();
         $species->setCommonName($speciesCreateDTO->commonName);
@@ -89,14 +88,15 @@ class SpeciesService
             throw new BadRequestException("No data to update");
         }
 
-        $errors = $this->validator->validate($speciesUpdateDTO);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        // $errors = $this->validator->validate($speciesUpdateDTO);
+        // if (count($errors) > 0) {
+        //     $validationErrors = [];
+        //     foreach ($errors as $error) {
+        //         $validationErrors[] = $error->getMessage();
+        //     }
+        //     throw new ValidationException($validationErrors);
+        // }
+        $this->validationService->validate($speciesUpdateDTO, ['update']);
 
         $commonName = $speciesUpdateDTO->commonName;
         $scientificName = $speciesUpdateDTO->scientificName;

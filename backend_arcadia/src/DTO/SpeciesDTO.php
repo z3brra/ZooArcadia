@@ -12,7 +12,7 @@ class SpeciesDTO
         minMessage: "Common name must have at least 2 chars.",
         max: 255,
         maxMessage: "The common may not exceed 255 characters.",
-        groups: ['create']
+        groups: ['create', 'update']
     )]
     public ?string $commonName = null;
 
@@ -22,7 +22,7 @@ class SpeciesDTO
         minMessage: "Scientific name must have at least 2 chars.",
         max: 255,
         maxMessage: "The scientific name may not exceed 255 characters.",
-        groups: ['create']
+        groups: ['create', 'update']
     )]
     public ?string $scientificName = null;
 
@@ -32,7 +32,7 @@ class SpeciesDTO
         minMessage: "Lifespan must have at least 2 chars.",
         max: 255,
         maxMessage: "Lifespan may not exceed 255 characters.",
-        groups: ['create']
+        groups: ['create', 'update']
     )]
     public ?string $lifespan = null;
 
@@ -40,7 +40,7 @@ class SpeciesDTO
     #[Assert\Choice(
         choices: ["HERBIVOROUS", "CARNIVOROUS", "OMNIVOROUS"],
         message: "The diet must be herbivorous, carnivorous or omnivorous.",
-        groups: ['create']
+        groups: ['create', 'update']
     )]
     public ?string $diet = null;
 
@@ -48,7 +48,7 @@ class SpeciesDTO
     #[Assert\Length(
         min: 10,
         minMessage: "The description must contain at least 10 characters.",
-        groups: ['create']
+        groups: ['create', 'update']
     )]
     public ?string $description = null;
 

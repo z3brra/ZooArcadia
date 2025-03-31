@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\DTO\SpeciesDTO;
-use App\Exception\ValidationException;
 use App\Service\SpeciesService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -34,7 +32,7 @@ final class SpeciesController extends AbstractController
                     'json'
                 );
             } catch (\Exception $e) {
-                throw new BadRequestException("Invalid JSON format");
+                throw new BadRequestHttpException("Invalid JSON format");
             }
 
             $speciesReadDTO = $this->speciesService->createSpecies($speciesCreateDTO);
@@ -56,20 +54,10 @@ final class SpeciesController extends AbstractController
                 json: true
             );
 
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -153,7 +141,7 @@ final class SpeciesController extends AbstractController
                     format: 'json'
                 );
             } catch (\Exception $e) {
-                throw new BadRequestException("Invalid JSON format");
+                throw new BadRequestHttpException("Invalid JSON format");
             }
 
             $speciesReadDTO = $this->speciesService->updateSpecies($uuid, $speciesUpdateDTO);
@@ -180,20 +168,10 @@ final class SpeciesController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
-            );
-        } catch (ValidationException $e) {
-            return new JsonResponse(
-                data: json_decode($e->getMessage(), true),
-                status: JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                data: ['error' => "An internal server error as occured"],
-                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
