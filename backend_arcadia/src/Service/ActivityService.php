@@ -19,15 +19,20 @@ class ActivityService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ActivityRepository $activityRepository,
-        private ValidatorInterface $validator
+        
+        private ValidatorInterface $validator,
+        private ValidationService $validationService
+
     ) {}
 
     public function createActivity(ActivityDTO $activityCreateDTO): ActivityReadDTO
     {
-        $validationErrors = $this->validateDTO($activityCreateDTO, ['create']);
-        if (!empty($validationErrors)) {
-            throw new ValidationException($validationErrors);
-        }
+        // $validationErrors = $this->validateDTO($activityCreateDTO, ['create']);
+        // if (!empty($validationErrors)) {
+        //     throw new ValidationException($validationErrors);
+        // }
+
+        $this->validationService->validate($activityCreateDTO, ['create']);
 
         $activity = new Activity();
         $activity->setName($activityCreateDTO->name);
