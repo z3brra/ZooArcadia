@@ -14,9 +14,7 @@ use App\Repository\AnimalRepository;
 use App\DTO\PictureDTO;
 use App\DTO\PictureReadDTO;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-use App\Exception\ValidationException;
 use DateTimeImmutable;
 use Exception;
 use RuntimeException;
@@ -35,7 +33,7 @@ class PictureService
         private EntityManagerInterface $entityManager,
         private PictureRepository $pictureRepository,
         private AnimalRepository $animalRepository,
-        private ValidatorInterface $validator,
+        private ValidationService $validationService,
         private ParameterBagInterface $params
     ) {
         $this->publicDir = $params->get('public_directory');
@@ -44,14 +42,7 @@ class PictureService
 
     public function createPicture(PictureDTO $pictureCreateDTO, UploadedFile $file): PictureReadDTO
     {
-        $errors = $this->validator->validate($pictureCreateDTO, null, ['create']);
-        if (count($errors) > 0) {
-            $validationErrors = [];
-            foreach ($errors as $error) {
-                $validationErrors[] = $error->getMessage();
-            }
-            throw new ValidationException($validationErrors);
-        }
+        $this->validationService->validate($pictureCreateDTO, ['create']);
 
         switch ($pictureCreateDTO->associatedEntityType) {
             case 'animal':
@@ -104,7 +95,7 @@ class PictureService
             throw new NotFoundHttpException("Picture not found or does not exist");
         }
 
-        // Delete old file with public dir concat (path in database : /uploads/<filename>.<ext>)
+        // Delete old file with public dir concat (path in database : /images/<filename>.<ext>)
         $oldFilePath = $this->publicDir . $picture->getPath();
         if (file_exists($oldFilePath)) {
             unlink($oldFilePath);
