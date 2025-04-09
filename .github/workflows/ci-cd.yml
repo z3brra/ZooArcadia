@@ -1,0 +1,73 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Build image for API
+      - name: Build API image
+        run: |
+          docker build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
+            -t zooarcadia_backend:latest \
+            -f docker/Dockerfile.back .
+
+      # Build image for Front
+      - name: Build Front image
+        run: |
+          docker build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
+            -t zooarcadia_front:latest \
+            -f docker/Dockerfile.front .
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  deploy:
+    name: Deploy to VPS
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.8.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 2222
+          script: |
+            cd /home/admin/ZooArcadia/docker
+            # Rebuild les images et redémarre les containers avec docker-compose
+            docker-compose up --build -d
+            docker system prune -f
