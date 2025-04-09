@@ -1,13 +1,18 @@
+# Étape de build
 FROM node:18-alpine AS builder
 
 WORKDIR /app
-COPY ../../frontend_arcadia/package*.json ./
+# Copier package.json et package-lock.json (ou yarn.lock) depuis frontend_arcadia
+COPY frontend_arcadia/package*.json ./
 RUN npm install
-COPY ../../frontend_arcadia/ ./
+# Copier l'intégralité du code du front
+COPY frontend_arcadia/ ./
 RUN npm run build
 
+# Phase de production : servir le build avec Nginx
 FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+# Attention : on utilise le nom de l'étape "builder" (et non "build")
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

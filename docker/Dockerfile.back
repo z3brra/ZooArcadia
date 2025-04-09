@@ -6,9 +6,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && docker-php-ext-install pdo_mysql zip
 
+# Installation de Composer depuis l'image officielle
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/api
 
-COPY ../../backend_arcadia/ ./
+# Copier le code de l'API depuis le dossier backend_arcadia
+COPY backend_arcadia/ ./
 RUN composer install --no-dev --optimize-autoloader

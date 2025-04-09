@@ -2,16 +2,17 @@ version: '3.8'
 services:
   api:
     build:
-      context: ../..
-      dockerfile: docker/Dockerfile.back
+      context: ..
+      dockerfile: Dockerfile.back
     container_name: zooarcadia_api
     restart: unless-stopped
     environment:
-      # On suppose que MySQL et MongoDB sont hébergés localement (hors container)
+      # Bases de données hébergées sur l'hôte
       DATABASE_URL: "mysql://user:password@185.158.107.98:3306/zooarcadia_db"
-      # MONGODB_URL: "mongodb://user:password@host.docker.internal:27017/zooarcadia_mongo"
+      # Si besoin de MongoDB, décommente et ajuste
+      # MONGODB_URL: "mongodb://user:password@185.158.107.98:27017/zooarcadia_mongo"
     volumes:
-      - ../../api:/var/www/api:ro
+      - ../backend_arcadia:/var/www/api:ro
     networks:
       - zooarcadia_net
     expose:
@@ -19,8 +20,8 @@ services:
 
   front:
     build:
-      context: ../..
-      dockerfile: docker/Dockerfile.front
+      context: ..
+      dockerfile: Dockerfile.front
     container_name: zooarcadia_front
     restart: unless-stopped
     ports:
