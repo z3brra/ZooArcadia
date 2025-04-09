@@ -2,8 +2,8 @@ version: '3.8'
 services:
   api:
     build:
-      context: ..
-      dockerfile: Dockerfile.back
+      context: /home/admin/ZooArcadia
+      dockerfile: docker/Dockerfile.back
     container_name: zooarcadia_api
     restart: unless-stopped
     environment:
@@ -20,8 +20,8 @@ services:
 
   front:
     build:
-      context: ..
-      dockerfile: Dockerfile.front
+      context: /home/admin/ZooArcadia
+      dockerfile: docker/Dockerfile.front
     container_name: zooarcadia_front
     restart: unless-stopped
     ports:
