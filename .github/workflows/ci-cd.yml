@@ -8,55 +8,27 @@ on:
 
 jobs:
   build:
-    name: Build Docker Images
+    name: Build Docker Images Locally
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          driver: docker-container
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      # Build image for API
-      - name: Build API image
+      - name: Build API image locally
         run: |
-          docker build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
-            -t zooarcadia_backend:latest \
-            -f docker/Dockerfile.back .
+          docker build -t zooarcadia_backend:latest -f docker/Dockerfile.back .
 
-      # Build image for Front
-      - name: Build Front image
+      - name: Build Front image locally
         run: |
-          docker build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new \
-            -t zooarcadia_front:latest \
-            -f docker/Dockerfile.front .
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          docker build -t zooarcadia_front:latest -f docker/Dockerfile.front .
 
   deploy:
     name: Deploy to VPS
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -67,9 +39,13 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: 2222
+          port: 22
           script: |
-            cd /home/admin/ZooArcadia/docker
-            # Rebuild les images et redémarre les containers avec docker-compose
-            docker-compose up --build -d
+            # Se positionner dans le répertoire du projet sur le VPS et mettre à jour le code
+            cd /home/admin/ZooArcadia
+            git pull
+            cd docker
+            # Recréer les containers à partir du docker-compose local
+            docker-compose down
+            docker-compose up -d --build
             docker system prune -f
