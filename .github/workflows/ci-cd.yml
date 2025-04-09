@@ -39,7 +39,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
+          port: 2222
           script: |
             # Se positionner dans le répertoire du projet sur le VPS et mettre à jour le code
             cd /home/admin/ZooArcadia
