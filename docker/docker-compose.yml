@@ -16,7 +16,7 @@ services:
     networks:
       - zooarcadia_net
     expose:
-      - "9000"
+      - "8000"
 
   front:
     build:
