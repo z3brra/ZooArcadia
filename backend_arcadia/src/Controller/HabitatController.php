@@ -1,5 +1,7 @@
 <?php
 
+// Test commentaire pour CI / CD
+
 namespace App\Controller;
 
 use App\DTO\HabitatDTO;
