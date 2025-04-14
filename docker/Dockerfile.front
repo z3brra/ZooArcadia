@@ -9,6 +9,8 @@ RUN npm install
 COPY frontend_arcadia/ ./
 RUN npm run build
 
+RUN ls -la /app/dist
+
 # Phase de production : servir le build avec Nginx
 FROM nginx:alpine
 # Attention : on utilise le nom de l'étape "builder" (et non "build")
