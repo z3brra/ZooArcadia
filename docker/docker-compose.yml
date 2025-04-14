@@ -17,6 +17,8 @@ services:
       - zooarcadia_net
     expose:
       - "8000"
+    ports:
+      - "8000:8000"
 
   front:
     build:
