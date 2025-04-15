@@ -20,8 +20,7 @@ services:
     ports:
       - "9000:9000"
     entrypoint: >
-      sh -c "chown -R www-data:www-data /var/www/api &&
-             php-fpm"
+      sh -c "chown -R www-data:www-data /var/www/api"
 
   front:
     build:
