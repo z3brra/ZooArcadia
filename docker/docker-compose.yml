@@ -6,9 +6,9 @@ services:
       dockerfile: docker/Dockerfile.back
     container_name: zooarcadia_api
     restart: unless-stopped
-    environment:
+    # environment:
       # Bases de données hébergées sur l'hôte
-      DATABASE_URL: "mysql://user:password@185.158.107.98:3306/zooarcadia_db"
+      # DATABASE_URL: "mysql://user:password@185.158.107.98:3306/zooarcadia_db"
       # Si besoin de MongoDB, décommente et ajuste
       # MONGODB_URL: "mongodb://user:password@185.158.107.98:27017/zooarcadia_mongo"
     # volumes:
