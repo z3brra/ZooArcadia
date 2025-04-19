@@ -2,8 +2,18 @@
 
 namespace App\Controller;
 
-use App\DTO\AnimalDTO;
-use App\Service\AnimalService;
+use App\DTO\Animal\AnimalDTO;
+use App\Service\Animal\{
+    CreateAnimalService,
+    ShowAnimalService,
+    UpdateAnimalService,
+    DeleteAnimalService,
+    ListAnimalPaginatedService,
+    AddAnimalPictureService,
+    ChangeAnimalPictureService,
+    RemoveAnimalPictureService
+};
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,14 +28,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class AnimalController extends AbstractController
 {
     public function __construct(
-        private AnimalService $animalService,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ) {}
 
     #[Route('/create', name: 'create', methods: 'POST')]
     public function createAnimal(
-        Request $request
+        Request $request,
+        CreateAnimalService $createAnimalService
     ): JsonResponse {
         try {
             try {
@@ -38,7 +48,7 @@ final class AnimalController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $animalReadDTO = $this->animalService->createAnimal($animalCreateDTO);
+            $animalReadDTO = $createAnimalService->createAnimal($animalCreateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $animalReadDTO,
@@ -75,10 +85,11 @@ final class AnimalController extends AbstractController
 
     #[Route('/{uuid}', name: 'show', methods: 'GET')]
     public function show(
-        string $uuid
+        string $uuid,
+        ShowAnimalService $showAnimalService
     ): JsonResponse {
         try {
-            $animalReadDTO = $this->animalService->showAnimal($uuid);
+            $animalReadDTO = $showAnimalService->showAnimal($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $animalReadDTO,
@@ -110,6 +121,7 @@ final class AnimalController extends AbstractController
     public function update(
         string $uuid,
         Request $request,
+        UpdateAnimalService $updateAnimalService
     ): JsonResponse {
         try {
             try {
@@ -122,7 +134,7 @@ final class AnimalController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $animalReadDTO = $this->animalService->updateAnimal($uuid, $animalUpdateDTO);
+            $animalReadDTO = $updateAnimalService->updateAnimal($uuid, $animalUpdateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $animalReadDTO,
@@ -158,8 +170,9 @@ final class AnimalController extends AbstractController
 
     #[Route('/{uuid}/add-picture', name: 'add_picture', methods: 'POST')]
     public function addPicture(
+        string $uuid,
         Request $request,
-        string $uuid
+        AddAnimalPictureService $addPictureService
     ): JsonResponse {
         try {
             $file = $request->files->get('image');
@@ -167,7 +180,7 @@ final class AnimalController extends AbstractController
                 throw new BadRequestHttpException("No image uploaded");
             }
 
-            $pictureReadDTO = $this->animalService->addPicture($uuid, $file);
+            $pictureReadDTO = $addPictureService->addPicture($uuid, $file);
 
             $responseData = $this->serializer->serialize(
                 data: $pictureReadDTO,
@@ -192,8 +205,9 @@ final class AnimalController extends AbstractController
 
     #[Route('/{uuid}/change-picture', name: 'change_picture', methods: 'POST')]
     public function changePicture(
+        string $uuid,
         Request $request,
-        string $uuid
+        ChangeAnimalPictureService $changePictureService
     ): JsonResponse {
         try {
             $file = $request->files->get('image');
@@ -206,7 +220,7 @@ final class AnimalController extends AbstractController
                 throw new BadRequestHttpException("pictureUuid is required in URI parameter");
             }
 
-            $pictureReadDTO = $this->animalService->changePicture($uuid, $pictureUuid, $file);
+            $pictureReadDTO = $changePictureService->changePicture($uuid, $pictureUuid, $file);
 
             $responseData = $this->serializer->serialize(
                 data: $pictureReadDTO,
@@ -235,8 +249,9 @@ final class AnimalController extends AbstractController
 
     #[Route('/{uuid}/remove-picture', name: 'remove_picture', methods: 'POST')]
     public function removePicture(
+        string $uuid,
         Request $request,
-        string $uuid
+        RemoveAnimalPictureService $removePictureService
     ): JsonResponse {
         try {
             $pictureUuid = $request->query->get('pictureUuid', null);
@@ -244,7 +259,7 @@ final class AnimalController extends AbstractController
                 throw new BadRequestHttpException("pictureUuid is required in URI parameter");
             }
 
-            $this->animalService->removePicture($uuid, $pictureUuid);
+            $removePictureService->removePicture($uuid, $pictureUuid);
 
             return new JsonResponse(
                 data: ['message' => 'Picture successfully removed'],
@@ -271,10 +286,11 @@ final class AnimalController extends AbstractController
 
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
-        string $uuid
+        string $uuid,
+        DeleteAnimalService $deleteAnimalService
     ): JsonResponse {
         try {
-            $this->animalService->deleteAnimal($uuid);
+            $deleteAnimalService->deleteAnimal($uuid);
 
             return new JsonResponse(
                 data: ['message' => 'Animal successfully deleted'],
@@ -295,13 +311,14 @@ final class AnimalController extends AbstractController
 
     #[Route('', name: 'list', methods: 'GET')]
     public function list(
-        Request $request
+        Request $request,
+        ListAnimalPaginatedService $listAnimalService
     ): JsonResponse {
         try {
             $page = max(1, (int) $request->query->get('page', 1));
             $limit = max(1, (int) $request->query->get('limit', 10));
 
-            $animalPaginated = $this->animalService->listAnimalPaginated($page, $limit);
+            $animalPaginated = $listAnimalService->listAnimalPaginated($page, $limit);
 
             $responseData = $this->serializer->serialize(
                 data: $animalPaginated,

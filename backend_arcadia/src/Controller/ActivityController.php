@@ -2,8 +2,14 @@
 
 namespace App\Controller;
 
-use App\DTO\ActivityDTO;
-use App\Service\ActivityService;
+use App\DTO\Activity\ActivityDTO;
+use App\Service\Activity\{
+    CreateActivityService,
+    ShowActivityService,
+    UpdateActivityService,
+    DeleteActivityService,
+    ListActivityPaginatedService
+};
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
@@ -18,14 +24,14 @@ final class ActivityController extends AbstractController
 {
 
     public function __construct(
-        private ActivityService $activityService,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ) {}
 
     #[Route('/create', name: 'create', methods: 'POST')]
     public function create(
-        Request $request
+        Request $request,
+        CreateActivityService $createActivityService
     ): JsonResponse {
         try {
             try {
@@ -38,7 +44,7 @@ final class ActivityController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $activityReadDTO = $this->activityService->createActivity($activityCreateDTO);
+            $activityReadDTO = $createActivityService->createActivity($activityCreateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
@@ -67,10 +73,11 @@ final class ActivityController extends AbstractController
 
     #[Route('/{uuid}', name: 'show', methods: 'GET')]
     public function show(
-        string $uuid
+        string $uuid,
+        ShowActivityService $showActivityService
     ): JsonResponse {
         try {
-            $activityReadDTO = $this->activityService->showActivity($uuid);
+            $activityReadDTO = $showActivityService->showActivity($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
@@ -101,7 +108,8 @@ final class ActivityController extends AbstractController
     #[Route('/{uuid}', name: 'update', methods: 'PUT')]
     public function update(
         string $uuid,
-        Request $request
+        Request $request,
+        UpdateActivityService $updateActivityService
     ): JsonResponse {
         try {
             try {
@@ -114,7 +122,7 @@ final class ActivityController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $activityReadDTO = $this->activityService->updateActivity($uuid, $activityUpdateDTO);
+            $activityReadDTO = $updateActivityService->updateActivity($uuid, $activityUpdateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
@@ -149,10 +157,11 @@ final class ActivityController extends AbstractController
 
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
-        string $uuid
+        string $uuid,
+        DeleteActivityService $deleteActivityService
     ): JsonResponse {
         try {
-            $this->activityService->deleteActivity($uuid);
+            $deleteActivityService->deleteActivity($uuid);
 
             return new JsonResponse(
                 data: ['message' => 'Activity successfully deleted'],
@@ -173,13 +182,14 @@ final class ActivityController extends AbstractController
 
     #[Route('', name: 'list', methods: 'GET')]
     public function list(
-        Request $request
+        Request $request,
+        ListActivityPaginatedService $listActivityService
     ): JsonResponse {
         try {
             $page = max(1, (int) $request->query->get('page', 1));
             $limit = max(1, (int) $request->query->get('limit', 10));
 
-            $activityPaginated = $this->activityService->listActivityPaginated($page, $limit);
+            $activityPaginated = $listActivityService->listActivityPaginated($page, $limit);
 
             $responseData = $this->serializer->serialize(
                 data: $activityPaginated,

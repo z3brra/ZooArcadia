@@ -2,8 +2,14 @@
 
 namespace App\Controller;
 
-use App\DTO\SpeciesDTO;
-use App\Service\SpeciesService;
+use App\DTO\Species\SpeciesDTO;
+use App\Service\Species\{
+    CreateSpeciesService,
+    ShowSpeciesService,
+    UpdateSpeciesService,
+    DeleteSpeciesService,
+    ListSpeciesPaginatedService
+};
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
 use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHttpException};
@@ -15,7 +21,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class SpeciesController extends AbstractController
 {
     public function __construct(
-        private SpeciesService $speciesService,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ){}
@@ -23,6 +28,7 @@ final class SpeciesController extends AbstractController
     #[Route('/create', name: 'create', methods: 'POST')]
     public function create(
         Request $request,
+        CreateSpeciesService $createSpeciesService
     ): JsonResponse {
         try {
             try {
@@ -35,7 +41,7 @@ final class SpeciesController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $speciesReadDTO = $this->speciesService->createSpecies($speciesCreateDTO);
+            $speciesReadDTO = $createSpeciesService->createSpecies($speciesCreateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $speciesReadDTO,
@@ -64,11 +70,12 @@ final class SpeciesController extends AbstractController
 
     #[Route('/{uuid}', name: 'show', methods: 'GET')]
     public function show(
-        string $uuid
+        string $uuid,
+        ShowSpeciesService $showSpeciesService
     ): JsonResponse {
 
         try {
-            $speciesReadDTO = $this->speciesService->showSpecies($uuid);
+            $speciesReadDTO = $showSpeciesService->showSpecies($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $speciesReadDTO,
@@ -98,10 +105,11 @@ final class SpeciesController extends AbstractController
 
     #[Route('/{uuid}/animals', name: 'show_animals', methods: 'GET')]
     public function showAnimals(
-        string $uuid
+        string $uuid,
+        ShowSpeciesService $showSpeciesService
     ): JsonResponse {
         try {
-            $animals = $this->speciesService->showSpeciesAnimals($uuid);
+            $animals = $showSpeciesService->showSpeciesAnimals($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $animals,
@@ -132,6 +140,7 @@ final class SpeciesController extends AbstractController
     public function update(
         string $uuid,
         Request $request,
+        UpdateSpeciesService $updateSpeciesService
     ): JsonResponse {
         try {
             try {
@@ -144,7 +153,7 @@ final class SpeciesController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $speciesReadDTO = $this->speciesService->updateSpecies($uuid, $speciesUpdateDTO);
+            $speciesReadDTO = $updateSpeciesService->updateSpecies($uuid, $speciesUpdateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $speciesReadDTO,
@@ -178,10 +187,11 @@ final class SpeciesController extends AbstractController
 
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
-        string $uuid
+        string $uuid,
+        DeleteSpeciesService $deleteSpeciesService
     ): JsonResponse {
         try {
-            $this->speciesService->deleteSpecies($uuid);
+            $deleteSpeciesService->deleteSpecies($uuid);
 
             return new JsonResponse(
                 data: ['message' => 'Species successfully deleted'],
@@ -202,13 +212,14 @@ final class SpeciesController extends AbstractController
 
     #[Route('', name: 'list', methods: 'GET')]
     public function list(
-        Request $request
+        Request $request,
+        ListSpeciesPaginatedService $listSpeciesService
     ): JsonResponse {
         try {
             $page = max(1, (int) $request->query->get('page', 1));
             $limit = max(1, (int) $request->query->get('limit', 10));
 
-            $speciesPaginated = $this->speciesService->listSpeciesPaginated($page, $limit);
+            $speciesPaginated = $listSpeciesService->listSpeciesPaginated($page, $limit);
 
             $responseData = $this->serializer->serialize(
                 data: $speciesPaginated,

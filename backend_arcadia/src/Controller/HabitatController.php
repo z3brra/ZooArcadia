@@ -4,8 +4,14 @@
 
 namespace App\Controller;
 
-use App\DTO\HabitatDTO;
-use App\Service\HabitatService;
+use App\DTO\Habitat\HabitatDTO;
+use App\Service\Habitat\{
+    CreateHabitatService,
+    ShowHabitatService,
+    UpdateHabitatService,
+    DeleteHabitatService,
+    ListHabitatPaginatedService
+};
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -18,14 +24,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class HabitatController extends AbstractController
 {
     public function __construct(
-        private HabitatService $habitatService,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ) {}
 
     #[Route('/create', name: 'create', methods: 'POST')]
     public function create(
-        Request $request
+        Request $request,
+        CreateHabitatService $createHabitatService
     ): JsonResponse {
         try {
             try {
@@ -38,7 +44,7 @@ final class HabitatController extends AbstractController
                 throw new BadRequestException("Invalid JSON format");
             }
 
-            $habitatReadDTO = $this->habitatService->createHabitat($habitatCreateDTO);
+            $habitatReadDTO = $createHabitatService->createHabitat($habitatCreateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $habitatReadDTO,
@@ -69,10 +75,11 @@ final class HabitatController extends AbstractController
 
     #[Route('/{uuid}', name: 'show', methods: 'GET')]
     public function show(
-        string $uuid
+        string $uuid,
+        ShowHabitatService $showHabitatService
     ): JsonResponse {
         try {
-            $habitatReadDTO = $this->habitatService->showHabitat($uuid);
+            $habitatReadDTO = $showHabitatService->showHabitat($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $habitatReadDTO,
@@ -102,10 +109,11 @@ final class HabitatController extends AbstractController
 
     #[Route('/{uuid}/animals', name: 'show_animals', methods: 'GET')]
     public function showAnimals(
-        string $uuid
+        string $uuid,
+        ShowHabitatService $showHabitatService
     ): JsonResponse {
         try {
-            $animals = $this->habitatService->showHabitatAnimals($uuid);
+            $animals = $showHabitatService->showHabitatAnimals($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $animals,
@@ -136,7 +144,8 @@ final class HabitatController extends AbstractController
     #[Route('/{uuid}', name: 'update', methods: 'PUT')]
     public function update(
         string $uuid,
-        Request $request
+        Request $request,
+        UpdateHabitatService $updateHabitatService
     ): JsonResponse {
         try {
             try {
@@ -149,7 +158,7 @@ final class HabitatController extends AbstractController
                 throw new BadRequestException("Invalid JSON format");
             }
 
-            $habitatReadDTO = $this->habitatService->updateHabitat($uuid, $habitatUpdateDTO);
+            $habitatReadDTO = $updateHabitatService->updateHabitat($uuid, $habitatUpdateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $habitatReadDTO,
@@ -184,10 +193,11 @@ final class HabitatController extends AbstractController
 
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
-        string $uuid
+        string $uuid,
+        DeleteHabitatService $deleteHabitatService
     ): JsonResponse {
         try {
-            $this->habitatService->deleteHabitat($uuid);
+            $deleteHabitatService->deleteHabitat($uuid);
 
             return new JsonResponse(
                 data: ['message' => 'Habitat successfully deleted'],
@@ -209,13 +219,14 @@ final class HabitatController extends AbstractController
 
     #[Route('', name: 'list', methods: 'GET')]
     public function list(
-        Request $request
+        Request $request,
+        ListHabitatPaginatedService $listHabitatService
     ): JsonResponse {
         try {
             $page = max(1, (int) $request->query->get('page', 1));
             $limit = max(1, (int) $request->query->get('limit', 10));
 
-            $habitatPaginated = $this->habitatService->listHabitatPaginated($page, $limit);
+            $habitatPaginated = $listHabitatService->listHabitatPaginated($page, $limit);
 
             $responseData = $this->serializer->serialize(
                 data: $habitatPaginated,

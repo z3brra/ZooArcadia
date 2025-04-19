@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
-use App\DTO\RatesDTO;
-use App\Service\RatesService;
+use App\DTO\Rates\RatesDTO;
+use App\Service\Rates\{
+    CreateRatesService,
+    ShowRatesService,
+    UpdateRatesService,
+    DeleteRatesService
+};
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
@@ -17,14 +22,14 @@ use Symfony\Component\HttpKernel\Exception\{BadRequestHttpException, NotFoundHtt
 final class RatesController extends AbstractController
 {
     public function __construct(
-        private RatesService $ratesService,
         private SerializerInterface $serializer,
         private UrlGeneratorInterface $urlGenerator
     ) {}
 
     #[Route('/create', name: 'create', methods: 'POST')]
     public function create(
-        Request $request
+        Request $request,
+        CreateRatesService $createRatesService
     ): JsonResponse {
         try {
             try {
@@ -37,7 +42,7 @@ final class RatesController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $ratesReadDTO = $this->ratesService->createRates($ratesCreateDTO);
+            $ratesReadDTO = $createRatesService->createRates($ratesCreateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $ratesReadDTO,
@@ -72,10 +77,11 @@ final class RatesController extends AbstractController
 
     #[Route('/{uuid}', name: 'show', methods: 'GET')]
     public function show(
-        string $uuid
+        string $uuid,
+        ShowRatesService $showRatesService
     ): JsonResponse {
         try {
-            $ratesReadDTO = $this->ratesService->showRates($uuid);
+            $ratesReadDTO = $showRatesService->showRates($uuid);
 
             $responseData = $this->serializer->serialize(
                 data: $ratesReadDTO,
@@ -105,8 +111,9 @@ final class RatesController extends AbstractController
 
     #[Route('/{uuid}', name: 'update', methods: 'PUT')]
     public function update(
+        string $uuid,
         Request $request,
-        string $uuid
+        UpdateRatesService $updateRatesService
     ): JsonResponse {
         try {
             try {
@@ -119,7 +126,7 @@ final class RatesController extends AbstractController
                 throw new BadRequestHttpException("Invalid JSON format");
             }
 
-            $ratesReadDTO = $this->ratesService->updateRates($uuid, $ratesUpdateDTO);
+            $ratesReadDTO = $updateRatesService->updateRates($uuid, $ratesUpdateDTO);
 
             $responseData = $this->serializer->serialize(
                 data: $ratesReadDTO,
@@ -155,10 +162,11 @@ final class RatesController extends AbstractController
 
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
-        string $uuid
+        string $uuid,
+        DeleteRatesService $deleteRatesService
     ): JsonResponse {
         try {
-            $this->ratesService->deleteRates($uuid);
+            $deleteRatesService->deleteRates($uuid);
 
             return new JsonResponse(
                 data: ['message' => 'Rates successfully deleted'],
