@@ -1,0 +1,22 @@
+@import 'mixins/mixins';
+
+@import 'settings/variables';
+@import 'settings/typography';
+@import 'settings/fonts';
+
+@import 'functions/sizeFunctions';
+
+@import 'components/container';
+@import 'components/header';
+@import 'components/form/input';
+@import 'components/form/button';
+@import 'components/dashboard/sidemenu';
+
+@import 'pages/login';
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

@@ -1,0 +1,84 @@
+.text-headline {
+    font-family: $headline-font;
+    font-size: $fontsize-desktop-headline;
+
+    @include tablet {
+        font-size: $fontsize-tablet-headline;
+    }
+
+    @include mobile {
+        font-size: $fontsize-mobile-headline;
+    }
+}
+
+.text-subtitle {
+    font-family: $headline-font;
+    font-size: $fontsize-desktop-subtitle;
+
+    @include tablet {
+        font-size: $fontsize-tablet-subtitle;
+    }
+
+    @include mobile {
+        font-size: $fontsize-mobile-subtitle;
+    }
+}
+
+.text-bigcontent {
+    font-family: $text-font;
+    font-size: $fontsize-desktop-bigcontent;
+
+    @include tablet {
+        font-size: $fontsize-tablet-bigcontent;
+    }
+
+    @include mobile {
+        font-size: $fontsize-mobile-bigcontent;
+    }
+}
+
+.text-content {
+    font-family: $text-font;
+    font-size: $fontsize-desktop-content;
+
+    @include tablet {
+        font-size: $fontsize-tablet-content;
+    }
+
+    @include mobile {
+        font-size: $fontsize-mobile-content;
+    }
+}
+
+.text-small {
+    font-family: $text-font;
+    font-size: $fontsize-desktop-small;
+
+    @include tablet {
+        font-size: $fontsize-tablet-small;
+    }
+
+    @include mobile {
+        font-size: $fontsize-mobile-small;
+    }
+}
+
+.text-white {
+    color: $white-text-fg;
+}
+
+.text-primary {
+    color: $primary-text-fg;
+}
+
+.text-secondary {
+    color: $secondary-text-fg;
+}
+
+.text-accent {
+    color: $accent
+}
+
+.text-silent {
+    color: $silent-text-fg;
+}

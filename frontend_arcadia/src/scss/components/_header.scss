@@ -1,0 +1,46 @@
+.header-container {
+    height: header-height(default);
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: $menu-background;
+    font-family: $headline-font !important;
+}
+
+.app-logo {
+    height: 90px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: $silent-text-fg;
+    padding: 0.5rem;
+}
+
+.main-nav a.active {
+    color: $primary-text-fg;
+    border-bottom: 2px solid $secondary;
+    font-weight: 500;
+}
+
+.main-nav-logout-button {
+    background: none;
+    border: none;
+    color: $silent-text-fg;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.5rem;
+    text-decoration: none;
+    outline: none;
+
+    &:focus {
+        text-decoration: underline;
+    }
+}

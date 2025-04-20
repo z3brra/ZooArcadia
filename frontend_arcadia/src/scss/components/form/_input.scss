@@ -1,0 +1,77 @@
+$placeholder-col: #999;
+$focus-shadow: #5a7c1727;
+
+.text-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+    font-family: $text-font;
+    width: 300px;
+
+    &-label {
+        margin-bottom: 0.6rem;
+        font-weight: 600;
+    }
+
+    &-field {
+        padding: 0.6rem 0.8rem;
+        background-color: $background-darker;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+
+        &::placeholder {
+            color: $silent-text-fg;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: $primary;
+            box-shadow: 0 0 0 4px $primary-box-shadow;
+        }
+    }
+
+    
+}
+
+// .text-input {
+//     display: flex;
+//     flex-direction: column;
+//     margin-bottom: 1rem;
+
+//     &-label {
+//         margin-bottom: 0.5rem;
+//         font-size: 0.9rem;
+//         font-weight: 500;
+//         color: $primary-text-fg;
+//     }
+
+//     &-field {
+//         padding: 0.6rem 0.8rem;
+//         font-size: 1rem;
+//         color: $silent-text-fg;
+//         background-color: $background-darker;
+//         border: 1px solid $border-color;
+//         //   border-radius: $border-radius;
+//         transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+//         // placeholder
+//         &::placeholder {
+//             color: $silent-text-fg;
+//         }
+
+//         // état focus
+//         &:focus {
+//             outline: none;
+//             border-color: $primary;
+//             box-shadow: 0 0 0 3px $focus-shadow;
+//         }
+
+//         // textarea spécifique
+//         &.textarea,
+//         &[as='textarea'],
+//         &+textarea {
+//             resize: vertical;
+//             min-height: 120px;
+//         }
+//     }
+// }

@@ -1,0 +1,21 @@
+.main-content {
+    width: 100%;
+    height: calc(100vh - header-height(default));
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    overflow-y: auto;
+
+    background-color: $background;
+}
+
+.dashboard-main-content {
+    margin-left: 300px;
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: $background;
+    overflow-y: auto;
+}

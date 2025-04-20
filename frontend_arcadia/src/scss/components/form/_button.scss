@@ -1,0 +1,85 @@
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    width: auto;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0px 2px 4px 0px $box-shadow;
+    border-radius: $border-radius;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+
+    &-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    &-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &-text {
+        display: inline;
+    }
+
+    &-primary {
+        color: $white-text-fg;
+        background-color: $primary;
+
+        &:hover:not(.button-disabled) {
+            background-color: darken($primary, 1%);
+        }
+
+        &:active:not(.button-disabled) {
+            background-color: $primary-darker;
+        }
+    }
+
+    &-secondary {
+        color: $white-text-fg;
+        background-color: $secondary;
+
+        &:hover:not(.button-disabled) {
+            background-color: darken($secondary, 1%);
+        }
+
+        &:active:not(.button-disabled) {
+            background-color: $secondary-darker;
+        }
+    }
+
+    &-delete {
+        color: $white-text-fg;
+        background-color: $delete;
+
+        &:hover:not(.button-disabled) {
+            background-color: darken($delete, 1%);
+        }
+
+        &:active:not(.button-disabled) {
+            background-color: $delete-darker;
+        }
+    }
+
+    &-white {
+        color: $primary-text-fg;
+        background-color: $background;
+        // border: 1px solid $border-color;
+
+        &:hover:not(.button-disabled) {
+            background-color: darken($background, 2%);
+        }
+
+        &:active:not(.button-disabled) {
+            background-color: $background-darker;
+        }
+    }
+}
+

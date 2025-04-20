@@ -1,0 +1,77 @@
+//////////////////////////
+// Définition des couleurs
+$background: #F9F9F2;
+$background-darker: #E5DED8;
+
+$error-background: #FFE5E5;
+$succes-background: #edffe5;
+$info-background: #e5ecff;
+
+$menu-background: #EDE8D5;
+$card-background: #C5B496;
+
+$border-color: #BCB8B8;
+$dark-border-color: #818181;
+
+$primary: #5A7C17;
+$primary-darker: #506F14;
+$primary-box-shadow: #5a7c173a;
+
+$secondary: #D97734;
+$secondary-darker: #BF692E;
+$secondary-box-shadow: #D977343A;
+
+$delete: #E84E48;
+$delete-darker: #CF4641;
+
+$accent: #C59A71;
+$accent-darker: #AD8864;
+
+$primary-text-fg: #333333;
+$secondary-text-fg: $secondary;
+$accent-text-fg: $accent;
+$silent-text-fg: #767675;
+$white-text-fg: #FFFFFF;
+
+$blue-label-fg: #DBEAFE;
+$blue-label-bg: #1E40AF;
+
+$green-label-fg: #DCFCE7;
+$green-label-bg: #166534;
+
+$yellow-label-fg: #FEF9C3;
+$yellow-label-bg: #854D0E;
+
+$red-label-fg: #991B1B;
+$red-label-bg: #FEE2E2;
+
+$box-shadow: #00000040;
+
+//////////////////////
+// Polices d'écritures
+$headline-font: "Poppins", sans-serif !default;
+$text-font: "Roboto", sans-serif !default;
+
+/////////////////////
+// Taille des polices
+$fontsize-desktop-headline: 35px;
+$fontsize-desktop-subtitle: 27px;
+$fontsize-desktop-bigcontent: 19px;
+$fontsize-desktop-content: 17px;
+$fontsize-desktop-small: 15px;
+
+$fontsize-tablet-headline: 30px;
+$fontsize-tablet-subtitle: 22px;
+$fontsize-tablet-bigcontent: 19px;
+$fontsize-tablet-content: 17px;
+$fontsize-tablet-small: 15px;
+
+$fontsize-mobile-headline: 32px;
+$fontsize-mobile-subtitle: 24px;
+$fontsize-mobile-bigcontent: 18px;
+$fontsize-mobile-content: 16px;
+$fontsize-mobile-small: 14px;
+
+/////////////////////
+// Effets
+$border-radius: 10px

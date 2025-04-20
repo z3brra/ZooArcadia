@@ -1,0 +1,79 @@
+.dashboard-side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100vh;
+    background-color: $menu-background;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    // box-shadow: 74px 0px 100px 0px $box-shadow;
+
+    &-header {
+        text-align: center;
+        width: 100%;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 0.5px solid $border-color;
+
+        &-logo {
+            height: 100px;
+            margin-bottom: 0.5rem;
+        }
+
+        &-welcome {
+            font-family: $headline-font;
+            font-size: $fontsize-desktop-subtitle;
+            color: $primary-text-fg;
+            margin: 0.2rem 0;
+        }
+
+        &-user {
+            font-family: $text-font;
+            font-size: $fontsize-desktop-content;
+            font-weight: 600;
+            color: $accent-text-fg;
+            margin: 0.2rem 0;
+        }
+    }
+
+    &-options {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    &-option {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1.25rem;
+        text-decoration: none;
+        color: $silent-text-fg;
+        font-weight: 500;
+
+        &-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        &-label {
+            flex: 1;
+        }
+
+        &-active {
+            color: $primary;
+            font-weight: 700;
+        }
+    }
+
+    button {
+        margin-top: 2rem;
+    }
+
+
+}

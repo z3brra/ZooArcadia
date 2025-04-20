@@ -1,0 +1,19 @@
+@function header-height($breakpoint) {
+    @if $breakpoint == mobile {
+        @return 52px;
+    } @else if $breakpoint == tablet {
+        @return 74px;
+    } @else {
+        @return 100px;
+    }
+}
+
+@function input-height($breakpoint) {
+    @if $breakpoint == mobile {
+        @return 30px;
+    } @else if $breakpoint == tablet {
+        @return 40px;
+    } @else {
+        @return 50px;
+    }
+}
