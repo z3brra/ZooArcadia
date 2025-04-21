@@ -1,11 +1,11 @@
-
-
 import {
     createBrowserRouter,
     RouterProvider,
-    Outlet
+    Outlet,
+    useLocation
 } from 'react-router-dom'
 import './scss/main.css'
+import { useState, useRef, useEffect } from 'react'
 
 import { AuthProvider } from './hook/AuthContext'
 import { RequireAuth } from './components/RequireAuth'
@@ -17,17 +17,18 @@ import { Login } from './pages/auth/Login'
 
 import { DashboardHome } from './pages/dashboard/DashboardHome'
 import { DashboardSideMenu } from './components/dashboard/sidemenu/DashboardSideMenu'
-import { Habitats } from './components/dashboard/pages/Habitats'
-import { HabitatsReport } from './components/dashboard/pages/HabitatsReport'
-import { Species } from './components/dashboard/pages/Species'
-import { Animals } from './components/dashboard/pages/Animals'
-import { AnimalsReport } from './components/dashboard/pages/AnimalsReport'
-import { AnimalsFeed } from './components/dashboard/pages/AnimalsFeed'
-import { Activity } from './components/dashboard/pages/Activity'
-import { Reviews } from './components/dashboard/pages/Reviews'
-import { Users } from './components/dashboard/pages/Users'
+import { Habitats } from './pages/dashboard/Habitats'
+import { HabitatsReport } from './pages/dashboard/HabitatsReport'
+import { Species } from './pages/dashboard/Species'
+import { Animals } from './pages/dashboard/Animals'
+import { AnimalsReport } from './pages/dashboard/AnimalsReport'
+import { AnimalsFeed } from './pages/dashboard/AnimalsFeed'
+import { Activity } from './pages/dashboard/Activity'
+import { Reviews } from './pages/dashboard/Reviews'
+import { Employee } from './pages/dashboard/Users'
+import { Statistics } from './pages/dashboard/Statistics'
 
-
+import { MobileHeaderMenu } from './components/dashboard/MobileHeaderMenu'
 
 function RootLayout() {
     return (
@@ -41,9 +42,40 @@ function RootLayout() {
 }
 
 function DashboardLayout() {
+    const [isMenuOpen, setMenuOpen] = useState(false)
+    const menuRef = useRef(null)
+    const location = useLocation()
+
+    const toggleMenu = () => setMenuOpen(open => !open)
+    const closeMenu = () => setMenuOpen(false)
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (isMenuOpen &&
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
+                closeMenu()
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [isMenuOpen])
+
+    useEffect(() => {
+        if (isMenuOpen) {
+          closeMenu()
+        }
+      }, [location.pathname])
+
     return (
         <>
-            <DashboardSideMenu />
+            <MobileHeaderMenu onToggle={toggleMenu} />
+
+            <DashboardSideMenu ref={menuRef} isOpen={isMenuOpen} />
+
             <main className="dashboard-main-content">
                 <Outlet />
             </main>
@@ -51,64 +83,14 @@ function DashboardLayout() {
     )
 }
 
-// const router = createBrowserRouter([
-//     {
-//         path: '/',
-//         element: <RootLayout />,
-//         children: [
-//             { index: true, element: <Home /> },
-//             { path: 'habitats', element: <Home /> },
-//             { path: 'animals', element: <Home /> },
-//             { path: 'activity', element: <Home /> },
-//             { path: 'contact', element: <Home /> },
-//             { path: 'login', element: <Login /> },
-//         ]
-//     },
-//     {
-//         path: '/dashboard',
-//         element: (
-//             <RequireAuth>
-//                 <DashboardLayout />
-//             </RequireAuth>
-//         ),
-//         children: [
-//             { index: true, element: <DashboardHome /> },
-//             { path: 'habitats', element: <Habitats /> },
-//             { path: 'habitats-report', element: <HabitatsReport /> },
-//             { path: 'species', element: <Species /> },
-//             { path: 'animals', element: <Animals /> },
-//             { path: 'animals-report', element: <AnimalsReport /> },
-//             { path: 'animals-feed', element: <AnimalsFeed /> },
-//             { path: 'activity', element: <Activity /> },
-//             { path: 'reviews', element: <Reviews /> },
-//             { path: 'users', element: <Users /> },
-//             { path: 'statistics', element: <Home /> },
-//         ]
-//     }
-// ])
-
-// function App() {
-//     return (
-//         <AuthProvider>
-//             <RouterProvider router={router} />
-//         </AuthProvider>
-//     )
-
-// }
-
-// export default App
-
-
 const router = createBrowserRouter([
     {
-        // Route « wrapper » qui injecte AuthProvider
         element: (
             <AuthProvider>
                 <Outlet />
             </AuthProvider>
         ),
         children: [
-            // Toutes les routes publiques
             {
                 path: '/',
                 element: <RootLayout />,
@@ -121,7 +103,6 @@ const router = createBrowserRouter([
                     { path: 'login', element: <Login /> }
                 ]
             },
-            // Toutes les routes protégées
             {
                 path: '/dashboard',
                 element: (
@@ -139,8 +120,8 @@ const router = createBrowserRouter([
                     { path: 'animals-feed', element: <AnimalsFeed /> },
                     { path: 'activity', element: <Activity /> },
                     { path: 'reviews', element: <Reviews /> },
-                    { path: 'users', element: <Users /> },
-                    { path: 'statistics', element: <Home /> },
+                    { path: 'users', element: <Employee /> },
+                    { path: 'statistics', element: <Statistics /> },
                 ]
             }
         ]

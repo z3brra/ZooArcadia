@@ -43,7 +43,6 @@ export function Login(): JSX.Element {
         setLoading(true)
         try {
             await login(email, password)
-            // `login` gère la redirection vers /dashboard
         } catch (err: any) {
             if (err.response?.status === 401) {
                 setError('Identifiants invalides.')

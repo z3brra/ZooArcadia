@@ -6,12 +6,30 @@ import {
     ReactNode
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { postRequest } from '../api/request'
+import { postRequest, getRequest } from '../api/request'
 import { Endpoints } from '../api/endpoints'
 
+interface LoginResponse {
+    message: string
+    email: string
+    mustChangePassword: boolean
+    roles: string[]
+}
+
+interface CurrentUserResponse {
+    uuid: string
+    firstName: string
+    lastName: string
+    email: string
+    roles: string[]
+    mustChangePassword: boolean
+  }
+
 interface AuthContextType {
-    token: string | null
+    user: CurrentUserResponse | null
     isAuthenticated: boolean
+    hasRole: (role: string) => boolean
+    hasAnyRole: (...role: string[]) => boolean
     login: (email: string, password: string) => Promise<void>
     logout: () => void
 }
@@ -19,33 +37,43 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode}) {
-    const [token, setToken] = useState(
-        () => localStorage.getItem('apiToken')
-    )
     const navigate = useNavigate()
 
+    const [user, setUser] = useState<CurrentUserResponse | null>(null)
+
+    const isAuthenticated = Boolean(user)
+
+    const hasRole = (role: string) => user?.roles.includes(role) ?? false
+    const hasAnyRole = (...checks: string[]) => Boolean(user && checks.some(role => user.roles.includes(role)))
+
+    useEffect(() => {
+        getRequest<CurrentUserResponse>(Endpoints.ME)
+            .then(setUser)
+            .catch(() => setUser(null))
+    }, [])
+
     const login = async (email: string, password: string) => {
-        const body = { username: email, password}
-        const data = await postRequest<typeof body, { apiToken: string }>(
+        await postRequest<{ username: string; password: string }, LoginResponse>(
             Endpoints.LOGIN,
-            body
+            { username: email, password }
         )
-        localStorage.setItem('apiToken', data.apiToken)
-        setToken(data.apiToken)
+        const currentUser = await getRequest<CurrentUserResponse>(Endpoints.ME)
+        setUser(currentUser)
         navigate('/dashboard')
     }
 
     const logout = () => {
-        localStorage.removeItem('apiToken')
-        setToken(null)
+        setUser(null)
         navigate('/login')
     }
 
     return (
         <AuthContext.Provider
             value={{
-                token,
-                isAuthenticated: Boolean(token),
+                user,
+                isAuthenticated,
+                hasRole,
+                hasAnyRole,
                 login,
                 logout
             }}

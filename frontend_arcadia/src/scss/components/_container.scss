@@ -14,8 +14,22 @@
 
 .dashboard-main-content {
     margin-left: 300px;
+    margin-left: dashboard-side-menu-width(default);
     padding: 2rem;
     min-height: 100vh;
     background-color: $background;
     overflow-y: auto;
+
+    @include tablet {
+        margin-top: mobile-header-menu-height(tablet);
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    @include mobile {
+        margin-top: mobile-header-menu-height(mobile);
+        margin-left: 0;
+        padding: 1rem;
+    }
 }
+

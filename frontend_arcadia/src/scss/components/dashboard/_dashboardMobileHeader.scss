@@ -1,0 +1,54 @@
+.dashboard-mobile-header-menu {
+    display: none;
+    background: $menu-background;
+    padding: 0 1rem;
+
+    &-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &-logo {
+        height: 40px;
+    }
+
+    &-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        color: $silent-text-fg;
+
+        &:hover {
+            color: darken($silent-text-fg, 2%);
+        }
+
+        &:active {
+            color: $primary-text-fg;
+        }
+    }
+
+    @include tablet {
+        display: inline-flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: mobile-header-menu-height(tablet);
+        width: 100%;
+
+        &-logo {
+            height: 60px;
+        }
+    }
+
+    @include mobile {
+        display: inline-flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: mobile-header-menu-height(mobile);
+        width: 100%;
+    }
+}

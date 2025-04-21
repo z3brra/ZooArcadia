@@ -8,12 +8,20 @@
     }
 }
 
-@function input-height($breakpoint) {
+@function dashboard-side-menu-width($breakpoint) {
     @if $breakpoint == mobile {
-        @return 30px;
+        @return 240px;
     } @else if $breakpoint == tablet {
-        @return 40px;
+        @return 280px;
     } @else {
-        @return 50px;
+        @return 300px;
+    }
+}
+
+@function mobile-header-menu-height($breakpoint) {
+    @if $breakpoint == mobile {
+        @return 52px;
+    } @else {
+        @return 74px;
     }
 }

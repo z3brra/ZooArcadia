@@ -1,7 +1,5 @@
 export function Home () {
     return (
-        <div>
-            Home page
-        </div>
+        <div>Visitor Home page</div>
     )
 }

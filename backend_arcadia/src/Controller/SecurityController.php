@@ -6,7 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\{Request, JsonResponse, Response};
+use Symfony\Component\HttpFoundation\{Request, JsonResponse, Cookie, Response};
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -47,13 +47,28 @@ final class SecurityController extends AbstractController
                 throw new BadCredentialsException("Invalid credentials.");
             }
 
-            return new JsonResponse([
-                'message'            => 'Login successful',
-                'email'              => $user->getUserIdentifier(),
-                'mustChangePassword' => $user->isMustChangePassword(),
-                'apiToken'           => $user->getApiToken(),
-                'roles'              => $user->getRoles()
-            ], JsonResponse::HTTP_OK);
+            $token = $user->getApiToken();
+
+            $cookie = Cookie::create('access_token')
+                ->withValue($token)
+                ->withHttpOnly(true)
+                ->withSecure($request->isSecure())
+                ->withSameSite('strict')
+                ->withExpires(new \DateTimeImmutable('+7 days'));
+
+            $response = new JsonResponse(
+                data: [
+                    'message'            => 'Login successful',
+                    'email'              => $user->getUserIdentifier(),
+                    'mustChangePassword' => $user->isMustChangePassword(),
+                    'roles'              => $user->getRoles()
+                ], 
+                status: JsonResponse::HTTP_OK,
+            );
+
+            $response->headers->setCookie($cookie);
+
+            return $response;
 
         } catch (BadRequestException | NotEncodableValueException $e) {
             return new JsonResponse(
@@ -91,7 +106,7 @@ final class SecurityController extends AbstractController
                 'roles'              => $user->getRoles(),
                 'mustChangePassword' => $user->isMustChangePassword(),
                 'createdAt'          => $user->getCreatedAt()->format('Y-m-d H:i:s'),
-                'updatedAt'          => $user->getUpdatedAt()->format('Y-m-d H:i:s')
+                'updatedAt'          => $user->getUpdatedAt() ? $user->getUpdatedAt()->format('Y-m-d H:i:s') : null
             ], JsonResponse::HTTP_OK);
 
         } catch (AccessDeniedHttpException $e) {

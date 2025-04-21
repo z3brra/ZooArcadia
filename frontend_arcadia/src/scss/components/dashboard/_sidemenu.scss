@@ -2,14 +2,37 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 300px;
+    width: dashboard-side-menu-width(desktop);
     height: 100vh;
     background-color: $menu-background;
     display: flex;
     align-items: center;
     flex-direction: column;
     padding: 1.5rem 0;
-    // box-shadow: 74px 0px 100px 0px $box-shadow;
+    transition: transform 0.3s ease;
+
+    @include tablet {
+        transform: translateX(-100%);
+        width: dashboard-side-menu-width(tablet);
+        background-color: $background;
+
+        &.open {
+            transform: translateX(0);
+            box-shadow: 74px 0px 100px 0px $box-shadow;
+        }
+    }
+
+    @include mobile {
+        transform: translateX(-100%);
+        width: dashboard-side-menu-width(mobile);
+        background-color: $background;
+        
+
+        &.open {
+            transform: translateX(0);
+            box-shadow: 74px 0px 100px 0px $box-shadow;
+        }
+    }
 
     &-header {
         text-align: center;
@@ -25,7 +48,7 @@
 
         &-welcome {
             font-family: $headline-font;
-            font-size: $fontsize-desktop-subtitle;
+            // font-size: $fontsize-desktop-subtitle;
             color: $primary-text-fg;
             margin: 0.2rem 0;
         }
@@ -43,7 +66,30 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        width: 100%;
         padding: 1rem;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+            background-color: $menu-background;
+        }
+        &::-webkit-scrollbar-button {
+            display: none;
+            height: 0;
+            width: 0;
+        }
+        &::-webkit-scrollbar-track {
+            background-color: $menu-background;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: $border-color;
+            border-radius: 4px;
+        }
+
+        @include mobile {
+            padding: 0;
+        }
     }
 
     &-option {
@@ -73,6 +119,11 @@
 
     button {
         margin-top: 2rem;
+
+        @include mobile {
+            margin: 2rem;
+        }
+
     }
 
 

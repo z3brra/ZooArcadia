@@ -13,17 +13,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # login:
-        #     pattern: ^/api/auth/login
-        #     stateless: true
-        #     provider: app_user_provider
-
         main:
+            pattern: ^/api
+            stateless: true
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\ApiTokenAuthenticator
             access_denied_handler: App\Security\AccessDeniedHandler
-            stateless: true
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

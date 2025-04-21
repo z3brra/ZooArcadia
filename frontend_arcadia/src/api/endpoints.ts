@@ -1,5 +1,7 @@
 export const Endpoints = {
     LOGIN: "/auth/login",
+    ME: "/auth/me",
+
     HABITATS: "/habitats"
 } as const
 

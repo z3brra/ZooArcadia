@@ -4,7 +4,7 @@ import logo from '../assets/arcadia_logo2.png'
 
 export function Header() {
 
-    const { isAuthenticated, logout } = useAuth()
+    const { isAuthenticated } = useAuth()
 
     return (
         <header className="main-header">
@@ -52,13 +52,12 @@ export function Header() {
 
 
                     { isAuthenticated ? (
-                        <button
-                            type="button"
-                            onClick={logout}
-                            className="main-nav-logout-button"
+                        <NavLink
+                            to="/dashboard"
+                            className={({ isActive }) => isActive ? 'active' : ''}
                         >
-                            Se déconnecter
-                        </button>
+                            Dashboard
+                        </NavLink>
                     ) : (
                     <NavLink
                         to="/login"
