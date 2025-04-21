@@ -461,6 +461,27 @@
   }
 }
 
+.dashboard-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: flex-start;
+}
+.dashboard-section.button-section {
+  justify-content: flex-start;
+}
+@media (min-width: 668px) and (max-width: 1024px) {
+  .dashboard-section.button-section {
+    justify-content: space-between;
+  }
+}
+@media (max-width: 667px) {
+  .dashboard-section.button-section {
+    justify-content: space-between;
+  }
+}
+
 .login-container {
   background-color: #F9F9F2;
   display: flex;
