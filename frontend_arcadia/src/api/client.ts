@@ -8,17 +8,4 @@ const apiClient = axios.create({
     withCredentials: true,
 })
 
-// apiClient.interceptors.request.use(config => {
-//     const token = localStorage.getItem('apiToken')
-//     if (token) {
-//         config.headers = {
-//             ...config.headers,
-//             'X-AUTH-TOKEN': token,
-//         }
-//     }
-//     return config
-//     }, error => {
-//     return Promise.reject(error)
-// })
-
 export default apiClient

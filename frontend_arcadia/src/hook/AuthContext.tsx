@@ -10,12 +10,10 @@ import { postRequest, getRequest } from '../api/request'
 import { Endpoints } from '../api/endpoints'
 
 import {
-    loadAttempts,
     clearAttempts,
     isLocked,
     incrementAttempts,
     getRetryInMinutes,
-    AttemptsData
 } from '../utils/loginLock'
 
 interface LoginResponse {
@@ -51,7 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode}) {
 
     const [user, setUser] = useState<CurrentUserResponse | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
-    const [attempts, setAttempts] = useState<AttemptsData>(loadAttempts())
 
     const isAuthenticated = Boolean(user)
 
@@ -80,14 +77,12 @@ export function AuthProvider({ children }: { children: ReactNode}) {
             )
 
             clearAttempts()
-            setAttempts(loadAttempts())
 
             const currentUser = await getRequest<CurrentUserResponse>(Endpoints.ME)
             setUser(currentUser)
             navigate('/dashboard')
         } catch (error: any) {
-            const next = incrementAttempts()
-            setAttempts(next)
+            incrementAttempts()
             throw error
         }
     }

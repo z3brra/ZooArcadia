@@ -18,7 +18,6 @@ type LinkButtonProps = BaseButtonProps & {
     onClick?: never
 }
 
-// Pour utiliser un lien vers l'extérieur (wikipédia)
 type AnchorButtonProps = BaseButtonProps & {
     href: string
     to?: never
@@ -27,7 +26,6 @@ type AnchorButtonProps = BaseButtonProps & {
     rel?: string
 }
 
-// Pour un boutton classique <button>
 type ActionButtonProps = BaseButtonProps & {
     onClick: React.MouseEventHandler<HTMLButtonElement>
     to?: never
@@ -58,10 +56,10 @@ export function Button (props: ButtonProps): JSX.Element {
         .filter(Boolean)
         .join(' ')
 
-    // Lien interne avec react-router-dom
+    // for react-router-dom link
     if ('to' in props) {
         return (
-            <Link to={props.to} className={classes}>
+            <Link to={props.to!} className={classes}>
                 {icon && <span className="button-icon">{icon}</span>}
                 <span className="button-text">{children}</span>
             </Link>

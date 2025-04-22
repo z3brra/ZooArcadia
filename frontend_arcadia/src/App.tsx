@@ -43,7 +43,7 @@ function RootLayout() {
 
 function DashboardLayout() {
     const [isMenuOpen, setMenuOpen] = useState(false)
-    const menuRef = useRef(null)
+    const menuRef = useRef<HTMLElement | null>(null)
     const location = useLocation()
 
     const toggleMenu = () => setMenuOpen(open => !open)

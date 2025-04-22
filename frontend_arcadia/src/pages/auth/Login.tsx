@@ -1,4 +1,4 @@
-import { JSX, useState } from "react"
+import React, { JSX, useState } from "react"
 
 import { useAuth } from "../../hook/AuthContext"
 
@@ -78,7 +78,7 @@ export function Login(): JSX.Element {
                         label="Adresse email"
                         placeholder="john.doe@email.com"
                         value={email}
-                        onChange={e => setEmail(e.currentTarget.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.currentTarget.value)}
                     />
                     {fieldErrors.email && (
                         <div className="login-form-field-error text-small">
@@ -93,7 +93,7 @@ export function Login(): JSX.Element {
                         label="Mot de passe"
                         placeholder="Votre mot de passe"
                         value={password}
-                        onChange={e => setPassword(e.currentTarget.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
                     />
                     {fieldErrors.password && (
                         <div className="login-form-field-error text-small">
