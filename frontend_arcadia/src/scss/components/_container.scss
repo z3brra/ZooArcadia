@@ -10,23 +10,23 @@
 }
 
 .dashboard-main-content {
-    margin-left: 300px;
+    display: flex;
+    flex-direction: column;
     margin-left: dashboard-side-menu-width(default);
     padding: 2rem 10rem 2rem 10rem;
-    // min-height: 100vh;
+    min-height: 100vh;
     background-color: $background;
-    // overflow-y: auto;
 
     @include tablet {
-        // height: calc(100vh - mobile-header-menu-height(tablet));
+        min-height: calc(100vh - mobile-header-menu-height(tablet));
+        height: calc(100vh - mobile-header-menu-height(tablet));
         margin-top: mobile-header-menu-height(tablet);
         margin-left: 0;
         padding: 2rem;
     }
 
     @include mobile {
-        // height: calc(100vh - mobile-header-menu-height(mobile));
-        // margin-top: mobile-header-menu-height(mobile);
+        min-height: calc(100vh - mobile-header-menu-height(tablet));
         margin-left: 0;
         padding: 2rem;
         padding: calc(mobile-header-menu-height(mobile) + 2rem) 2rem 2rem 2rem;

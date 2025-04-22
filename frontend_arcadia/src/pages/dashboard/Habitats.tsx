@@ -38,7 +38,7 @@ export function Habitats (): JSX.Element {
             setError(null)
             try {
                 const habitatResponse = await getRequest<PaginatedResponse<Habitat>>(
-                    `${Endpoints.HABITATS}?page=${currentPage}`
+                    `${Endpoints.HABITAT}?page=${currentPage}`
                 )
                 setHabitats(habitatResponse.data)
                 setTotalPages(habitatResponse.totalPages)

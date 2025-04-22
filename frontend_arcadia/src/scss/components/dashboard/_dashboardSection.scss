@@ -17,13 +17,15 @@
         }
     }
 
-    &.habitats-list {
+    &.habitats-list, &.species-list {
         flex-direction: column;
         align-items: center;
+        flex: 1;
     }
 
     &.pagination-section {
         justify-content: center;
+        padding-bottom: 2rem;
     }
 
 }

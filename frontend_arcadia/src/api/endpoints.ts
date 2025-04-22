@@ -2,7 +2,9 @@ export const Endpoints = {
     LOGIN: "/auth/login",
     ME: "/auth/me",
 
-    HABITATS: "/habitat"
+    HABITAT: "/habitat",
+    
+    SPECIES: "/species",
 } as const
 
 export type Endpoint = typeof Endpoints[keyof typeof Endpoints]

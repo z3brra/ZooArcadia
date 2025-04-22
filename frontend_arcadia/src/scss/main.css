@@ -107,13 +107,17 @@
 }
 
 .dashboard-main-content {
-  margin-left: 300px;
+  display: flex;
+  flex-direction: column;
   margin-left: 300px;
   padding: 2rem 10rem 2rem 10rem;
+  min-height: 100vh;
   background-color: #F9F9F2;
 }
 @media (min-width: 668px) and (max-width: 1024px) {
   .dashboard-main-content {
+    min-height: calc(100vh - 74px);
+    height: calc(100vh - 74px);
     margin-top: 74px;
     margin-left: 0;
     padding: 2rem;
@@ -121,6 +125,7 @@
 }
 @media (max-width: 667px) {
   .dashboard-main-content {
+    min-height: calc(100vh - 74px);
     margin-left: 0;
     padding: 2rem;
     padding: calc(52px + 2rem) 2rem 2rem 2rem;
@@ -529,12 +534,14 @@
     justify-content: space-between;
   }
 }
-.dashboard-section.habitats-list {
+.dashboard-section.habitats-list, .dashboard-section.species-list {
   flex-direction: column;
   align-items: center;
+  flex: 1;
 }
 .dashboard-section.pagination-section {
   justify-content: center;
+  padding-bottom: 2rem;
 }
 
 .dashboard-card {
@@ -575,6 +582,7 @@
   justify-content: space-between;
   flex-direction: column;
   padding: 1rem;
+  gap: 0.5rem;
 }
 .dashboard-card-ellipsis {
   background: none;
