@@ -26,7 +26,9 @@ final class AdminUserController extends AbstractController
     public function __construct (
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
+
+        private StringHelper $stringHelper,
     ) {
     }
 
@@ -62,7 +64,7 @@ final class AdminUserController extends AbstractController
             $user->setLastName($userCreateDTO->lastName);
             $user->setRoles([$userCreateDTO->role]);
 
-            $email = StringHelper::generateEmail($userCreateDTO->firstName, $userCreateDTO->lastName);
+            $email = $this->stringHelper->generateEmail($userCreateDTO->firstName, $userCreateDTO->lastName);
             $user->setEmail($email);
 
             $plainPassword = Utils::randomPassword();

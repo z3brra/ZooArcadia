@@ -4,7 +4,12 @@ namespace App\Service;
 
 class StringHelper
 {
-    public static function generateEmail(string $firstName, string $lastName): string
+
+    public function __construct(
+        private string $emailDomain
+    ) {}
+
+    public function generateEmail(string $firstName, string $lastName): string
     {
         $firstName = str_replace('-', '_', self::normalizeString($firstName));
         $lastName = str_replace('-', '_', self::normalizeString($lastName));
@@ -17,19 +22,19 @@ class StringHelper
             }
         }
 
-        return str_replace(' ', '_', $firstName) . '.' . str_replace(' ', '_', $lastName) . '@zooarcadia.com';
+        return str_replace(' ', '_', $firstName) . '.' . str_replace(' ', '_', $lastName) . '@'. $this->emailDomain;
     }
 
-    private static function normalizeString(string $str): string
+    private function normalizeString(string $str): string
     {
         $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
         $str = preg_replace('/[^a-zA-Z0-9 _-]/', '', $str);
         return strtolower(trim($str));
     }
 
-    public static function slugify($text) {
+    public function slugify($text) {
         $text = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
-    
+
         $text = preg_replace('/[^a-zA-Z0-9\s-]/', '', str_replace('_', '-', $text));
         $text = preg_replace('/[\s-]+/', '-', $text);
 

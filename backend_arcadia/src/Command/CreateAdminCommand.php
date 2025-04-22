@@ -12,6 +12,8 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+use App\Service\StringHelper;
+
 #[AsCommand(
     name: 'app:create-admin',
     description: 'Créer le premier administrateur du système.'
@@ -20,7 +22,11 @@ final class CreateAdminCommand extends Command
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
+
+        private StringHelper $stringHelper,
+
+        private string $defaultPassword,
     ) {
         parent::__construct();
     }
@@ -35,8 +41,8 @@ final class CreateAdminCommand extends Command
         $questionLastName = new Question("Veuillez entrer le nom de l'administrateur : ");
         $lastName = $helper->ask($input, $output, $questionLastName);
 
-        $email = strtolower($firstName . '.' . $lastName . '@zooarcadia.com');
-        $password = 'admin123';
+        $email = $this->stringHelper->generateEmail($firstName, $lastName);
+        $password = $this->defaultPassword;
 
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($existingUser) {
