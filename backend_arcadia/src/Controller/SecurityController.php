@@ -8,7 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse, Cookie, Response};
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -28,9 +30,19 @@ final class SecurityController extends AbstractController
     public function login(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
+        RateLimiterFactory $loginLimiter
     ): JsonResponse {
 
         try {
+            $limiter = $loginLimiter->create($request->getClientIp());
+            $limit = $limiter->consume();
+            if (!$limit->isAccepted()) {
+                $retryAt = $limit->getRetryAfter()->getTimestamp();
+                $current = time();
+                $retryAfter = max(0, $retryAt - $current);
+                throw new TooManyRequestsHttpException($retryAfter, "Too many attempts");
+            }
+
             $data = json_decode($request->getContent(), true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -68,8 +80,22 @@ final class SecurityController extends AbstractController
 
             $response->headers->setCookie($cookie);
 
+            $limiter->reset();
+
             return $response;
 
+        } catch (TooManyRequestsHttpException $e) {
+            $headers = $e->getHeaders();
+            $retryAfter = $headers['Retry-After'] ?? null;
+
+            return new JsonResponse(
+                data: [
+                    'error' => $e->getMessage(),
+                    'retryAfter' => $retryAfter
+                ],
+                status: JsonResponse::HTTP_TOO_MANY_REQUESTS,
+                headers: ['Retry-After' => $retryAfter]
+            );
         } catch (BadRequestException | NotEncodableValueException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
