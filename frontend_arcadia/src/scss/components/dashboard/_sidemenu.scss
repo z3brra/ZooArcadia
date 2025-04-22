@@ -48,14 +48,12 @@
 
         &-welcome {
             font-family: $headline-font;
-            // font-size: $fontsize-desktop-subtitle;
             color: $primary-text-fg;
             margin: 0.2rem 0;
         }
 
         &-user {
             font-family: $text-font;
-            font-size: $fontsize-desktop-content;
             font-weight: 600;
             color: $accent-text-fg;
             margin: 0.2rem 0;

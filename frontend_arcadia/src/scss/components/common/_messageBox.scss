@@ -1,0 +1,59 @@
+.message-box {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: $border-radius;
+    box-shadow: 0px 4px 10px 0px $box-shadow;
+    position: relative;
+
+    &-icon {
+        display: flex;
+        align-items: center;
+        margin-right: 0.75rem;
+    }
+
+    &-text {
+        flex: 1;
+    }
+
+    &-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: inherit;
+        padding: 0;
+        margin-left: 1rem;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+            opacity: 0.7;
+        }
+
+    }
+
+    &-info {
+        background-color: $blue-label-bg;
+        color: $blue-label-fg;
+        border: 1px solid $blue-label-fg;
+    }
+
+    &-success {
+        background-color: $green-label-bg;
+        color: $green-label-fg;
+        border: 1px solid $green-label-fg;
+    }
+
+    &-error {
+        background-color: $red-label-bg;
+        color: $red-label-fg;
+        border: 1px solid $red-label-fg;
+    }
+
+    &-warning {
+        background-color: $yellow-label-bg;
+        color: $yellow-label-fg;
+        border: 1px solid $yellow-label-fg;
+    }
+
+}

@@ -1,9 +1,10 @@
 .dashboard-section {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 1rem;
     margin-bottom: 1.5rem;
-    justify-content: flex-start;
+    width: 100%;
 
     &.button-section {
         justify-content: flex-start;
@@ -14,6 +15,15 @@
         @include mobile {
             justify-content: space-between;
         }
+    }
+
+    &.habitats-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &.pagination-section {
+        justify-content: center;
     }
 
 }

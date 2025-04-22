@@ -1,35 +1,35 @@
 .main-content {
     width: 100%;
     height: calc(100vh - header-height(default));
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-
     overflow-y: auto;
-
     background-color: $background;
 }
 
 .dashboard-main-content {
     margin-left: 300px;
     margin-left: dashboard-side-menu-width(default);
-    padding: 2rem;
-    min-height: 100vh;
+    padding: 2rem 10rem 2rem 10rem;
+    // min-height: 100vh;
     background-color: $background;
-    overflow-y: auto;
+    // overflow-y: auto;
 
     @include tablet {
+        // height: calc(100vh - mobile-header-menu-height(tablet));
         margin-top: mobile-header-menu-height(tablet);
         margin-left: 0;
-        padding: 1rem;
+        padding: 2rem;
     }
 
     @include mobile {
-        margin-top: mobile-header-menu-height(mobile);
+        // height: calc(100vh - mobile-header-menu-height(mobile));
+        // margin-top: mobile-header-menu-height(mobile);
         margin-left: 0;
-        padding: 1rem;
+        padding: 2rem;
+        padding: calc(mobile-header-menu-height(mobile) + 2rem) 2rem 2rem 2rem;
     }
 }
 

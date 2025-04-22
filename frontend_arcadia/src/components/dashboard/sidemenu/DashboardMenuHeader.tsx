@@ -22,7 +22,7 @@ export function DashboardSideMenuHeader(): JSX.Element {
                 />
             </Link>
             <h3 className="dashboard-side-menu-header-welcome text-subtitle">Bienvenue</h3>
-            <p className="dashboard-side-menu-header-user">{username}</p>
+            <p className="dashboard-side-menu-header-user text-content">{username}</p>
         </div>
     )
 }
