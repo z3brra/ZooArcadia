@@ -12,10 +12,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class AnimalReadDTO
 {
-    #[Groups(['animal:read'])]
+    #[Groups(['animal:read', 'animal:list'])]
     public string $uuid;
 
-    #[Groups(['animal:read', 'species:with-animals'])]
+    #[Groups(['animal:read', 'animal:list', 'species:with-animals'])]
     public string $name;
 
     #[Groups(['animal:read', 'species:with-animals'])]
@@ -45,10 +45,17 @@ class AnimalReadDTO
     #[Groups(['animal:read'])]
     public string $speciesUuid;
 
+    #[Groups(['animal:list'])]
+    public ?string $speciesName;
+
     #[Groups(['animal:read'])]
     public ?string $habitatUuid;
 
-    #[Groups(['animal:read'])]
+    #[Groups(['animal:list'])]
+    public ?string $habitatName;
+
+
+    #[Groups(['animal:read', 'animal:list'])]
     public ?array $pictures = [];
 
     public function __construct(
@@ -63,8 +70,10 @@ class AnimalReadDTO
         DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt = null,
         string $speciesUuid,
+        ?string $speciesName = null,
         ?string $habitatUuid = null,
-        ?array $pictures = []
+        ?string $habitatName = null,
+        ?array $pictures = [],
     ) {
         $this->uuid = $uuid;
         $this->name = $name;
@@ -77,7 +86,9 @@ class AnimalReadDTO
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
         $this->speciesUuid = $speciesUuid;
+        $this->speciesName = $speciesName;
         $this->habitatUuid = $habitatUuid;
+        $this->habitatName = $habitatName;
         $this->pictures = $pictures;
     }
 
@@ -101,7 +112,9 @@ class AnimalReadDTO
             $animal->getCreatedAt(),
             $animal->getUpdatedAt(),
             $animal->getSpecies()->getUuid(),
+            $animal->getSpecies()->getCommonName(),
             $animal->getHabitat() ? $animal->getHabitat()->getUuid() : null,
+            $animal->getHabitat() ? $animal->getHabitat()->getName() : null,
             count($picturesDTOs) > 0 ? $picturesDTOs : null
         );
     }

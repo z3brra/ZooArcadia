@@ -22,7 +22,7 @@ class ListSpeciesPaginatedService
 
         $speciesDTOs = [];
         foreach ($result['data'] as $species) {
-            $speciesDTOs[] = SpeciesReadDTO::fromEntity($species);
+            $speciesDTOs[] = SpeciesReadDTO::fromEntity($species, true);
         }
 
         return [

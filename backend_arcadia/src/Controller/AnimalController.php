@@ -323,7 +323,7 @@ final class AnimalController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $animalPaginated,
                 format: 'json',
-                context: ['groups' => ['animal:read', 'entity-with-picture: read']]
+                context: ['groups' => ['animal:list', 'entity-with-picture: read']]
             );
 
             return new JsonResponse(

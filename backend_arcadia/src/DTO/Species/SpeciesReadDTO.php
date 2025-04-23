@@ -32,6 +32,9 @@ class SpeciesReadDTO
     #[Groups(['species:read'])]
     public ?DateTimeImmutable $updatedAt;
 
+    #[Groups(['species:with-animalCount'])]
+    public ?int $animalCount;
+
     public function __construct(
         string $uuid,
         string $commonName,
@@ -40,7 +43,8 @@ class SpeciesReadDTO
         string $diet,
         string $description,
         DateTimeImmutable $createdAt,
-        ?DateTimeImmutable $updatedAt = null
+        ?DateTimeImmutable $updatedAt = null,
+        ?int $animalCount = null
     ) {
         $this->uuid = $uuid;
         $this->commonName = $commonName;
@@ -50,10 +54,28 @@ class SpeciesReadDTO
         $this->description = $description;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->animalCount = $animalCount;
     }
 
-    public static function fromEntity(Species $species): self
+    public static function fromEntity(Species $species, bool $withAnimalCount = false): self
     {
+        if ($withAnimalCount) {
+            $animals = $species->getAnimals();
+            $animalCount = count($animals);
+
+            return new self(
+                $species->getUuid(),
+                $species->getCommonName(),
+                $species->getScientificName(),
+                $species->getLifespan(),
+                $species->getDiet(),
+                $species->getDescription(),
+                $species->getCreatedAt(),
+                $species->getUpdatedAt(),
+                $animalCount
+            );
+        }
+
         return new self(
             $species->getUuid(),
             $species->getCommonName(),
