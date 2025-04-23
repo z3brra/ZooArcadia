@@ -6,7 +6,7 @@ import {
 } from "lucide-react"
 import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
 import { DashboardSection } from "../../components/dashboard/DashboardSection"
-import { DashboardPagination } from "../../components/dashboard/DashboardPagination"
+import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
 import { SpeciesList, Specie } from "../../components/dashboard/species/SpeciesList"
 
@@ -16,13 +16,6 @@ import { Button } from "../../components/form/Button"
 import { getRequest } from "../../api/request"
 import { Endpoints } from "../../api/endpoints"
 
-interface PaginatedResponse<T> {
-    data: T[]
-    total: number
-    totalPages: number
-    currentPage: number
-    perPage: number
-}
 
 export function Species (): JSX.Element {
     const [species, setSpecies] = useState<Specie[]>([])
@@ -96,13 +89,11 @@ export function Species (): JSX.Element {
 
 
             { !loading && !error && species.length > 0 && totalPages > 1 && (
-                <DashboardSection className="pagination-section">
-                    <DashboardPagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                    />
-                </DashboardSection>
+                <DashboardPagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
             ) }
         </>
     )
