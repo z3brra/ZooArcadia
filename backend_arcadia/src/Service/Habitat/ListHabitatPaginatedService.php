@@ -21,7 +21,7 @@ class ListHabitatPaginatedService
 
         $habitatDTOs = [];
         foreach ($result['data'] as $habitat) {
-            $habitatDTOs[] = HabitatReadDTO::fromEntity($habitat);
+            $habitatDTOs[] = HabitatReadDTO::fromEntity($habitat, true);
         }
 
         return [
