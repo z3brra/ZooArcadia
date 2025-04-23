@@ -11,15 +11,15 @@ import { Ellipsis } from "lucide-react"
 export type AnimalItemProps = {
     imageUrl: string
     name: string
-    species: string
-    habitat: string
+    speciesName: string
+    habitatName: string | null
 }
 
 export function AnimalItem({
     imageUrl,
     name,
-    species,
-    habitat
+    speciesName,
+    habitatName
 }: AnimalItemProps): JSX.Element {
     return (
         <Card>
@@ -27,8 +27,8 @@ export function AnimalItem({
                 <CardMedia src={imageUrl} className="media-rounded" />
                 <div className="dashboard-card-item">
                     <CardHeader className="text-bigcontent text-primary">{name}</CardHeader>
-                    <CardContent className="text-small text-silent">{species}</CardContent>
-                    <CardContent className="text-small text-silent">{habitat}</CardContent>
+                    <CardContent className="text-small text-silent">{speciesName}</CardContent>
+                    <CardContent className="text-small text-silent">{habitatName}</CardContent>
                 </div>
             </div>
             <CardActions>

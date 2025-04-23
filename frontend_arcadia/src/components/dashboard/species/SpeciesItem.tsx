@@ -24,7 +24,7 @@ export function SpeciesItem({
                 <div className="dashboard-card-item">
                     <CardHeader className="text-bigcontent text-primary">{commonName}</CardHeader>
                     <CardContent className="text-small text-silent">{scientificName}</CardContent>
-                    <CardContent className="text-small text-silent">{animalCount}</CardContent>
+                    <CardContent className="text-small text-silent">{`Nombre d'animaux : ${animalCount}`}</CardContent>
                 </div>
             </div>
             <CardActions>

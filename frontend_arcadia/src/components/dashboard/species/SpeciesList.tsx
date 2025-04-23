@@ -2,8 +2,6 @@ import { JSX } from "react"
 import { DashboardSection } from "../DashboardSection"
 import { SpeciesItem } from "./SpeciesItem"
 
-const fakeNumber = 2
-
 export interface Specie {
     uuid: string
     commonName: string
@@ -13,6 +11,7 @@ export interface Specie {
     description: string
     createdAt: string
     updatedAt: string | null
+    animalCount: number
 }
 
 export function SpeciesList({ items }: { items: Specie[] }): JSX.Element {
@@ -23,7 +22,7 @@ export function SpeciesList({ items }: { items: Specie[] }): JSX.Element {
                     key={species.uuid}
                     commonName={species.commonName}
                     scientificName={species.scientificName}
-                    animalCount={fakeNumber}
+                    animalCount={species.animalCount}
                 />
             ))}
         </DashboardSection>

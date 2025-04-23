@@ -7,16 +7,8 @@ const fakeURL = "https://media.istockphoto.com/id/1140829787/fr/photo/coucher-du
 export interface Animal {
     uuid: string
     name: string
-    isMale: boolean
-    size: number
-    weight: number
-    isFertile: boolean
-    birthDate: Date
-    arrivalDate: Date
-    createdAt: Date
-    updatedAt: Date | null
-    speciesUuid: string
-    habitatUuid: string | null
+    speciesName: string
+    habitatName: string| null
     pictures: [] | null
 }
 
@@ -35,8 +27,8 @@ export function AnimalList({
                     key={animal.uuid}
                     imageUrl={fakeURL}
                     name={animal.name}
-                    species={"fake species"}
-                    habitat={"fake habitat"}
+                    speciesName={animal.speciesName}
+                    habitatName={animal.habitatName ? animal.habitatName : 'Aucun habitat' }
                 />
             ))}
         </DashboardSection>
