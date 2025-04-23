@@ -1,9 +1,10 @@
 export const Endpoints = {
     LOGIN: "/auth/login",
+    LOGOUT: "/auth/logout",
     ME: "/auth/me",
 
     HABITAT: "/habitat",
-    
+
     SPECIES: "/species",
 } as const
 

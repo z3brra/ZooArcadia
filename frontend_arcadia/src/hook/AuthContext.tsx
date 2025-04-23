@@ -23,6 +23,10 @@ interface LoginResponse {
     roles: string[]
 }
 
+interface LogoutResponse {
+    message: string
+}
+
 interface CurrentUserResponse {
     uuid: string
     firstName: string
@@ -87,9 +91,16 @@ export function AuthProvider({ children }: { children: ReactNode}) {
         }
     }
 
-    const logout = () => {
-        setUser(null)
-        navigate('/login')
+    const logout = async () => {
+        try {
+            await postRequest<{}, LogoutResponse>(
+                Endpoints.LOGOUT,
+                {}
+            )
+        } finally {
+            setUser(null)
+            navigate('/login')
+        }
     }
 
     return (
