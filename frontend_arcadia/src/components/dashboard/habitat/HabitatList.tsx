@@ -9,7 +9,7 @@ export interface Habitat {
     description: string
     createdAt: string
     updatedAt: string | null
-    // animalCount: number
+    animalCount: number
 }
 
 export function HabitatsList({ items }: { items: Habitat[] }) {
@@ -20,7 +20,7 @@ export function HabitatsList({ items }: { items: Habitat[] }) {
                     key={habitat.uuid}
                     imageUrl={fakeURL}
                     name={habitat.name}
-                    description={habitat.description}
+                    animalCount={habitat.animalCount}
                 />
             ))}
         </DashboardSection>

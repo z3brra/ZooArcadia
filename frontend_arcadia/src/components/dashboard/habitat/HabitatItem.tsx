@@ -11,20 +11,22 @@ import { Ellipsis } from "lucide-react"
 export type HabitatItemProps = {
     imageUrl: string
     name: string
-    description: string
+    animalCount: number
 }
+
 export function HabitatItem({
     imageUrl,
     name,
-    description
+    animalCount
 }: HabitatItemProps): JSX.Element {
+    
     return (
         <Card>
             <div className="dashboard-card-body">
                 <CardMedia src={imageUrl} className="media-rounded"/>
                 <div className="dashboard-card-item">
                     <CardHeader className="text-bigcontent text-primary">{name}</CardHeader>
-                    <CardContent className="text-small text-silent">{description}</CardContent>
+                    <CardContent className="text-small text-silent">{`Nombre d'animaux : ${animalCount}`}</CardContent>
                 </div>
             </div>
             <CardActions>
