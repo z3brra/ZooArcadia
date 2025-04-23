@@ -23,7 +23,7 @@ import { Species } from './pages/dashboard/Species'
 import { Animals } from './pages/dashboard/Animals'
 import { AnimalsReport } from './pages/dashboard/AnimalsReport'
 import { AnimalsFeed } from './pages/dashboard/AnimalsFeed'
-import { Activity } from './pages/dashboard/Activity'
+import { Activities } from './pages/dashboard/Activities'
 import { Reviews } from './pages/dashboard/Reviews'
 import { Employee } from './pages/dashboard/Users'
 import { Statistics } from './pages/dashboard/Statistics'
@@ -118,7 +118,7 @@ const router = createBrowserRouter([
                     { path: 'animals', element: <Animals /> },
                     { path: 'animals-report', element: <AnimalsReport /> },
                     { path: 'animals-feed', element: <AnimalsFeed /> },
-                    { path: 'activity', element: <Activity /> },
+                    { path: 'activities', element: <Activities /> },
                     { path: 'reviews', element: <Reviews /> },
                     { path: 'users', element: <Employee /> },
                     { path: 'statistics', element: <Statistics /> },

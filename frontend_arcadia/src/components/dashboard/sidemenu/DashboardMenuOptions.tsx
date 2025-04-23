@@ -49,7 +49,7 @@ export function DashboardSideMenuOptions (): JSX.Element {
             )}
 
             { hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE') && (
-                <SideMenuOption to="activity" label="Activités" icon={<LandPlot size={20} />} />
+                <SideMenuOption to="activities" label="Activités" icon={<LandPlot size={20} />} />
             )}
 
             { hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE') && (

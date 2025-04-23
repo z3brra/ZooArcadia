@@ -532,7 +532,7 @@
     justify-content: space-between;
   }
 }
-.dashboard-section.habitats-list, .dashboard-section.species-list {
+.dashboard-section.habitats-list, .dashboard-section.species-list, .dashboard-section.animals-list, .dashboard-section.activities-list {
   flex-direction: column;
   align-items: center;
   flex: 1;
