@@ -1,29 +1,31 @@
-version: '3.8'
+version: "3.8"
 services:
-  api:
-    build:
-      context: /home/admin/ZooArcadia
-      dockerfile: docker/Dockerfile.back
-    container_name: zooarcadia_api
-    restart: unless-stopped
-    networks:
-      - zooarcadia_net
-    expose:
-      - "9000"
-    ports:
-      - "9000:9000"
+    api:
+        build:
+            context: /home/admin/ZooArcadia
+            dockerfile: docker/Dockerfile.back
+        container_name: zooarcadia_api
+        restart: unless-stopped
+        networks:
+            - zooarcadia_net
+        expose:
+            - "9000"
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./backend_arcadia/public/images:/var/www/api/public/images
 
-  front:
-    build:
-      context: /home/admin/ZooArcadia
-      dockerfile: docker/Dockerfile.front
-    container_name: zooarcadia_front
-    restart: unless-stopped
-    ports:
-      - "3000:80"
-    networks:
-      - zooarcadia_net
+    front:
+        build:
+            context: /home/admin/ZooArcadia
+            dockerfile: docker/Dockerfile.front
+        container_name: zooarcadia_front
+        restart: unless-stopped
+        ports:
+            - "3000:80"
+        networks:
+            - zooarcadia_net
 
 networks:
-  zooarcadia_net:
-    driver: bridge
+    zooarcadia_net:
+        driver: bridge
