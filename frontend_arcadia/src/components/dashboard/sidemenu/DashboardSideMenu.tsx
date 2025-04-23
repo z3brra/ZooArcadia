@@ -9,12 +9,12 @@ type DashboardSideMenuProps = {
 
 export const DashboardSideMenu = forwardRef<HTMLElement, DashboardSideMenuProps>(
     ({ isOpen }, ref) => (
-      <aside
-        ref={ref}
-        className={`dashboard-side-menu${isOpen ? ' open' : ''}`}
-      >
-        <DashboardSideMenuHeader />
-        <DashboardSideMenuOptions />
-      </aside>
+        <aside
+            ref={ref}
+            className={`dashboard-side-menu${isOpen ? ' open' : ''}`}
+        >
+            <DashboardSideMenuHeader />
+            <DashboardSideMenuOptions />
+        </aside>
     )
-  )
+)

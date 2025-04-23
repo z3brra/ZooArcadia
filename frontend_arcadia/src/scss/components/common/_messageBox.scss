@@ -35,25 +35,25 @@
     &-info {
         background-color: $blue-label-bg;
         color: $blue-label-fg;
-        border: 1px solid $blue-label-fg;
+        // border: 1px solid $blue-label-fg;
     }
 
     &-success {
         background-color: $green-label-bg;
         color: $green-label-fg;
-        border: 1px solid $green-label-fg;
+        // border: 1px solid $green-label-fg;
     }
 
     &-error {
         background-color: $red-label-bg;
         color: $red-label-fg;
-        border: 1px solid $red-label-fg;
+        // border: 1px solid $red-label-fg;
     }
 
     &-warning {
         background-color: $yellow-label-bg;
         color: $yellow-label-fg;
-        border: 1px solid $yellow-label-fg;
+        // border: 1px solid $yellow-label-fg;
     }
 
 }

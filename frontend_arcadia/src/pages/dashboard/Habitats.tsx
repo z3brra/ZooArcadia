@@ -87,7 +87,7 @@ export function Habitats (): JSX.Element {
                 <HabitatsList items={habitats}/>
             )}
 
-            { !loading && !error && habitats.length && totalPages > 1 && (
+            { !loading && !error && habitats.length > 0 && totalPages > 1 && (
                 <DashboardSection className="pagination-section">
                     <DashboardPagination
                         currentPage={currentPage}

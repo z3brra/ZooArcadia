@@ -94,7 +94,8 @@ export function Species (): JSX.Element {
                 <SpeciesList items={species} />
             )}
 
-            { !loading && !error && species.length && totalPages > 1 && (
+
+            { !loading && !error && species.length > 0 && totalPages > 1 && (
                 <DashboardSection className="pagination-section">
                     <DashboardPagination
                         currentPage={currentPage}

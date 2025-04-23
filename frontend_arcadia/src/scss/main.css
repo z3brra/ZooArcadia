@@ -210,22 +210,18 @@
 .message-box-info {
   background-color: #DBEAFE;
   color: #1E40AF;
-  border: 1px solid #1E40AF;
 }
 .message-box-success {
   background-color: #DCFCE7;
   color: #166534;
-  border: 1px solid #166534;
 }
 .message-box-error {
   background-color: #FEE2E2;
   color: #991B1B;
-  border: 1px solid #991B1B;
 }
 .message-box-warning {
   background-color: #FEF9C3;
   color: #854D0E;
-  border: 1px solid #854D0E;
 }
 
 .text-input {
@@ -332,11 +328,13 @@
   left: 0;
   width: 300px;
   height: 100vh;
+  height: 100dvh;
   background-color: #EDE8D5;
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 1.5rem 0;
+  padding: 1.5rem 0 1.5rem;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
   transition: transform 0.3s ease;
 }
 @media (min-width: 668px) and (max-width: 1024px) {
@@ -581,7 +579,6 @@
   display: inline-flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 1rem;
   gap: 0.5rem;
 }
 .dashboard-card-ellipsis {

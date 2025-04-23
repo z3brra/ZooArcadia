@@ -4,11 +4,13 @@
     left: 0;
     width: dashboard-side-menu-width(desktop);
     height: 100vh;
+    height: 100dvh;
     background-color: $menu-background;
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 1.5rem 0;
+    padding: 1.5rem 0 1.5rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
     transition: transform 0.3s ease;
 
     @include tablet {
@@ -26,7 +28,6 @@
         transform: translateX(-100%);
         width: dashboard-side-menu-width(mobile);
         background-color: $background;
-        
 
         &.open {
             transform: translateX(0);
