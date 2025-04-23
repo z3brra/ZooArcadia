@@ -13,7 +13,7 @@ services:
         ports:
             - "9000:9000"
         volumes:
-            - ./backend_arcadia/public/images:/var/www/api/public/images
+            - ../backend_arcadia/public/images:/var/www/api/public/images
 
     front:
         build:
