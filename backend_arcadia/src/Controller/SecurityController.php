@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -207,13 +208,43 @@ final class SecurityController extends AbstractController
                 ['error' => $e->getMessage()],
                 JsonResponse::HTTP_UNAUTHORIZED
             );
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(
                 data: ['error' => "An internal server error as occured"],
                 status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
 
+    #[Route('/logout', name: 'logout', methods: 'POST')]
+    public function logout(): JsonResponse {
+
+        try {
+            $user = $this->getUser();
+            if (!$user) {
+                throw new AccessDeniedHttpException("User not authenticated.");
+            }
+
+            $cookie = Cookie::create('access_token')
+                ->withValue('')
+                ->withExpires(new DateTimeImmutable('-1 hour'))
+                ->withHttpOnly(true)
+                ->withSecure(true)
+                ->withSameSite('strict');
+
+            $response = new JsonResponse (
+                data: ['message' => 'User successfully logged out'],
+                status: JsonResponse::HTTP_OK
+            );
+            $response->headers->setCookie($cookie);
+
+            return $response;
+
+        } catch (AccessDeniedHttpException $e) {
+            return new JsonResponse(
+                ['error' => $e->getMessage()],
+                JsonResponse::HTTP_FORBIDDEN
+            );
+        }
     }
 }

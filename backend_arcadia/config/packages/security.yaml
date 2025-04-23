@@ -34,6 +34,8 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/logout, roles: ROLE_USER }
+
         - { path: ^/api/test/create, roles: PUBLIC_ACCESS }
 
         - { path: ^/api/species/create, roles: ROLE_ADMIN }
