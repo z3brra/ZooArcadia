@@ -13,7 +13,7 @@ import { sliceText } from "../../../utils/sliceText"
 export type ActivityItemProps = {
     imageUrl: string
     name: string
-    description: string
+    description: string | null
 }
 
 export function ActivityItem({
@@ -21,7 +21,8 @@ export function ActivityItem({
     name,
     description
 }: ActivityItemProps): JSX.Element {
-    const slicedDescription = sliceText(description, 70)
+
+    const slicedDescription = description ? sliceText(description!, 70) : ''
 
     return (
         <Card>

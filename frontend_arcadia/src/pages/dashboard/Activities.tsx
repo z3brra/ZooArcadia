@@ -13,7 +13,8 @@ import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHea
 import { DashboardSection } from "../../components/dashboard/DashboardSection"
 import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
-import { ActivityList, Activity } from "../../components/dashboard/activity/ActivityList"
+import { ActivityList } from "../../components/dashboard/activity/ActivityList"
+import { ActivityListItem } from "@models/activity"
 
 import { MessageBox } from "../../components/common/MessageBox"
 import { Button } from "../../components/form/Button"
@@ -24,7 +25,7 @@ import { Endpoints } from "../../api/endpoints"
 
 export function Activities (): JSX.Element {
 
-    const [activities, setActivites] = useState<Activity[]>([])
+    const [activities, setActivites] = useState<ActivityListItem[]>([])
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages, setTotalPages] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
@@ -36,7 +37,7 @@ export function Activities (): JSX.Element {
             setLoading(false)
             setError(null)
             try {
-                const activitiesResponse = await getRequest<PaginatedResponse<Activity>>(
+                const activitiesResponse = await getRequest<PaginatedResponse<ActivityListItem>>(
                     `${Endpoints.ACTIVITY}?page=${currentPage}`
                 )
                 setActivites(activitiesResponse.data)
