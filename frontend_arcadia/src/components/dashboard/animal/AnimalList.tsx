@@ -2,7 +2,7 @@ import { JSX } from "react"
 import { DashboardSection } from "../DashboardSection"
 import { AnimalItem } from "./AnimalItem"
 
-import { AnimalListItem } from "@types/animal"
+import { AnimalListItem } from "@models/animal"
 import placeholderPicture from "@assets/common/placeholder.png"
 
 

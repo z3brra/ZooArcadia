@@ -13,7 +13,7 @@ import { DashboardSection } from "../../components/dashboard/DashboardSection"
 import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
 import { AnimalList } from "../../components/dashboard/animal/AnimalList"
-import { AnimalListItem } from "@types/animal"
+import { AnimalListItem } from "@models/animal"
 
 import { MessageBox } from "../../components/common/MessageBox"
 import { Button } from "../../components/form/Button"

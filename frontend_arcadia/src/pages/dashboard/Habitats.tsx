@@ -8,7 +8,7 @@ import { DashboardSection } from "../../components/dashboard/DashboardSection"
 import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
 import { HabitatsList } from "../../components/dashboard/habitat/HabitatList"
-import { HabitatListItem } from "@types/habitat"
+import { HabitatListItem } from "@models/habitat"
 
 import { MessageBox } from "../../components/common/MessageBox"
 import { Button } from "../../components/form/Button"

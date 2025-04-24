@@ -24,7 +24,7 @@
 
     "baseUrl": "src",
     "paths": {
-      "@types/*": ["types/*"],
+      "@models/*": ["models/*"],
       "@assets/*": ["assets/*"]
     }
   },

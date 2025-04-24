@@ -8,7 +8,8 @@ import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHea
 import { DashboardSection } from "../../components/dashboard/DashboardSection"
 import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
-import { SpeciesList, Specie } from "../../components/dashboard/species/SpeciesList"
+import { SpeciesList } from "../../components/dashboard/species/SpeciesList"
+import { SpeciesListItem } from "@models/species"
 
 import { MessageBox } from "../../components/common/MessageBox"
 import { Button } from "../../components/form/Button"
@@ -18,7 +19,7 @@ import { Endpoints } from "../../api/endpoints"
 
 
 export function Species (): JSX.Element {
-    const [species, setSpecies] = useState<Specie[]>([])
+    const [species, setSpecies] = useState<SpeciesListItem[]>([])
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages, setTotalPages] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
@@ -30,7 +31,7 @@ export function Species (): JSX.Element {
             setLoading(true)
             setError(null)
             try {
-                const speciesResponse = await getRequest<PaginatedResponse<Specie>>(
+                const speciesResponse = await getRequest<PaginatedResponse<SpeciesListItem>>(
                     `${Endpoints.SPECIES}?page=${currentPage}`
                 )
                 setSpecies(speciesResponse.data)

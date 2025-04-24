@@ -1,6 +1,6 @@
 import { DashboardSection } from "../DashboardSection"
 import { HabitatItem } from "./HabitatItem"
-import { HabitatListItem } from "@types/habitat"
+import { HabitatListItem } from "@models/habitat"
 import placeholderPicture from "@assets/common/placeholder.png"
 
 type HabitatListProps = {
