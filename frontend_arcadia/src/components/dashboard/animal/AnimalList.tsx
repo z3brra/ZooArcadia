@@ -1,15 +1,22 @@
 import { JSX } from "react"
 import { DashboardSection } from "../DashboardSection"
 import { AnimalItem } from "./AnimalItem"
+import placeholderPicture from "../../../assets/common/placeholder.png"
 
-const fakeURL = "https://media.istockphoto.com/id/1140829787/fr/photo/coucher-du-soleil-aux-plaines-de-savane.jpg?s=612x612&w=0&k=20&c=E0Z2FP8IkNUvLvOq1GrlvUXxsUggZZH7-hsokErioZ0="
+export interface Picture {
+    uuid: string
+    slug: string
+    path: string
+    createdAt: Date
+    updatedAt: Date | null
+}
 
 export interface Animal {
     uuid: string
     name: string
     speciesName: string
     habitatName: string| null
-    pictures: [] | null
+    pictures: Picture[] | null
 }
 
 type AnimalListProps = {
@@ -25,7 +32,7 @@ export function AnimalList({
             { items.map(animal => (
                 <AnimalItem
                     key={animal.uuid}
-                    imageUrl={fakeURL}
+                    imageUrl={animal.pictures && animal.pictures.length > 0 ? animal.pictures[0].path : placeholderPicture}
                     name={animal.name}
                     speciesName={animal.speciesName}
                     habitatName={animal.habitatName ? animal.habitatName : 'Aucun habitat' }
@@ -33,5 +40,4 @@ export function AnimalList({
             ))}
         </DashboardSection>
     )
-
 }
