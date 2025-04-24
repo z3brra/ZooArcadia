@@ -7,7 +7,8 @@ import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHea
 import { DashboardSection } from "../../components/dashboard/DashboardSection"
 import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
-import { HabitatsList, Habitat } from "../../components/dashboard/habitat/HabitatList"
+import { HabitatsList } from "../../components/dashboard/habitat/HabitatList"
+import { HabitatListItem } from "@types/habitat"
 
 import { MessageBox } from "../../components/common/MessageBox"
 import { Button } from "../../components/form/Button"
@@ -17,7 +18,7 @@ import { Endpoints } from "../../api/endpoints"
 
 export function Habitats (): JSX.Element {
 
-    const [habitats, setHabitats] = useState<Habitat[]>([])
+    const [habitats, setHabitats] = useState<HabitatListItem[]>([])
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages, setTotalPages] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
@@ -29,7 +30,7 @@ export function Habitats (): JSX.Element {
             setLoading(true)
             setError(null)
             try {
-                const habitatResponse = await getRequest<PaginatedResponse<Habitat>>(
+                const habitatResponse = await getRequest<PaginatedResponse<HabitatListItem>>(
                     `${Endpoints.HABITAT}?page=${currentPage}`
                 )
                 setHabitats(habitatResponse.data)

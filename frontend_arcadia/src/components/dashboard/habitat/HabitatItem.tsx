@@ -19,7 +19,6 @@ export function HabitatItem({
     name,
     animalCount
 }: HabitatItemProps): JSX.Element {
-    
     return (
         <Card>
             <div className="dashboard-card-body">
