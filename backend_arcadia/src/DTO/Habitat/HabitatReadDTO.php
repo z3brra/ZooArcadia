@@ -11,13 +11,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class HabitatReadDTO
 {
-    #[Groups(['habitat:read'])]
+    #[Groups(['habitat:read', 'habitat:list'])]
     public string $uuid;
 
-    #[Groups(['habitat:read'])]
+    #[Groups(['habitat:read', 'habitat:list'])]
     public string $name;
 
-    #[Groups(['habitat:read'])]
+    #[Groups(['habitat:read', 'habitat:list'])]
     public ?string $description;
 
     #[Groups(['habitat:read'])]
@@ -26,10 +26,10 @@ class HabitatReadDTO
     #[Groups(['habitat:read'])]
     public ?DateTimeImmutable $updatedAt;
 
-    #[Groups(['habitat:with-animalCount'])]
+    #[Groups(['habitat:list', 'habitat:with-animalCount'])]
     public ?int $animalCount;
 
-    #[Groups(['habitat:read'])]
+    #[Groups(['habitat:read', 'habitat:list'])]
     public ?array $pictures = [];
 
     public function __construct(
