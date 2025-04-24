@@ -3,7 +3,11 @@ import { HabitatItem } from "./HabitatItem"
 import { HabitatListItem } from "@types/habitat"
 import placeholderPicture from "@assets/common/placeholder.png"
 
-export function HabitatsList({ items }: { items: HabitatListItem[] }) {
+type HabitatListProps = {
+    items: HabitatListItem[]
+}
+
+export function HabitatsList({ items }: HabitatListProps) {
     return (
         <DashboardSection className="habitats-list">
             {items.map(habitat => (

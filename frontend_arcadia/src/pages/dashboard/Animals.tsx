@@ -12,7 +12,8 @@ import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHea
 import { DashboardSection } from "../../components/dashboard/DashboardSection"
 import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
 
-import { AnimalList, Animal } from "../../components/dashboard/animal/AnimalList"
+import { AnimalList } from "../../components/dashboard/animal/AnimalList"
+import { AnimalListItem } from "@types/animal"
 
 import { MessageBox } from "../../components/common/MessageBox"
 import { Button } from "../../components/form/Button"
@@ -22,7 +23,7 @@ import { Endpoints } from "../../api/endpoints"
 
 export function Animals (): JSX.Element {
 
-    const [animals, setAnimals] = useState<Animal[]>([])
+    const [animals, setAnimals] = useState<AnimalListItem[]>([])
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [totalPages, setTotalPages] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
@@ -34,7 +35,7 @@ export function Animals (): JSX.Element {
             setLoading(true)
             setError(null)
             try {
-                const animalResponse = await getRequest<PaginatedResponse<Animal>>(
+                const animalResponse = await getRequest<PaginatedResponse<AnimalListItem>>(
                     `${Endpoints.ANIMAL}?page=${currentPage}`
                 )
                 setAnimals(animalResponse.data)
