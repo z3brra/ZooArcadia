@@ -50,7 +50,7 @@ class UpdatePictureService
         }
 
         $slug = $this->slugGenerator->generate($filename);
-        $extension = pathinfo($filename);
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
         $updatedFilename = $slug . '.' . $extension;
 
         try {

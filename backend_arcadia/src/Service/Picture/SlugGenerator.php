@@ -16,6 +16,7 @@ class SlugGenerator
 
         // Return the entire slug (unique) if the filename is too long (+255)
         // TODO : Need a fix / upgrade
+        // var_dump($slug);
         return substr($slug, -255, strlen($slug));
     }
 }

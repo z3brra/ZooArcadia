@@ -5,8 +5,8 @@ namespace App\Service\Picture;
 use App\Service\Picture\{PictureFileManager, SlugGenerator};
 use App\Service\ValidationService;
 
-use App\Entity\{Picture, Animal, Habitat, Activity, ActivityPicture, HabitatPicture};
-use App\Entity\{AnimalPicture};
+use App\Entity\{Picture, Animal, Habitat, Activity};
+use App\Entity\{AnimalPicture, HabitatPicture, ActivityPicture};
 
 use App\Repository\{AnimalRepository, HabitatRepository, ActivityRepository};
 
@@ -64,6 +64,7 @@ class CreatePictureService
         }
 
         $slug = $this->slugGenerator->generate($pictureCreateDTO->filename);
+        // var_dump($slug);
 
         $extension = pathinfo($pictureCreateDTO->filename, PATHINFO_EXTENSION);
 
@@ -98,8 +99,8 @@ class CreatePictureService
             $picture->addActivityPicture($activityPicture);
         }
 
-        $picture->setCreatedAt(new DateTimeImmutable());
 
+        $picture->setCreatedAt(new DateTimeImmutable());
         $this->entityManager->persist($picture);
         $this->entityManager->flush();
 

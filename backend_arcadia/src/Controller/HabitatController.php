@@ -1,7 +1,5 @@
 <?php
 
-// Test commentaire pour CI / CD
-
 namespace App\Controller;
 
 use App\DTO\Habitat\HabitatDTO;
@@ -10,12 +8,17 @@ use App\Service\Habitat\{
     ShowHabitatService,
     UpdateHabitatService,
     DeleteHabitatService,
-    ListHabitatPaginatedService
+    ListHabitatPaginatedService,
+    AddHabitatPictureService,
+    ChangeHabitatPictureService,
+    RemoveHabitatPictureService
 };
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Symfony\Component\HttpKernel\Exception\{NotFoundHttpException, BadRequestHttpException};
+
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -41,7 +44,7 @@ final class HabitatController extends AbstractController
                     'json'
                 );
             } catch (\Exception $e) {
-                throw new BadRequestException("Invalid JSON format");
+                throw new BadRequestHttpException("Invalid JSON format");
             }
 
             $habitatReadDTO = $createHabitatService->createHabitat($habitatCreateDTO);
@@ -65,7 +68,7 @@ final class HabitatController extends AbstractController
                 json: true
             );
 
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
@@ -84,7 +87,7 @@ final class HabitatController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $habitatReadDTO,
                 format: 'json',
-                context: ['groups' => ['habitat:read']]
+                context: ['groups' => ['habitat:read', 'entity-with-picture:read']]
             );
 
             return new JsonResponse(
@@ -155,7 +158,7 @@ final class HabitatController extends AbstractController
                     format: 'json',
                 );
             } catch (\Exception $e) {
-                throw new BadRequestException("Invalid JSON format");
+                throw new BadRequestHttpException("Invalid JSON format");
             }
 
             $habitatReadDTO = $updateHabitatService->updateHabitat($uuid, $habitatUpdateDTO);
@@ -183,10 +186,136 @@ final class HabitatController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_NOT_FOUND
             );
-        } catch (BadRequestException $e) {
+        } catch (BadRequestHttpException $e) {
             return new JsonResponse(
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    #[Route('/{uuid}/add-picture', name: 'add_picture', methods: 'POST')]
+    public function addPicture(
+        string $uuid,
+        Request $request,
+        AddHabitatPictureService $addPictureService
+    ): JsonResponse {
+        try {
+            $file = $request->files->get('image');
+            if (!$file instanceof UploadedFile) {
+                throw new BadRequestHttpException("No image uploaded");
+            }
+
+            $pictureReadDTO = $addPictureService->addPicture($uuid, $file);
+
+            $responseData = $this->serializer->serialize(
+                data: $pictureReadDTO,
+                format: 'json',
+                context: ['groups' => ['entity-with-picture:read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}/change-picture', name: 'change_picture', methods: 'POST')]
+    public function changePicture(
+        string $uuid,
+        Request $request,
+        ChangeHabitatPictureService $changePictureService
+    ): JsonResponse {
+        try {
+            $file = $request->files->get('image');
+            if (!$file instanceof UploadedFile) {
+                throw new BadRequestHttpException("No image uploaded");
+            }
+
+            $pictureUuid = $request->query->get('pictureUuid', null);
+            if (!$pictureUuid) {
+                throw new BadRequestHttpException("pictureUuid is required in URI parameter");
+            }
+
+            $pictureReadDTO = $changePictureService->changePicture($uuid, $pictureUuid, $file);
+
+            $responseData = $this->serializer->serialize(
+                data: $pictureReadDTO,
+                format: 'json',
+                context: ['groups' => ['entity-with-picture:read']]
+            );
+
+            return new JsonResponse(
+                data : $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    #[Route('/{uuid}/remove-picture', name:'remove_picture', methods: 'POST')]
+    public function removePicture(
+        string $uuid,
+        Request $request,
+        RemoveHabitatPictureService $removePictureService
+    ): JsonResponse {
+        try {
+            $pictureUuid = $request->query->get('pictureUuid', null);
+            if (!$pictureUuid) {
+                throw new BadRequestHttpException("pictureUuid is required in URI parameter");
+            }
+
+            $removePictureService->removePicture($uuid, $pictureUuid);
+
+            return new JsonResponse(
+                data: ['message' => 'Picture successfully removed'],
+                status: JsonResponse::HTTP_OK
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -231,7 +360,7 @@ final class HabitatController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $habitatPaginated,
                 format: 'json',
-                context: ['groups' => ['habitat:list', 'entity-with-picture: read']]
+                context: ['groups' => ['habitat:list', 'entity-with-picture:read']]
             );
 
             return new JsonResponse(

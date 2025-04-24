@@ -17,7 +17,7 @@ class HabitatPicture
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Habitat $habitat = null;
 
-    #[ORM\ManyToOne(targetEntity: Habitat::class, inversedBy: 'habitatPictures')]
+    #[ORM\ManyToOne(targetEntity: Picture::class, inversedBy: 'habitatPictures')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Picture $picture = null;
 

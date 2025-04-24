@@ -8,13 +8,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class PictureReadDTO
 {
-    #[Groups(['picture:read', 'entity-with-picture: read'])]
+    #[Groups(['picture:read', 'entity-with-picture:read'])]
     public string $uuid;
 
-    #[Groups(['picture:read', 'entity-with-picture: read'])]
+    #[Groups(['picture:read', 'entity-with-picture:read'])]
     public string $slug;
 
-    #[Groups(['picture:read', 'entity-with-picture: read'])]
+    #[Groups(['picture:read', 'entity-with-picture:read'])]
     public string $path;
 
     #[Groups(['picture:read'])]
@@ -23,10 +23,10 @@ class PictureReadDTO
     #[Groups(['picture:read'])]
     public string $associatedEntityUuid;
 
-    #[Groups(['picture:read', 'entity-with-picture: read'])]
+    #[Groups(['picture:read', 'entity-with-picture:read'])]
     public DateTimeImmutable $createdAt;
 
-    #[Groups(['picture:read', 'entity-with-picture: read'])]
+    #[Groups(['picture:read', 'entity-with-picture:read'])]
     public ?DateTimeImmutable $updatedAt;
 
     public function __construct(
@@ -66,14 +66,6 @@ class PictureReadDTO
             $entityType = 'activity';
             $entityUuid = $associatedEntity->getActivity()->getUuid();
         }
-
-        /*
-        $associatedEntity = $picture->getHabitatPictures()->first();
-        if ($associatedEntity) {
-            $entityType = 'habitat';
-            $entityUuid = $associatedEntity->getHabitat()->getUuid();
-        }
-        */
 
         return new self(
             uuid: $picture->getUuid(),
