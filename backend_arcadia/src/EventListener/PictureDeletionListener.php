@@ -10,15 +10,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class PictureDeletionListener
 {
-    // private string $publicDir;
-
     public function __construct(
         private PictureFileManager $pictureFileManager,
-        private ParameterBagInterface $params
-    )
-    {
-        // $this->publicDir = $params->get('public_directory');
-    }
+    ) {}
 
     public function postRemove(PostRemoveEventArgs $args): void
     {

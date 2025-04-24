@@ -8,11 +8,16 @@ use App\Service\Activity\{
     ShowActivityService,
     UpdateActivityService,
     DeleteActivityService,
-    ListActivityPaginatedService
+    ListActivityPaginatedService,
+    AddActivityPictureService,
+    ChangeActivityPictureService,
+    RemoveActivityPictureService
 };
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{Request, JsonResponse};
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -155,6 +160,132 @@ final class ActivityController extends AbstractController
         }
     }
 
+    #[Route('/{uuid}/add-picture', name: 'add_picture', methods: 'POST')]
+    public function addPicture(
+        string $uuid,
+        Request $request,
+        AddActivityPictureService $addPictureService
+    ): JsonResponse {
+        try {
+            $file = $request->files->get('image');
+            if (!$file instanceof UploadedFile) {
+                throw new BadRequestHttpException("No image uploaded");
+            }
+
+            $pictureReadDTO = $addPictureService->addPicture($uuid, $file);
+
+            $responseData = $this->serializer->serialize(
+                data: $pictureReadDTO,
+                format: 'json',
+                context: ['groups' => ['entity-with-picture:read']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}/change-picture', name: 'change_picture', methods: 'POST')]
+    public function changePicture(
+        string $uuid,
+        Request $request,
+        ChangeActivityPictureService $changePictureService
+    ): JsonResponse {
+        try {
+            $file = $request->files->get('image');
+            if (!$file instanceof UploadedFile) {
+                throw new BadRequestHttpException("No image uploaded");
+            }
+
+            $pictureUuid = $request->query->get('pictureUuid', null);
+            if (!$pictureUuid) {
+                throw new BadRequestHttpException("pictureUuid is required in URI parameter");
+            }
+
+            $pictureReadDTO = $changePictureService->changePicture($uuid, $pictureUuid, $file);
+
+            $responseData = $this->serializer->serialize(
+                data: $pictureReadDTO,
+                format: 'json',
+                context: ['groups' => ['entity-with-picture:read']]
+            );
+
+            return new JsonResponse(
+                data : $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    #[Route('/{uuid}/remove-picture', name:'remove_picture', methods: 'POST')]
+    public function removePicture(
+        string $uuid,
+        Request $request,
+        RemoveActivityPictureService $removePictureService
+    ): JsonResponse {
+        try {
+            $pictureUuid = $request->query->get('pictureUuid', null);
+            if (!$pictureUuid) {
+                throw new BadRequestHttpException("pictureUuid is required in URI parameter");
+            }
+
+            $removePictureService->removePicture($uuid, $pictureUuid);
+
+            return new JsonResponse(
+                data: ['message' => 'Picture successfully removed'],
+                status: JsonResponse::HTTP_OK
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (BadRequestHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_BAD_REQUEST
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     #[Route('/{uuid}', name: 'delete', methods: 'DELETE')]
     public function delete(
         string $uuid,
@@ -194,7 +325,7 @@ final class ActivityController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $activityPaginated,
                 format: 'json',
-                context: ['groups' => ['activity:read']]
+                context: ['groups' => ['activity:list', 'entity-with-picture:read']]
             );
 
             return new JsonResponse(
