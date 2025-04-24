@@ -8,13 +8,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class SpeciesReadDTO
 {
-    #[Groups(['species:read'])]
+    #[Groups(['species:read', 'species:list'])]
     public string $uuid;
 
-    #[Groups(['species:read'])]
+    #[Groups(['species:read', 'species:list'])]
     public string $commonName;
 
-    #[Groups(['species:read'])]
+    #[Groups(['species:read', 'species:list'])]
     public string $scientificName;
 
     #[Groups(['species:read'])]
@@ -32,7 +32,7 @@ class SpeciesReadDTO
     #[Groups(['species:read'])]
     public ?DateTimeImmutable $updatedAt;
 
-    #[Groups(['species:with-animalCount'])]
+    #[Groups(['species:list', 'species:with-animalCount'])]
     public ?int $animalCount;
 
     public function __construct(
@@ -59,33 +59,24 @@ class SpeciesReadDTO
 
     public static function fromEntity(Species $species, bool $withAnimalCount = false): self
     {
-        if ($withAnimalCount) {
-            $animals = $species->getAnimals();
-            $animalCount = count($animals);
 
-            return new self(
-                $species->getUuid(),
-                $species->getCommonName(),
-                $species->getScientificName(),
-                $species->getLifespan(),
-                $species->getDiet(),
-                $species->getDescription(),
-                $species->getCreatedAt(),
-                $species->getUpdatedAt(),
-                $animalCount
-            );
+        $speciesDTO = new self(
+            uuid: $species->getUuid(),
+            commonName: $species->getCommonName(),
+            scientificName: $species->getScientificName(),
+            lifespan: $species->getLifespan(),
+            diet: $species->getDiet(),
+            description: $species->getDescription(),
+            createdAt: $species->getCreatedAt(),
+            updatedAt: $species->getUpdatedAt(),
+            animalCount: null
+        );
+
+        if ($withAnimalCount) {
+            $speciesDTO->animalCount = count($species->getAnimals());
         }
 
-        return new self(
-            $species->getUuid(),
-            $species->getCommonName(),
-            $species->getScientificName(),
-            $species->getLifespan(),
-            $species->getDiet(),
-            $species->getDescription(),
-            $species->getCreatedAt(),
-            $species->getUpdatedAt()
-        );
+        return $speciesDTO;
     }
 }
 
