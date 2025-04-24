@@ -18,8 +18,8 @@ class PictureDTO
 
     #[Assert\NotBlank(message: "Entity type is required", groups: ['create', 'update'])]
     #[Assert\Choice(
-        choices: ['animal', 'habitat'],
-        message: "The entity type must be animal or habitat",
+        choices: ['animal', 'habitat', 'activity'],
+        message: "The entity type must be animal, habitat or activity",
         groups: ['create', 'update']
     )]
     public ?string $associatedEntityType = null;
@@ -33,7 +33,6 @@ class PictureDTO
                $this->associatedEntityType === null &&
                $this->associatedEntityUuid === null;
     }
-
 }
 
 ?>

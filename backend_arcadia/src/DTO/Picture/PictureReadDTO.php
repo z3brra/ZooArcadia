@@ -55,6 +55,18 @@ class PictureReadDTO
             $entityUuid = $associatedEntity->getAnimal()->getUuid();
         }
 
+        $associatedEntity = $picture->getHabitatPictures()->first();
+        if ($associatedEntity) {
+            $entityType = 'habitat';
+            $entityUuid = $associatedEntity->getHabitat()->getUuid();
+        }
+
+        $associatedEntity = $picture->getActivityPictures()->first();
+        if ($associatedEntity) {
+            $entityType = 'activity';
+            $entityUuid = $associatedEntity->getActivity()->getUuid();
+        }
+
         /*
         $associatedEntity = $picture->getHabitatPictures()->first();
         if ($associatedEntity) {

@@ -5,10 +5,10 @@ namespace App\Service\Picture;
 use App\Service\Picture\{PictureFileManager, SlugGenerator};
 use App\Service\ValidationService;
 
-use App\Entity\{Picture, Animal, Habitat, Activity};
+use App\Entity\{Picture, Animal, Habitat, Activity, ActivityPicture, HabitatPicture};
 use App\Entity\{AnimalPicture};
 
-use App\Repository\{PictureRepository, AnimalRepository, HabitatRepository, ActivityRepository};
+use App\Repository\{AnimalRepository, HabitatRepository, ActivityRepository};
 
 use App\DTO\Picture\{PictureDTO, PictureReadDTO};
 
@@ -27,6 +27,8 @@ class CreatePictureService
         private EntityManagerInterface $entityManager,
 
         private AnimalRepository $animalRepository,
+        private HabitatRepository $habitatRepository,
+        private ActivityRepository $activityRepository,
 
         private ValidationService $validationService,
         private PictureFileManager $pictureFileManager,
@@ -42,6 +44,18 @@ class CreatePictureService
                 $entity = $this->animalRepository->findOneByUuid($pictureCreateDTO->associatedEntityUuid);
                 if (!$entity) {
                     throw new NotFoundHttpException("Animal not found with UUID : " . $pictureCreateDTO->associatedEntityUuid);
+                }
+                break;
+            case 'habitat':
+                $entity = $this->habitatRepository->findOneByUuid($pictureCreateDTO->associatedEntityUuid);
+                if (!$entity) {
+                    throw new NotFoundHttpException("Habitat not found with UUID : ", $pictureCreateDTO->associatedEntityUuid);
+                }
+                break;
+            case 'activity':
+                $entity = $this->activityRepository->findOneByUuid($pictureCreateDTO->associatedEntityUuid);
+                if (!$entity) {
+                    throw new NotFoundHttpException("Activity not found with UUID : ", $pictureCreateDTO->associatedEntityUuid);
                 }
                 break;
 
@@ -70,6 +84,18 @@ class CreatePictureService
             $animalPicture->setAnimal($entity);
             $animalPicture->setPicture($picture);
             $picture->addAnimalPicture($animalPicture);
+        }
+        if ($entity instanceof Habitat) {
+            $habitatPicture = new HabitatPicture();
+            $habitatPicture->setHabitat($entity);
+            $habitatPicture->setPicture($picture);
+            $picture->addHabitatPicture($habitatPicture);
+        }
+        if ($entity instanceof Activity) {
+            $activityPicture = new ActivityPicture();
+            $activityPicture->setActivity($entity);
+            $activityPicture->setPicture($picture);
+            $picture->addActivityPicture($activityPicture);
         }
 
         $picture->setCreatedAt(new DateTimeImmutable());
