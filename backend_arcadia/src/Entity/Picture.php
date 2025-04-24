@@ -38,10 +38,17 @@ class Picture
     #[ORM\OneToMany(targetEntity: AnimalPicture::class, mappedBy: 'picture', cascade: ['persist', 'remove'])]
     private Collection $animalPictures;
 
+    /**
+     * @var Collection<int, HabitatPicture>
+     */
+    #[ORM\OneToMany(targetEntity: HabitatPicture::class, mappedBy: 'picture', cascade: ['persist', 'remove'])]
+    private Collection $habitatPictures;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->animalPictures = new ArrayCollection();
+        $this->habitatPictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -133,6 +140,36 @@ class Picture
             // set the owning side to null (unless already changed)
             if ($animalPicture->getPicture() === $this) {
                 $animalPicture->setPicture(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HabitatPicture>
+     */
+    public function getHabitatPictures(): Collection
+    {
+        return $this->habitatPictures;
+    }
+
+    public function addHabitatPicture(HabitatPicture $habitatPicture): static
+    {
+        if (!$this->habitatPictures->contains($habitatPicture)) {
+            $this->habitatPictures->add($habitatPicture);
+            $habitatPicture->setPicture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHabitatPicture(HabitatPicture $habitatPicture): static
+    {
+        if ($this->habitatPictures->removeElement($habitatPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($habitatPicture->getPicture() === $this) {
+                $habitatPicture->setPicture(null);
             }
         }
 
