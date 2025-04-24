@@ -44,11 +44,18 @@ class Picture
     #[ORM\OneToMany(targetEntity: HabitatPicture::class, mappedBy: 'picture', cascade: ['persist', 'remove'])]
     private Collection $habitatPictures;
 
+    /**
+     * @var Collection<int, ActivityPicture>
+     */
+    #[ORM\OneToMany(targetEntity: ActivityPicture::class, mappedBy: 'picture', cascade: ['persist', 'remove'])]
+    private Collection $activityPictures;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->animalPictures = new ArrayCollection();
         $this->habitatPictures = new ArrayCollection();
+        $this->activityPictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,6 +177,36 @@ class Picture
             // set the owning side to null (unless already changed)
             if ($habitatPicture->getPicture() === $this) {
                 $habitatPicture->setPicture(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ActivityPicture>
+     */
+    public function getActivityPictures(): Collection
+    {
+        return $this->activityPictures;
+    }
+
+    public function addActivityPicture(ActivityPicture $activityPicture): static
+    {
+        if (!$this->activityPictures->contains($activityPicture)) {
+            $this->activityPictures->add($activityPicture);
+            $activityPicture->setPicture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivityPicture(ActivityPicture $activityPicture): static
+    {
+        if ($this->activityPictures->removeElement($activityPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($activityPicture->getPicture() === $this) {
+                $activityPicture->setPicture(null);
             }
         }
 

@@ -39,11 +39,18 @@ class Activity
     #[ORM\OneToMany(targetEntity: Rates::class, mappedBy: 'activity', orphanRemoval: true)]
     private Collection $rates;
 
+    /**
+     * @var Collection<int, ActivityPicture>
+     */
+    #[ORM\OneToMany(targetEntity: ActivityPicture::class, mappedBy: 'activity', orphanRemoval: true, cascade: ['remove'])]
+    private Collection $activityPictures;
+
     /** @throws Exception */
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->rates = new ArrayCollection();
+        $this->activityPictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,6 +142,36 @@ class Activity
             // set the owning side to null (unless already changed)
             if ($rate->getActivity() === $this) {
                 $rate->setActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ActivityPicture>
+     */
+    public function getActivityPictures(): Collection
+    {
+        return $this->activityPictures;
+    }
+
+    public function addActivityPicture(ActivityPicture $activityPicture): static
+    {
+        if (!$this->activityPictures->contains($activityPicture)) {
+            $this->activityPictures->add($activityPicture);
+            $activityPicture->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivityPicture(ActivityPicture $activityPicture): static
+    {
+        if ($this->activityPictures->removeElement($activityPicture)) {
+            // set the owning side to null (unless already changed)
+            if ($activityPicture->getActivity() === $this) {
+                $activityPicture->setActivity(null);
             }
         }
 

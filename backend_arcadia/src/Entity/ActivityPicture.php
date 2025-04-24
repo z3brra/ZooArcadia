@@ -2,22 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\HabitatPictureRepository;
+use App\Repository\ActivityPictureRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HabitatPictureRepository::class)]
-class HabitatPicture
+#[ORM\Entity(repositoryClass: ActivityPictureRepository::class)]
+class ActivityPicture
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Habitat::class, inversedBy: 'habitatPictures')]
+    #[ORM\ManyToOne(targetEntity: Activity::class, inversedBy: 'activityPictures')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?Habitat $habitat = null;
+    private ?Activity $activity = null;
 
-    #[ORM\ManyToOne(targetEntity: Habitat::class, inversedBy: 'habitatPictures')]
+    #[ORM\ManyToOne(targetEntity: Picture::class, inversedBy: 'activityPictures', cascade: ['remove'])]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Picture $picture = null;
 
@@ -26,14 +26,14 @@ class HabitatPicture
         return $this->id;
     }
 
-    public function getHabitat(): ?Habitat
+    public function getActivity(): ?Activity
     {
-        return $this->habitat;
+        return $this->activity;
     }
 
-    public function setHabitat(?Habitat $habitat): static
+    public function setActivity(?Activity $activity): static
     {
-        $this->habitat = $habitat;
+        $this->activity = $activity;
 
         return $this;
     }
