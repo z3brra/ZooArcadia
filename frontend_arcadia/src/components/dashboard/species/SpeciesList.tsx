@@ -1,6 +1,6 @@
 import { JSX } from "react"
-import { DashboardSection } from "../DashboardSection"
-import { SpeciesItem } from "./SpeciesItem"
+import { DashboardSection } from "@components/dashboard/DashboardSection"
+import { SpeciesItem } from "@components/dashboard/species/SpeciesItem"
 import { SpeciesListItem } from "@models/species"
 
 type SpeciesListProps = {

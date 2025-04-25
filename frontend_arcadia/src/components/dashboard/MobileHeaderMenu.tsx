@@ -1,7 +1,7 @@
 import { JSX } from "react"
 import { Link } from "react-router-dom"
 import { Menu } from "lucide-react"
-import logo from "../../assets/arcadia_logo2.png"
+import logo from "@assets/arcadia_logo2.png"
 
 type MobileHeaderMenuProps = {
     onToggle: () => void

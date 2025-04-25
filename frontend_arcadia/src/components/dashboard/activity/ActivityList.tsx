@@ -1,5 +1,5 @@
 import { JSX } from "react"
-import { DashboardSection } from "../DashboardSection"
+import { DashboardSection } from "@components/dashboard/DashboardSection"
 import { ActivityItem } from "./ActivityItem"
 import { ActivityListItem } from "@models/activity"
 import placeholderPicture from "@assets/common/placeholder.png"

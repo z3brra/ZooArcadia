@@ -3,7 +3,7 @@ import {
     PencilRuler
 } from "lucide-react"
 import { useParams } from 'react-router-dom'
-import { DashboardPageHeader } from "../../../components/dashboard/DashboardPageHeader"
+import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 
 export function SpeciesDetail(): JSX.Element {
     const { uuid } = useParams<{ uuid: string }>()

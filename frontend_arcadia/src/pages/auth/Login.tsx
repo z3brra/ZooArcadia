@@ -1,11 +1,13 @@
 import React, { JSX, useState } from "react"
 
-import { useAuth } from "../../hook/AuthContext"
-
-import { Input } from "../../components/form/Input"
-import { Button } from '../../components/form/Button'
 import { LogIn } from 'lucide-react'
-import { MessageBox } from "../../components/common/MessageBox"
+
+import { useAuth } from "@hook/AuthContext"
+
+import { Input } from "@components/form/Input"
+import { Button } from '@components/form/Button'
+
+import { MessageBox } from "@components/common/MessageBox"
 
 export function Login(): JSX.Element {
     const { login } = useAuth()

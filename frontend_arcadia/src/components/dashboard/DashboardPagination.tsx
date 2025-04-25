@@ -4,9 +4,9 @@ import {
     ChevronRight
 } from 'lucide-react'
 
-import { DashboardSection } from "./DashboardSection"
+import { DashboardSection } from "@components/dashboard/DashboardSection"
 
-import { Button } from "../form/Button"
+import { Button } from "@form/Button"
 
 export type DashboardPaginationProps = {
     currentPage: number

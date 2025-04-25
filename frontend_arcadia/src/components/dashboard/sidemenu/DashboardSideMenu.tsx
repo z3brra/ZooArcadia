@@ -1,6 +1,6 @@
 import { forwardRef } from "react"
-import { DashboardSideMenuHeader } from "./DashboardMenuHeader"
-import { DashboardSideMenuOptions } from "./DashboardMenuOptions"
+import { DashboardSideMenuHeader } from "@components/dashboard/sidemenu/DashboardMenuHeader"
+import { DashboardSideMenuOptions } from "@components/dashboard/sidemenu/DashboardMenuOptions"
 
 
 type DashboardSideMenuProps = {

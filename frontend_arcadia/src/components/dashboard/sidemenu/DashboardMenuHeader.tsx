@@ -1,7 +1,7 @@
 import { JSX } from 'react'
-import logo from '../../../assets/arcadia_logo2.png'
+import logo from '@assets/arcadia_logo2.png'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../../hook/AuthContext'
+import { useAuth } from '@hook/AuthContext'
 
 export function DashboardSideMenuHeader(): JSX.Element {
     const { user } = useAuth()

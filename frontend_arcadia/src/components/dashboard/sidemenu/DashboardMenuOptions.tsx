@@ -1,6 +1,6 @@
 import { JSX } from "react"
-import { useAuth } from "../../../hook/AuthContext"
-import { SideMenuOption } from "./DashboardMenuOption"
+import { useAuth } from "@hook/AuthContext"
+import { SideMenuOption } from "@components/dashboard/sidemenu/DashboardMenuOption"
 import {
     CircleGauge,
     Leaf,
@@ -15,7 +15,7 @@ import {
     ChartPie,
     LogOut
 } from 'lucide-react'
-import { Button } from "../../form/Button"
+import { Button } from "@form/Button"
 
 export function DashboardSideMenuOptions (): JSX.Element {
 

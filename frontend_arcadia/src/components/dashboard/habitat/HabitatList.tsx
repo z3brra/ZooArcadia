@@ -1,5 +1,5 @@
-import { DashboardSection } from "../DashboardSection"
-import { HabitatItem } from "./HabitatItem"
+import { DashboardSection } from "@components/dashboard/DashboardSection"
+import { HabitatItem } from "@components/dashboard/habitat/HabitatItem"
 import { HabitatListItem } from "@models/habitat"
 import placeholderPicture from "@assets/common/placeholder.png"
 

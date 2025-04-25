@@ -9,7 +9,7 @@ import {
 } from "../Card"
 import { Ellipsis } from "lucide-react"
 
-import { sliceText } from "../../../utils/sliceText"
+import { sliceText } from "@utils/sliceText"
 
 export type ActivityItemProps = {
     uuid: string

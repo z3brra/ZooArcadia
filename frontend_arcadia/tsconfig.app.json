@@ -25,7 +25,14 @@
     "baseUrl": "src",
     "paths": {
       "@models/*": ["models/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@pages/*": ["pages/*"],
+      "@components/*": ["components/*"],
+      "@hook/*": ["hook/*"],
+      "@api/*": ["api/*"],
+      "@utils/*": ["utils/*"],
+      "@form/*": ["components/form/*"],
+
     },
     "types": ["vite/client", "node"]
   },

@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardContent,
     CardActions
-} from "../Card"
+} from "@components/dashboard/Card"
 import { Ellipsis } from "lucide-react"
 
 export type HabitatItemProps = {

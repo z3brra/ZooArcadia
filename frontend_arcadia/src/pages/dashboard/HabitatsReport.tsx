@@ -4,9 +4,9 @@ import {
     PlusCircle,
     Funnel
 } from "lucide-react"
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
-import { DashboardSection } from "../../components/dashboard/DashboardSection"
-import { Button } from "../../components/form/Button"
+import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
+import { DashboardSection } from "@components/dashboard/DashboardSection"
+import { Button } from "@components/form/Button"
 
 
 export function HabitatsReport (): JSX.Element {

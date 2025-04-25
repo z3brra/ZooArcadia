@@ -7,39 +7,39 @@ import {
 import './scss/main.css'
 import { useState, useRef, useEffect } from 'react'
 
-import { AuthProvider } from './hook/AuthContext'
-import { RequireAuth } from './components/RequireAuth'
+import { AuthProvider } from '@hook/AuthContext'
+import { RequireAuth } from '@components/RequireAuth'
 
 
-import { Header } from './components/Header'
-import { Home } from './pages/Home'
-import { Login } from './pages/auth/Login'
+import { Header } from '@components/Header'
+import { Home } from '@pages/Home'
+import { Login } from '@pages/auth/Login'
 
-import { DashboardHome } from './pages/dashboard/DashboardHome'
-import { DashboardSideMenu } from './components/dashboard/sidemenu/DashboardSideMenu'
+import { DashboardHome } from '@pages/dashboard/DashboardHome'
+import { DashboardSideMenu } from '@components/dashboard/sidemenu/DashboardSideMenu'
 
-import { Habitats } from './pages/dashboard/habitat/Habitats'
-import { HabitatDetail } from './pages/dashboard/habitat/HabitatDetail'
-import { HabitatsReport } from './pages/dashboard/HabitatsReport'
+import { Habitats } from '@pages/dashboard/habitat/Habitats'
+import { HabitatDetail } from '@pages/dashboard/habitat/HabitatDetail'
+import { HabitatsReport } from '@pages/dashboard/HabitatsReport'
 
-import { Species } from './pages/dashboard/species/Species'
-import { SpeciesDetail } from './pages/dashboard/species/SpeciesDetail'
+import { Species } from '@pages/dashboard/species/Species'
+import { SpeciesDetail } from '@pages/dashboard/species/SpeciesDetail'
 
-import { Animals } from './pages/dashboard/animal/Animals'
-import { AnimalDetail } from './pages/dashboard/animal/AnimalDetail'
-import { AnimalsReport } from './pages/dashboard/animal/AnimalsReport'
-import { AnimalsFeed } from './pages/dashboard/animal/AnimalsFeed'
+import { Animals } from '@pages/dashboard/animal/Animals'
+import { AnimalDetail } from '@pages/dashboard/animal/AnimalDetail'
+import { AnimalsReport } from '@pages/dashboard/animal/AnimalsReport'
+import { AnimalsFeed } from '@pages/dashboard/animal/AnimalsFeed'
 
-import { Activities } from './pages/dashboard/activity/Activities'
-import { ActivityDetail } from './pages/dashboard/activity/ActivityDetail'
+import { Activities } from '@pages/dashboard/activity/Activities'
+import { ActivityDetail } from '@pages/dashboard/activity/ActivityDetail'
 
-import { Reviews } from './pages/dashboard/Reviews'
+import { Reviews } from '@pages/dashboard/Reviews'
 
-import { Employee } from './pages/dashboard/Users'
+import { Employee } from '@pages/dashboard/Users'
 
-import { Statistics } from './pages/dashboard/Statistics'
+import { Statistics } from '@pages/dashboard/Statistics'
 
-import { MobileHeaderMenu } from './components/dashboard/MobileHeaderMenu'
+import { MobileHeaderMenu } from '@components/dashboard/MobileHeaderMenu'
 
 
 

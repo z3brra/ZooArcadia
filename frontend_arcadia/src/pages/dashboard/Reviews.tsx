@@ -1,6 +1,6 @@
 import { JSX } from "react"
 import { MessagesSquare } from "lucide-react"
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
+import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 
 export function Reviews (): JSX.Element {
     return (

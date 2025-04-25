@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useAuth } from '../hook/AuthContext'
-import logo from '../assets/arcadia_logo2.png'
+import { useAuth } from '@hook/AuthContext'
+import logo from '@assets/arcadia_logo2.png'
 
 export function Header() {
 

@@ -1,6 +1,6 @@
 import { JSX } from "react"
 import { Users } from "lucide-react"
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
+import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 
 export function Employee (): JSX.Element {
     return (

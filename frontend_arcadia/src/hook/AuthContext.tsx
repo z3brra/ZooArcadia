@@ -6,15 +6,15 @@ import {
     ReactNode
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { postRequest, getRequest } from '../api/request'
-import { Endpoints } from '../api/endpoints'
+import { postRequest, getRequest } from '@api/request'
+import { Endpoints } from '@api/endpoints'
 
 import {
     clearAttempts,
     isLocked,
     incrementAttempts,
     getRetryInMinutes,
-} from '../utils/loginLock'
+} from '@utils/loginLock'
 
 interface LoginResponse {
     message: string

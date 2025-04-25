@@ -1,6 +1,6 @@
 import { JSX } from "react"
 import { ChartPie } from "lucide-react"
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
+import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 
 export function Statistics (): JSX.Element {
     return (
