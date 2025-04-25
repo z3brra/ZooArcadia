@@ -8,18 +8,18 @@ import {
     PlusCircle,
     Funnel
 } from "lucide-react"
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
-import { DashboardSection } from "../../components/dashboard/DashboardSection"
-import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
+import { DashboardPageHeader } from "../../../components/dashboard/DashboardPageHeader"
+import { DashboardSection } from "../../../components/dashboard/DashboardSection"
+import { DashboardPagination, PaginatedResponse } from "../../../components/dashboard/DashboardPagination"
 
-import { AnimalList } from "../../components/dashboard/animal/AnimalList"
+import { AnimalList } from "../../../components/dashboard/animal/AnimalList"
 import { AnimalListItem } from "@models/animal"
 
-import { MessageBox } from "../../components/common/MessageBox"
-import { Button } from "../../components/form/Button"
+import { MessageBox } from "../../../components/common/MessageBox"
+import { Button } from "../../../components/form/Button"
 
-import { getRequest } from "../../api/request"
-import { Endpoints } from "../../api/endpoints"
+import { getRequest } from "../../../api/request"
+import { Endpoints } from "../../../api/endpoints"
 
 export function Animals (): JSX.Element {
 

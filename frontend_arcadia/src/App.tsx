@@ -25,9 +25,10 @@ import { HabitatsReport } from './pages/dashboard/HabitatsReport'
 import { Species } from './pages/dashboard/species/Species'
 import { SpeciesDetail } from './pages/dashboard/species/SpeciesDetail'
 
-import { Animals } from './pages/dashboard/Animals'
-import { AnimalsReport } from './pages/dashboard/AnimalsReport'
-import { AnimalsFeed } from './pages/dashboard/AnimalsFeed'
+import { Animals } from './pages/dashboard/animal/Animals'
+import { AnimalDetail } from './pages/dashboard/animal/AnimalDetail'
+import { AnimalsReport } from './pages/dashboard/animal/AnimalsReport'
+import { AnimalsFeed } from './pages/dashboard/animal/AnimalsFeed'
 
 import { Activities } from './pages/dashboard/Activities'
 
@@ -38,6 +39,7 @@ import { Employee } from './pages/dashboard/Users'
 import { Statistics } from './pages/dashboard/Statistics'
 
 import { MobileHeaderMenu } from './components/dashboard/MobileHeaderMenu'
+
 
 
 
@@ -127,8 +129,8 @@ const router = createBrowserRouter([
                     {
                         path: "habitats",
                         children: [
-                            { index: true, element: <Habitats />},
-                            { path: ":uuid", element: <HabitatDetail />}
+                            { index: true, element: <Habitats /> },
+                            { path: ":uuid", element: <HabitatDetail /> }
                         ]
                     },
                     { path: 'habitats-report', element: <HabitatsReport /> },
@@ -136,11 +138,18 @@ const router = createBrowserRouter([
                     {
                         path: "species",
                         children: [
-                            { index: true, element: <Species />},
-                            { path: ":uuid", element: <SpeciesDetail />}
+                            { index: true, element: <Species /> },
+                            { path: ":uuid", element: <SpeciesDetail /> }
                         ]
                     },
-                    { path: 'animals', element: <Animals /> },
+                    // { path: 'animals', element: <Animals /> },
+                    { 
+                        path: "animals",
+                        children: [
+                            { index: true, element: <Animals /> },
+                            { path: ":uuid", element: <AnimalDetail /> }
+                        ]
+                    },
                     { path: 'animals-report', element: <AnimalsReport /> },
                     { path: 'animals-feed', element: <AnimalsFeed /> },
                     { path: 'activities', element: <Activities /> },

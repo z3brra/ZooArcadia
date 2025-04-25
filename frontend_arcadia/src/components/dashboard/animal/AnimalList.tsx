@@ -18,7 +18,7 @@ export function AnimalList({
         <DashboardSection className="animals-list">
             { items.map(animal => (
                 <AnimalItem
-                    key={animal.uuid}
+                    uuid={animal.uuid}
                     imageUrl={animal.pictures && animal.pictures.length > 0 ? animal.pictures[0].path : placeholderPicture}
                     name={animal.name}
                     speciesName={animal.speciesName}
