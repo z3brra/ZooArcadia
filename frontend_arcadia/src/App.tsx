@@ -17,19 +17,28 @@ import { Login } from './pages/auth/Login'
 
 import { DashboardHome } from './pages/dashboard/DashboardHome'
 import { DashboardSideMenu } from './components/dashboard/sidemenu/DashboardSideMenu'
+
 import { Habitats } from './pages/dashboard/habitat/Habitats'
 import { HabitatDetail } from './pages/dashboard/habitat/HabitatDetail'
 import { HabitatsReport } from './pages/dashboard/HabitatsReport'
-import { Species } from './pages/dashboard/Species'
+
+import { Species } from './pages/dashboard/species/Species'
+import { SpeciesDetail } from './pages/dashboard/species/SpeciesDetail'
+
 import { Animals } from './pages/dashboard/Animals'
 import { AnimalsReport } from './pages/dashboard/AnimalsReport'
 import { AnimalsFeed } from './pages/dashboard/AnimalsFeed'
+
 import { Activities } from './pages/dashboard/Activities'
+
 import { Reviews } from './pages/dashboard/Reviews'
+
 import { Employee } from './pages/dashboard/Users'
+
 import { Statistics } from './pages/dashboard/Statistics'
 
 import { MobileHeaderMenu } from './components/dashboard/MobileHeaderMenu'
+
 
 
 function RootLayout() {
@@ -123,7 +132,14 @@ const router = createBrowserRouter([
                         ]
                     },
                     { path: 'habitats-report', element: <HabitatsReport /> },
-                    { path: 'species', element: <Species /> },
+                    // { path: 'species', element: <Species /> },
+                    {
+                        path: "species",
+                        children: [
+                            { index: true, element: <Species />},
+                            { path: ":uuid", element: <SpeciesDetail />}
+                        ]
+                    },
                     { path: 'animals', element: <Animals /> },
                     { path: 'animals-report', element: <AnimalsReport /> },
                     { path: 'animals-feed', element: <AnimalsFeed /> },

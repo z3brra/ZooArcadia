@@ -12,7 +12,7 @@ export function SpeciesList({ items }: SpeciesListProps): JSX.Element {
         <DashboardSection className="species-list">
             { items.map(species => (
                 <SpeciesItem
-                    key={species.uuid}
+                    uuid={species.uuid}
                     commonName={species.commonName}
                     scientificName={species.scientificName}
                     animalCount={species.animalCount}

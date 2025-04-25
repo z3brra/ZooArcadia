@@ -4,18 +4,18 @@ import {
     PlusCircle,
     Funnel
 } from "lucide-react"
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
-import { DashboardSection } from "../../components/dashboard/DashboardSection"
-import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
+import { DashboardPageHeader } from "../../../components/dashboard/DashboardPageHeader"
+import { DashboardSection } from "../../../components/dashboard/DashboardSection"
+import { DashboardPagination, PaginatedResponse } from "../../../components/dashboard/DashboardPagination"
 
-import { SpeciesList } from "../../components/dashboard/species/SpeciesList"
+import { SpeciesList } from "../../../components/dashboard/species/SpeciesList"
 import { SpeciesListItem } from "@models/species"
 
-import { MessageBox } from "../../components/common/MessageBox"
-import { Button } from "../../components/form/Button"
+import { MessageBox } from "../../../components/common/MessageBox"
+import { Button } from "../../../components/form/Button"
 
-import { getRequest } from "../../api/request"
-import { Endpoints } from "../../api/endpoints"
+import { getRequest } from "../../../api/request"
+import { Endpoints } from "../../../api/endpoints"
 
 
 export function Species (): JSX.Element {
