@@ -17,7 +17,8 @@ import { Login } from './pages/auth/Login'
 
 import { DashboardHome } from './pages/dashboard/DashboardHome'
 import { DashboardSideMenu } from './components/dashboard/sidemenu/DashboardSideMenu'
-import { Habitats } from './pages/dashboard/Habitats'
+import { Habitats } from './pages/dashboard/habitat/Habitats'
+import { HabitatDetail } from './pages/dashboard/habitat/HabitatDetail'
 import { HabitatsReport } from './pages/dashboard/HabitatsReport'
 import { Species } from './pages/dashboard/Species'
 import { Animals } from './pages/dashboard/Animals'
@@ -29,6 +30,7 @@ import { Employee } from './pages/dashboard/Users'
 import { Statistics } from './pages/dashboard/Statistics'
 
 import { MobileHeaderMenu } from './components/dashboard/MobileHeaderMenu'
+
 
 function RootLayout() {
     return (
@@ -112,7 +114,14 @@ const router = createBrowserRouter([
                 ),
                 children: [
                     { index: true, element: <DashboardHome /> },
-                    { path: 'habitats', element: <Habitats /> },
+                    // { path: 'habitats', element: <Habitats /> },
+                    {
+                        path: "habitats",
+                        children: [
+                            { index: true, element: <Habitats />},
+                            { path: ":uuid", element: <HabitatDetail />}
+                        ]
+                    },
                     { path: 'habitats-report', element: <HabitatsReport /> },
                     { path: 'species', element: <Species /> },
                     { path: 'animals', element: <Animals /> },
