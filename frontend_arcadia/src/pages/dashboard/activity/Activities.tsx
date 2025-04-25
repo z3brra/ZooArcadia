@@ -9,18 +9,18 @@ import {
     Funnel
 } from "lucide-react"
 
-import { DashboardPageHeader } from "../../components/dashboard/DashboardPageHeader"
-import { DashboardSection } from "../../components/dashboard/DashboardSection"
-import { DashboardPagination, PaginatedResponse } from "../../components/dashboard/DashboardPagination"
+import { DashboardPageHeader } from "../../../components/dashboard/DashboardPageHeader"
+import { DashboardSection } from "../../../components/dashboard/DashboardSection"
+import { DashboardPagination, PaginatedResponse } from "../../../components/dashboard/DashboardPagination"
 
-import { ActivityList } from "../../components/dashboard/activity/ActivityList"
+import { ActivityList } from "../../../components/dashboard/activity/ActivityList"
 import { ActivityListItem } from "@models/activity"
 
-import { MessageBox } from "../../components/common/MessageBox"
-import { Button } from "../../components/form/Button"
+import { MessageBox } from "../../../components/common/MessageBox"
+import { Button } from "../../../components/form/Button"
 
-import { getRequest } from "../../api/request"
-import { Endpoints } from "../../api/endpoints"
+import { getRequest } from "../../../api/request"
+import { Endpoints } from "../../../api/endpoints"
 
 
 export function Activities (): JSX.Element {

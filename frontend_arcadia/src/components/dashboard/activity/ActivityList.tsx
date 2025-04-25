@@ -15,7 +15,7 @@ export function ActivityList({
         <DashboardSection className="activities-list">
             { items.map(activity => (
                 <ActivityItem
-                    key={activity.uuid}
+                    uuid={activity.uuid}
                     imageUrl={activity.pictures && activity.pictures.length > 0 ? activity.pictures[0].path : placeholderPicture}
                     name={activity.name}
                     description={activity.description}

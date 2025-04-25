@@ -30,7 +30,8 @@ import { AnimalDetail } from './pages/dashboard/animal/AnimalDetail'
 import { AnimalsReport } from './pages/dashboard/animal/AnimalsReport'
 import { AnimalsFeed } from './pages/dashboard/animal/AnimalsFeed'
 
-import { Activities } from './pages/dashboard/Activities'
+import { Activities } from './pages/dashboard/activity/Activities'
+import { ActivityDetail } from './pages/dashboard/activity/ActivityDetail'
 
 import { Reviews } from './pages/dashboard/Reviews'
 
@@ -39,6 +40,7 @@ import { Employee } from './pages/dashboard/Users'
 import { Statistics } from './pages/dashboard/Statistics'
 
 import { MobileHeaderMenu } from './components/dashboard/MobileHeaderMenu'
+
 
 
 
@@ -152,7 +154,14 @@ const router = createBrowserRouter([
                     },
                     { path: 'animals-report', element: <AnimalsReport /> },
                     { path: 'animals-feed', element: <AnimalsFeed /> },
-                    { path: 'activities', element: <Activities /> },
+                    // { path: 'activities', element: <Activities /> },
+                    {
+                        path: "activities",
+                        children: [
+                            { index: true, element: <Activities /> },
+                            { path: ":uuid", element: <ActivityDetail /> }
+                        ]
+                    },
                     { path: 'reviews', element: <Reviews /> },
                     { path: 'users', element: <Employee /> },
                     { path: 'statistics', element: <Statistics /> },
