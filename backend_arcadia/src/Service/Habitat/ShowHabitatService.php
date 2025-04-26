@@ -24,14 +24,18 @@ class ShowHabitatService
         return HabitatReadDTO::fromEntity($habitat, true);
     }
 
-    public function showHabitatAnimals(string $uuid): array
+    public function showHabitatAnimals(string $uuid, ?int $limit): array
     {
         $habitat = $this->habitatRepository->findOneByUuid($uuid);
         if (!$habitat) {
             throw new NotFoundHttpException("Habitat not found or does not exist");
         }
 
-        $animals = $habitat->getAnimals();
+        if ($limit === null) {
+            $animals = $habitat->getAnimals();
+        } else {
+            $animals = $habitat->getAnimals()->slice(0, $limit);
+        }
         $animalsDTOs = [];
 
         foreach ($animals as $animal) {
