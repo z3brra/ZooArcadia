@@ -106,15 +106,17 @@ final class SpeciesController extends AbstractController
     #[Route('/{uuid}/animals', name: 'show_animals', methods: 'GET')]
     public function showAnimals(
         string $uuid,
+        Request $request,
         ShowSpeciesService $showSpeciesService
     ): JsonResponse {
         try {
-            $animals = $showSpeciesService->showSpeciesAnimals($uuid);
+            $limit = $request->query->get('limit', null);
+            $animals = $showSpeciesService->showSpeciesAnimals($uuid, $limit);
 
             $responseData = $this->serializer->serialize(
                 data: $animals,
                 format: 'json',
-                context: ['groups' => ['animal:read']]);
+                context: ['groups' => ['animal:list']]);
 
             return new JsonResponse(
                 data: $responseData,

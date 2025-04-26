@@ -25,7 +25,7 @@ class ShowSpeciesService
         return SpeciesReadDTO::fromEntity($species);
     }
 
-    public function showSpeciesAnimals(string $uuid): array
+    public function showSpeciesAnimals(string $uuid, ?int $limit): array
     {
         $species = $this->speciesRepository->findOneByUuid($uuid);
 
@@ -33,7 +33,11 @@ class ShowSpeciesService
             throw new NotFoundHttpException("Species not found or does not exist");
         }
 
-        $animals = $species->getAnimals();
+        if ($limit === null) {
+            $animals = $species->getAnimals();
+        } else {
+            $animals = $species->getAnimals()->slice(0, $limit);
+        }
         $animalsDTOs = [];
 
         foreach ($animals as $animal) {
