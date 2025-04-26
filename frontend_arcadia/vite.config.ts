@@ -8,6 +8,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@routes": fileURLToPath(new URL('./src/routes', import.meta.url)),
+      "@layout": fileURLToPath(new URL('./src/layout', import.meta.url)),
       "@models": fileURLToPath(new URL('./src/models', import.meta.url)),
       "@assets": fileURLToPath(new URL('./src/assets', import.meta.url)),
       "@pages" : fileURLToPath(new URL('./src/pages', import.meta.url)),

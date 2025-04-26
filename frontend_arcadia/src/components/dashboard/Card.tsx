@@ -3,6 +3,7 @@ import React, {JSX } from "react"
 export type CardProps = {
     children: React.ReactNode
     className?: string
+    orientation?: "horizontal" | "vertical"
 }
 
 export type CardMediaProps = {
@@ -28,10 +29,16 @@ export type CardActionsProps = {
 
 export function Card({
     children,
-    className = ""
+    className = "",
+    orientation = "horizontal"
 }: CardProps): JSX.Element {
+    const orientationClassName = 
+        orientation === "vertical"
+        ? "dashboard-card-vertical"
+        : "dashboard-card"
+
     return (
-        <div className={`dashboard-card ${className}`}>
+        <div className={`${orientationClassName} ${className}`}>
             {children}
         </div>
     )

@@ -1,0 +1,7 @@
+.common-link {
+    color: $primary;
+
+    &:hover {
+        color: $primary-darker;
+    }
+}

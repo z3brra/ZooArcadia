@@ -24,8 +24,6 @@
         flex: 0 0 auto;
         img {
             display: block;
-            width: 80px;
-            height: 80px;
             object-fit: cover;
             border-radius: $border-radius;
         }
@@ -67,5 +65,62 @@
         height: 80px;
         border-radius: 50px;
         box-shadow: 0px 4px 10px 0px $box-shadow;
+    }
+}
+
+// .media-filled-rectangle {
+//     img {
+        
+//     }
+// }
+
+.dashboard-card-vertical {
+    display: flex;
+    flex-direction: column;
+    background-color: $background;
+    padding: 1rem;
+    // gap: 1rem;
+    width: 100%;
+
+    border-radius: $border-radius;
+    box-shadow: 0px 4px 10px 0px $box-shadow;
+
+    .dashboard-card-link {
+        text-decoration: none;
+        width: 100%;
+    }
+
+    .dashboard-card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        gap: 1rem;
+    }
+
+    .dashboard-card-media {
+        width: 100%;
+        max-height: 10rem;
+        flex: 0 0 auto;
+
+        img {
+            display: block;
+            width: 100%;
+            max-height: inherit;
+            object-fit: cover;
+        }
+    }
+
+    .dashboard-card-header {
+        font-weight: 700;
+    }
+
+    .dashboard-card-item {
+        display: inline-flex;
+        justify-content: space-between;
+        align-self: flex-start;
+        flex-direction: column;
+        padding: 0.75rem;
+        gap: 1rem;
     }
 }

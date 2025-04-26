@@ -21,7 +21,7 @@ class ShowHabitatService
             throw new NotFoundHttpException("Habitat not found or does not exist");
         }
 
-        return HabitatReadDTO::fromEntity($habitat);
+        return HabitatReadDTO::fromEntity($habitat, true);
     }
 
     public function showHabitatAnimals(string $uuid): array

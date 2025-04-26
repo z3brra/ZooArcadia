@@ -1,7 +1,9 @@
 import { JSX } from 'react'
-import logo from '@assets/arcadia_logo2.png'
 import { Link } from 'react-router-dom'
+import { DASHBOARD_ROUTES } from '@routes/paths'
 import { useAuth } from '@hook/AuthContext'
+
+import logo from '@assets/arcadia_logo2.png'
 
 export function DashboardSideMenuHeader(): JSX.Element {
     const { user } = useAuth()
@@ -14,7 +16,7 @@ export function DashboardSideMenuHeader(): JSX.Element {
 
     return (
         <div className="dashboard-side-menu-header">
-            <Link to="/dashboard">
+            <Link to={DASHBOARD_ROUTES.HOME}>
                 <img
                     src={logo}
                     alt="Logo Arcadia"

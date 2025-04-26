@@ -95,6 +95,14 @@
   color: #767675;
 }
 
+.text-medium {
+  font-weight: 500;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
 .main-content {
   width: 100%;
   height: calc(100vh - 100px);
@@ -178,6 +186,93 @@
   text-decoration: underline;
 }
 
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0.75rem;
+}
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.dropdown-trigger:hover {
+  text-decoration: underline;
+}
+.dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  align-items: center;
+  padding: 0.5rem 1rem;
+}
+@media (min-width: 668px) and (max-width: 1024px) {
+  .dropdown-item {
+    width: 100%;
+  }
+}
+@media (max-width: 667px) {
+  .dropdown-item {
+    width: 100%;
+  }
+}
+.dropdown-item-left {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1rem;
+}
+.dropdown-item-left-pair {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.dropdown-item-right {
+  display: flex;
+  justify-content: flex-start;
+  align-self: flex-start;
+}
+.dropdown-item-icon {
+  display: inline-flex;
+}
+.dropdown-item-text {
+  flex: 1;
+}
+.dropdown-item-label {
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+}
+.dropdown-item-label.label-red {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+.dropdown-item-label.label-yellow {
+  background-color: #FEF9C3;
+  color: #854D0E;
+}
+.dropdown-item-label.label-blue {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+.dropdown-item-label.label-green {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+
 .message-box {
   display: flex;
   align-items: center;
@@ -222,6 +317,26 @@
 .message-box-warning {
   background-color: #FEF9C3;
   color: #854D0E;
+}
+
+.return-link {
+  text-decoration: none;
+}
+.return-link:hover {
+  color: #333333;
+}
+.return-link-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.common-link {
+  color: #5A7C17;
+}
+.common-link:hover {
+  color: #506F14;
 }
 
 .text-input {
@@ -440,9 +555,6 @@
   }
 }
 
-.dashboard-page-header {
-  margin-bottom: 1.5rem;
-}
 .dashboard-page-header-main {
   display: flex;
   align-items: center;
@@ -515,7 +627,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 2rem;
   margin-bottom: 1.5rem;
   width: 100%;
 }
@@ -566,8 +678,6 @@
 }
 .dashboard-card-media img {
   display: block;
-  width: 80px;
-  height: 80px;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 10px;
@@ -600,6 +710,50 @@
   height: 80px;
   border-radius: 50px;
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.2509803922);
+}
+
+.dashboard-card-vertical {
+  display: flex;
+  flex-direction: column;
+  background-color: #F9F9F2;
+  padding: 1rem;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.2509803922);
+}
+.dashboard-card-vertical .dashboard-card-link {
+  text-decoration: none;
+  width: 100%;
+}
+.dashboard-card-vertical .dashboard-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  gap: 1rem;
+}
+.dashboard-card-vertical .dashboard-card-media {
+  width: 100%;
+  max-height: 10rem;
+  flex: 0 0 auto;
+}
+.dashboard-card-vertical .dashboard-card-media img {
+  display: block;
+  width: 100%;
+  max-height: inherit;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.dashboard-card-vertical .dashboard-card-header {
+  font-weight: 700;
+}
+.dashboard-card-vertical .dashboard-card-item {
+  display: inline-flex;
+  justify-content: space-between;
+  align-self: flex-start;
+  flex-direction: column;
+  padding: 0.75rem;
+  gap: 1rem;
 }
 
 .dashboard-pagination {
@@ -645,6 +799,16 @@
 }
 .login-form .text-input-field:invalid {
   outline: none;
+}
+
+.habitat-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.habitat-content-infos {
+  justify-content: flex-start;
 }
 
 * {

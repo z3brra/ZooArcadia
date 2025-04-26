@@ -9,7 +9,10 @@
 @import 'components/container';
 @import 'components/header';
 
+@import 'components/common/dropdown';
 @import 'components/common/messageBox';
+@import 'components/common/returnButton';
+@import 'components/common/commonLink';
 
 @import 'components/form/input';
 @import 'components/form/button';
@@ -22,6 +25,7 @@
 @import 'components/dashboard/dashboardPagination';
 
 @import 'pages/login';
+@import 'pages/dashboard/habitat';
 
 
 * {

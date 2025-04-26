@@ -1,0 +1,98 @@
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.75rem;
+
+    &-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 0.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+    }
+}
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    width: 70%;
+    align-items: center;
+    padding: 0.5rem 1rem;
+
+    @include tablet {
+        width: 100%;
+    }
+
+    @include mobile {
+        width: 100%;
+    }
+
+    &-left {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 1rem;
+
+        &-pair {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+    }
+
+    &-right {
+        display: flex;
+        justify-content: flex-start;
+        align-self: flex-start;
+    }
+
+    &-icon {
+        display: inline-flex;
+    }
+
+    &-text {
+        flex: 1;
+    }
+
+    &-label {
+        padding: 0.5rem 0.75rem;
+        border-radius: calc($border-radius * 2);
+
+        &.label-red {
+            background-color: $red-label-bg;
+            color: $red-label-fg;
+        }
+
+        &.label-yellow {
+            background-color: $yellow-label-bg;
+            color: $yellow-label-fg;
+        }
+
+        &.label-blue {
+            background-color: $blue-label-bg;
+            color: $blue-label-fg;
+        }
+
+        &.label-green {
+            background-color: $green-label-bg;
+            color: $green-label-fg;
+        }
+    }
+
+}

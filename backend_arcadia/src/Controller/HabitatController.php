@@ -87,7 +87,7 @@ final class HabitatController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $habitatReadDTO,
                 format: 'json',
-                context: ['groups' => ['habitat:read', 'entity-with-picture:read']]
+                context: ['groups' => ['habitat:read', 'habitat:with-animalCount', 'entity-with-picture:read']]
             );
 
             return new JsonResponse(
