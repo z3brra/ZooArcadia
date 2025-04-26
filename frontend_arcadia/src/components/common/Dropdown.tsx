@@ -29,7 +29,7 @@ export function DropdownItem({
 }
 
 
-export type LabelVariant = "red" | "yellow" | "blue" | "green"
+export type LabelVariant = "red" | "yellow" | "blue" | "green" | "grey"
 
 export type DropdownLabelProps = {
     label: string

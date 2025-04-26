@@ -272,6 +272,10 @@
   background-color: #DCFCE7;
   color: #166534;
 }
+.dropdown-item-label.label-grey {
+  background-color: #ececec;
+  color: #767675;
+}
 
 .message-box {
   display: flex;

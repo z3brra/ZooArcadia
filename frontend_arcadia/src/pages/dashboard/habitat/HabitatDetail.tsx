@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 
 import { Habitat } from '@models/habitat'
+import { AnimalListItem } from '@models/animal'
 
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 import { DashboardSection } from '@components/dashboard/DashboardSection'
@@ -42,6 +43,10 @@ export function HabitatDetail(): JSX.Element {
     const [error, setError] = useState<string | null>(null)
     const [showEmptyInfo, setShowEmptyInfo] = useState<boolean>(false)
 
+    const [animals, setAnimals] = useState<AnimalListItem[]>([])
+    const [animalsLoading, setAnimalsLoading] = useState<boolean>(false)
+    const [animalsError, setAnimalsError] = useState<string | null>(null)
+
     useEffect(() => {
         const fetchHabitat = async () => {
             setLoading(true)
@@ -61,11 +66,34 @@ export function HabitatDetail(): JSX.Element {
                 setLoading(false)
             }
         }
-        
         if (uuid) {
             fetchHabitat()
         }
     }, [uuid])
+
+    useEffect(() => {
+        if (!habitat) {
+            return
+        }
+        const fetchAnimals = async () => {
+            setAnimalsLoading(true)
+            setAnimalsError(null)
+            try {
+                const animalsResponse = await getRequest<AnimalListItem[]>(
+                    `${Endpoints.HABITAT}/${uuid}/animals?limit=4`
+                )
+                setAnimals(animalsResponse)
+            } catch (errorResponse) {
+                console.error("Error when fetching animals ", errorResponse)
+                setAnimalsError("Impossible de charger les animaux")
+            } finally {
+                setAnimalsLoading(false)
+            }
+        }
+        if (habitat) {
+            fetchAnimals()
+        }
+    }, [habitat, uuid])
 
 
     return (
@@ -127,25 +155,21 @@ export function HabitatDetail(): JSX.Element {
                             <CardContent className="text-small text-silent">{`Animaux : ${habitat.animalCount}`}</CardContent>
                         </div>
                         <Dropdown triggerText="Voir les animaux">
-                            {/* La boucle se fera au dessus */}
-                            <div className="dropdown-item">
-                                <DropdownItem
-                                    leftItems={[
-                                        { icon: <PawPrint size={20} />, text: "Simba", itemClassName: "text-content text-primary"},
-                                        { icon: <PencilRuler size={20} />, text: "Lion d'Afrique", itemClassName: "text-content text-silent"}
-                                    ]}
-                                />
-                                <DropdownLabel variant="green" label='Bonne santé' />
-                            </div>
-                            <div className="dropdown-item">
-                                <DropdownItem
-                                    leftItems={[
-                                        { icon: <PawPrint size={20} />, text: "Nala", itemClassName: "text-content text-primary"},
-                                        { icon: <PencilRuler size={20} />, text: "Lion d'Afrique", itemClassName: "text-content text-silent"}
-                                    ]}
-                                />
-                                <DropdownLabel variant="yellow" label='Fatigué' />
-                            </div>
+                            { animalsError && (
+                                <MessageBox variant="error" message={animalsError} onClose={() => setAnimalsError(null)} />
+                            )}
+
+                            { !animalsLoading && !animalsError && animals.map(animal => (
+                                <div key={animal.uuid} className="dropdown-item">
+                                    <DropdownItem
+                                        leftItems={[
+                                            { icon: <PawPrint size={20} />, text: animal.name, itemClassName: "text-content text-primary"},
+                                            { icon: <PencilRuler size={20} />, text: animal.speciesName, itemClassName: "text-content text-silent"}
+                                        ]}
+                                    />
+                                    <DropdownLabel variant="grey" label='Aucun statut' />
+                                </div>
+                            ))}
                             <CommonLink to={DASHBOARD_ROUTES.ANIMALS.TO} text="Voir tout les animaux" />
                         </Dropdown>
                     </Card>

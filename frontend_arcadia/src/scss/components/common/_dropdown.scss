@@ -93,6 +93,11 @@
             background-color: $green-label-bg;
             color: $green-label-fg;
         }
+
+        &.label-grey {
+            background-color: $grey-label-bg;
+            color: $grey-label-fg;
+        }
     }
 
 }
