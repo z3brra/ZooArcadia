@@ -759,6 +759,11 @@
   padding: 0.75rem;
   gap: 1rem;
 }
+.dashboard-card-vertical .dashboard-card-pair {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
 .dashboard-pagination {
   display: flex;
@@ -812,6 +817,16 @@
   padding-bottom: 2rem;
 }
 .habitat-content-infos {
+  justify-content: flex-start;
+}
+
+.activity-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.activity-content-infos {
   justify-content: flex-start;
 }
 

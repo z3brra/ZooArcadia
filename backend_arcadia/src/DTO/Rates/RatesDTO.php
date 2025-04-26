@@ -17,7 +17,7 @@ class RatesDTO
     public ?string $title = null;
 
     #[Assert\NotNull(message: "Price is required.", groups: ['create'])]
-    #[Assert\Positive(message: "Price must be a positive number.", groups: ['create', 'update'])]
+    // #[Assert\Positive(message: "Price must be a positive number.", groups: ['create', 'update'])]
     public ?float $price = null;
 
     #[Assert\NotNull(message: "Activity uuid is required.", groups: ['create'])]
