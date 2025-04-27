@@ -45,13 +45,13 @@ class AnimalReadDTO
     #[Groups(['animal:read'])]
     public string $speciesUuid;
 
-    #[Groups(['animal:list'])]
+    #[Groups(['animal:read', 'animal:list'])]
     public ?string $speciesName;
 
     #[Groups(['animal:read'])]
     public ?string $habitatUuid;
 
-    #[Groups(['animal:list'])]
+    #[Groups(['animal:read', 'animal:list'])]
     public ?string $habitatName;
 
 
