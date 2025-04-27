@@ -840,6 +840,16 @@
   justify-content: flex-start;
 }
 
+.animal-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.animal-content-infos {
+  justify-content: flex-start;
+}
+
 * {
   margin: 0;
   padding: 0;
