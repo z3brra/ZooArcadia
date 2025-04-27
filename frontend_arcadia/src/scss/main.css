@@ -96,11 +96,11 @@
 }
 
 .text-medium {
-  font-weight: 500;
+  font-weight: 500 !important;
 }
 
 .text-bold {
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 .main-content {
@@ -283,7 +283,6 @@
   padding: 0.75rem 1rem;
   border-radius: 10px;
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.2509803922);
-  position: relative;
 }
 .message-box-icon {
   display: flex;
@@ -341,6 +340,44 @@
 }
 .common-link:hover {
   color: #506F14;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2509803922);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #F9F9F2;
+  border-radius: 10px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.modal-close:hover {
+  color: #333333;
+}
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .text-input {

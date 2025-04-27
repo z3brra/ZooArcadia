@@ -21,6 +21,7 @@ import {
     CardContent
 } from '@components/dashboard/Card'
 
+import { DeleteModal } from '@components/common/DeleteModal'
 import { MessageBox } from "@components/common/MessageBox"
 import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
@@ -34,6 +35,8 @@ import { formatDiet } from '@utils/formatters'
 
 export function SpeciesDetail(): JSX.Element {
     const { uuid } = useParams<{ uuid: string }>()
+
+    const [showDelete, setShowDelete] = useState<boolean>(false)
 
     const [specie, setSpecie] = useState<Specie | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
@@ -115,7 +118,7 @@ export function SpeciesDetail(): JSX.Element {
                 <Button
                     variant="delete"
                     icon={<Trash2 size={20} />}
-                    onClick={() => console.log('Supprimer')}
+                    onClick={() => setShowDelete(true)}
                     className="text-content"
                 >
                     Supprimer
@@ -183,6 +186,15 @@ export function SpeciesDetail(): JSX.Element {
                     </Card>
                 </DashboardSection>
             )}
+
+            <DeleteModal
+                isOpen={showDelete}
+                title="Êtes-vous sûr de vouloir supprimer l'espèce animale ?"
+                message="Cette action est irréversible. Cela supprimera l'espèce animale et toutes les données associées."
+                onConfirm={() => console.log("Confirm delete")}
+                onCancel={() => setShowDelete(false)}
+            />
+
         </>
     )
 }

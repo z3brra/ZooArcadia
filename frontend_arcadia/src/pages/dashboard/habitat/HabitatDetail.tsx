@@ -23,6 +23,7 @@ import {
     CardContent
 } from '@components/dashboard/Card'
 
+import { DeleteModal } from '@components/common/DeleteModal'
 import { MessageBox } from "@components/common/MessageBox"
 import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
@@ -35,8 +36,11 @@ import { CommonLink } from '@components/common/CommonLink'
 
 import placeholderPicture from "@assets/common/placeholder.png"
 
+
 export function HabitatDetail(): JSX.Element {
     const { uuid } = useParams<{ uuid: string }>()
+
+    const [showDelete, setShowDelete] = useState<boolean>(false)
 
     const [habitat, setHabitat] = useState<Habitat | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
@@ -119,7 +123,7 @@ export function HabitatDetail(): JSX.Element {
                 <Button
                     variant="delete"
                     icon={<Trash2 size={20} />}
-                    onClick={() => console.log('Supprimer')}
+                    onClick={() => setShowDelete(true)}
                     className="text-content"
                 >
                     Supprimer
@@ -179,6 +183,14 @@ export function HabitatDetail(): JSX.Element {
                     </Card>
                 </DashboardSection>
             )}
+
+            <DeleteModal
+                isOpen={showDelete}
+                title="Êtes-vous sûr de vouloir supprimer l'habitat ?"
+                message="Cette action est irréversible. Cela supprimera l'habitat et toutes les données associées."
+                onConfirm={() => console.log("Confirm delete")}
+                onCancel={() => setShowDelete(false)}
+            />
         </>
     )
 }

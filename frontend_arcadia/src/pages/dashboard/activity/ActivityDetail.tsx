@@ -14,6 +14,7 @@ import { DashboardSection } from '@components/dashboard/DashboardSection'
 
 import { Card, CardMedia, CardHeader, CardContent } from "@components/dashboard/Card"
 
+import { DeleteModal } from '@components/common/DeleteModal'
 import { MessageBox } from '@components/common/MessageBox'
 import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
@@ -25,6 +26,8 @@ import placeholderPicture from "@assets/common/placeholder.png"
 
 export function ActivityDetail(): JSX.Element {
     const { uuid } = useParams<{ uuid: string }>()
+
+    const [showDelete, setShowDelete] = useState<boolean>(false)
 
     const [activity, setActivity] = useState<Activity | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
@@ -80,7 +83,7 @@ export function ActivityDetail(): JSX.Element {
                 <Button
                     variant="delete"
                     icon={<Trash2 size={20} />}
-                    onClick={() => console.log('Supprimer')}
+                    onClick={() => setShowDelete(true)}
                     className="text-content"
                 >
                     Supprimer
@@ -133,6 +136,15 @@ export function ActivityDetail(): JSX.Element {
                     )}
                 </DashboardSection>
             )}
+
+
+            <DeleteModal
+                isOpen={showDelete}
+                title="Êtes-vous sûr de vouloir supprimer l'activité ?"
+                message="Cette action est irréversible. Cela supprimera l'activité et toutes les données associées."
+                onConfirm={() => console.log("Confirm delete")}
+                onCancel={() => setShowDelete(false)}
+            />
 
         </>
     )

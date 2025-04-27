@@ -1,0 +1,43 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: $box-shadow;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: $background;
+    border-radius: $border-radius;
+    // width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            color: $primary-text-fg;
+        }
+    }
+
+    &-footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+
+    }
+}
