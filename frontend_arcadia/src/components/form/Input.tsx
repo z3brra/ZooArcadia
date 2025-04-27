@@ -19,14 +19,14 @@ export function Input ({
         return (
             <div className="text-input">
                 {label && (
-                    <label htmlFor={id} className="text-input-label text-content">
+                    <label htmlFor={id} className="text-input-label text-content text-accent">
                         {label}
                     </label>
                 )}
                 <textarea
                     id={id}
                     {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
-                    className="text-input-field"
+                    className="text-input-field text-small text-primary"
                 />
             </div>
         )

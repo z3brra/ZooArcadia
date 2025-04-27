@@ -10,6 +10,11 @@ export interface Habitat {
     pictures: Picture[] | null
 }
 
+export interface HabitatCreate {
+    name: string
+    description: string | null
+}
+
 export interface HabitatListItem {
     uuid: string
     name: string

@@ -17,3 +17,11 @@ export async function postRequest <B, T> (
     const { data } = await apiClient.post<T>(endpoint, body, config)
     return data
 }
+
+export async function deleteRequest<T>(
+    endpoint: string,
+    config?: AxiosRequestConfig
+): Promise<T> {
+    const { data } = await apiClient.delete<T>(endpoint, config);
+    return data
+}

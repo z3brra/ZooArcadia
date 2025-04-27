@@ -30,7 +30,11 @@ $focus-shadow: #5a7c1727;
         }
     }
 
-    
+    textarea {
+        resize: vertical;
+        max-height: 20rem;
+    }
+
 }
 
 // .text-input {
