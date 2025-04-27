@@ -22,7 +22,7 @@ class ShowSpeciesService
             throw new NotFoundHttpException("Species not found or does not exist");
         }
 
-        return SpeciesReadDTO::fromEntity($species);
+        return SpeciesReadDTO::fromEntity($species, true);
     }
 
     public function showSpeciesAnimals(string $uuid, ?int $limit): array

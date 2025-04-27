@@ -80,7 +80,7 @@ final class SpeciesController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $speciesReadDTO,
                 format: 'json',
-                context: ['groups' => ['species:read']]
+                context: ['groups' => ['species:read', 'species:with-animalCount']]
             );
 
             return new JsonResponse(

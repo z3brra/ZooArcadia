@@ -830,6 +830,16 @@
   justify-content: flex-start;
 }
 
+.specie-content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.specie-content-infos {
+  justify-content: flex-start;
+}
+
 * {
   margin: 0;
   padding: 0;
