@@ -10,6 +10,7 @@ export type CreateModalProps = {
     message?: string
     onCancel: () => void
     onSubmit: () => void
+    disabled: boolean
     children: React.ReactNode
 }
 
@@ -19,12 +20,13 @@ export function CreateModal({
     message,
     onCancel,
     onSubmit,
+    disabled,
     children
 }: CreateModalProps): JSX.Element {
     return (
         <Modal isOpen={isOpen} onClose={onCancel}>
             <div className="modal-header">
-                <div>
+                <div className="modal-header-text">
                     <div className="modal-title text-bigcontent text-bold text-primary">{title}</div>
                     { message && <p className="modal-message text-small text-silent">{message}</p>}
                 </div>
@@ -48,9 +50,10 @@ export function CreateModal({
                     variant="primary"
                     icon={<Save size={20} />}
                     onClick={onSubmit}
+                    disabled={disabled}
                     className="text-content text-medium"
                 >
-                    Supprimer
+                    {disabled ? "Enregistrement..." : "Enregistrer"}
                 </Button>
             </div>
         </Modal>

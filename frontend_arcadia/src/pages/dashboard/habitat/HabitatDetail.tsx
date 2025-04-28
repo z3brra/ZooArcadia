@@ -207,6 +207,7 @@ export function HabitatDetail(): JSX.Element {
                 message="Cette action est irréversible. Cela supprimera l'habitat et toutes les données associées."
                 onConfirm={handleDelete}
                 onCancel={() => setShowDelete(false)}
+                disabled={loading}
             />
         </>
     )

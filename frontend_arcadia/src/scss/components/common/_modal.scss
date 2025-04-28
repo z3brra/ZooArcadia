@@ -23,6 +23,12 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        &-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
     }
 
     &-close {
@@ -47,5 +53,18 @@
         display: flex;
         justify-content: space-between;
         gap: 0.5rem;
+    }
+
+    &-form-field {
+        display: flex;
+        flex-direction: column;
+
+        &-error {
+            color: $red-label-fg;
+            background-color: $red-label-bg;
+            padding: 0.5rem 1rem;
+            border-radius: $border-radius;
+            margin-bottom: 1rem;
+        }
     }
 }

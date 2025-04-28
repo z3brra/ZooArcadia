@@ -30,6 +30,10 @@ export function Habitats (): JSX.Element {
 
     const [habitatName, setHabitatName] = useState<string>("")
     const [habitatDescription, setHabitatDescription] = useState<string>("")
+    const [fieldErrors, setFieldErrors] = useState<{
+        habitatName?: string
+        habitatDescription?: string
+    }>({})
 
     const fetchHabitats = useCallback(async () => {
         const fetchHabitats = async () => {
@@ -58,24 +62,20 @@ export function Habitats (): JSX.Element {
         fetchHabitats()
     }, [fetchHabitats])
 
-    // const handleSubmit = async () => {
-    //     setLoading(true)
-    //     setError(null)
-    //     try {
 
-    //         console.log(habitatName)
-    //         console.log(habitatDescription)
-    //     } catch (errorResponse) {
-    //         console.error("Error when create habitat ", errorResponse)
-    //         setError("Impossible de créer l'habitat.")
-    //     } finally {
-    //         setLoading(false)
-    //         setHabitatName("")
-    //         setHabitatDescription("")
-    //         setShowCreate(false)
-    //     }
-    // }
-
+    const validateFields = () => {
+        const errors: typeof fieldErrors = {}
+        if (!habitatName.trim()) {
+            errors.habitatName = "Le nom de l'habitat est requis."
+        } else if (habitatName.length < 10) {
+            errors.habitatName = "Le nom doit faire plus de 10 caractères."
+        }
+        if (habitatDescription.trim() && habitatDescription.length < 10) {
+            errors.habitatDescription = "La description doit faire plus de 10 caractères."
+        }
+        setFieldErrors(errors)
+        return Object.keys(errors).length === 0
+    }
 
     const handleSubmit = async () => {
         if (!habitatName.trim()) {
@@ -83,8 +83,13 @@ export function Habitats (): JSX.Element {
             return
         }
 
-        setLoading(true)
         setError(null)
+
+        if (!validateFields()) {
+            return
+        }
+
+        setLoading(true)
         try {
             const payload: HabitatCreate = {
                 name: habitatName.trim(),
@@ -154,24 +159,38 @@ export function Habitats (): JSX.Element {
                 onCancel={() => setShowCreate(false)}
                 onSubmit={() => {
                     handleSubmit()
-                    setShowCreate(false)
                 }}
+                disabled={loading}
             >
                 <form noValidate className="modal-body">
-                    <Input
-                        type="string"
-                        label="Nom"
-                        placeholder="Saisir le nom"
-                        value={habitatName}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHabitatName(event.currentTarget.value)}
-                    />
-                    <Input
-                        type="textarea"
-                        label="Description"
-                        placeholder="Saisir le nom"
-                        value={habitatDescription}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHabitatDescription(event.currentTarget.value)}
-                    />
+                    <div className="modal-form-field">
+                        <Input
+                            type="string"
+                            label="Nom"
+                            placeholder="Saisir le nom"
+                            value={habitatName}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHabitatName(event.currentTarget.value)}
+                        />
+                        { fieldErrors.habitatName && (
+                            <div className="modal-form-field-error text-small">
+                                {fieldErrors.habitatName}
+                            </div>
+                        )}
+                    </div>
+                    <div className="modal-form-field">
+                        <Input
+                            type="textarea"
+                            label="Description"
+                            placeholder="Saisir le nom"
+                            value={habitatDescription}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setHabitatDescription(event.currentTarget.value)}
+                        />
+                        { fieldErrors.habitatDescription && (
+                            <div className="modal-form-field-error text-small">
+                                {fieldErrors.habitatDescription}
+                            </div>
+                        )}
+                    </div>
                 </form>
             </CreateModal>
         </>

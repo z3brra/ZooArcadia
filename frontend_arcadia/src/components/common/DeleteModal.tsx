@@ -9,6 +9,7 @@ export type DeleteModalProps = {
     message: string
     onConfirm: () => void
     onCancel: () => void
+    disabled: boolean
 }
 
 export function DeleteModal({
@@ -16,7 +17,8 @@ export function DeleteModal({
     title,
     message,
     onConfirm,
-    onCancel
+    onCancel,
+    disabled
 }: DeleteModalProps): JSX.Element {
     return (
         <Modal isOpen={isOpen} onClose={onCancel}>
@@ -44,9 +46,10 @@ export function DeleteModal({
                     variant="delete"
                     icon={<Trash2 size={20} />}
                     onClick={onConfirm}
+                    disabled={disabled}
                     className="text-content text-medium"
                 >
-                    Supprimer
+                    {disabled ? "Suppression..." : "Supprimer"}
                 </Button>
             </div>
 
