@@ -1,5 +1,5 @@
 import { JSX, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { DASHBOARD_ROUTES } from '@routes/paths'
 
@@ -28,13 +28,14 @@ import { Button } from '@components/form/Button'
 import { Dropdown, DropdownItem, DropdownLabel } from '@components/common/Dropdown'
 import { CommonLink } from '@components/common/CommonLink'
 
-import { getRequest } from '@api/request'
+import { getRequest, deleteRequest } from '@api/request'
 import { Endpoints } from '@api/endpoints'
 
 import { formatDiet } from '@utils/formatters'
 
 export function SpeciesDetail(): JSX.Element {
     const { uuid } = useParams<{ uuid: string }>()
+    const navigate = useNavigate()
 
     const [showDelete, setShowDelete] = useState<boolean>(false)
 
@@ -94,6 +95,23 @@ export function SpeciesDetail(): JSX.Element {
             fetchAnimals()
         }
     }, [specie, uuid])
+
+    const handleDelete = async () => {
+        setLoading(true)
+        setError(null)
+        try {
+            await deleteRequest<void>(
+                `${Endpoints.SPECIES}/${uuid}`
+            )
+        } catch (errorResponse) {
+            console.error("Error when delete habitat ", errorResponse)
+            setError("Impossible de supprimer l'espèce animale.")
+        } finally {
+            setLoading(false)
+            setShowDelete(false)
+            navigate(DASHBOARD_ROUTES.SPECIES.TO)
+        }
+    }
 
     return (
         <>
@@ -191,8 +209,9 @@ export function SpeciesDetail(): JSX.Element {
                 isOpen={showDelete}
                 title="Êtes-vous sûr de vouloir supprimer l'espèce animale ?"
                 message="Cette action est irréversible. Cela supprimera l'espèce animale et toutes les données associées."
-                onConfirm={() => console.log("Confirm delete")}
+                onConfirm={handleDelete}
                 onCancel={() => setShowDelete(false)}
+                disabled={loading}
             />
 
         </>
