@@ -67,8 +67,10 @@ export function Habitats (): JSX.Element {
         const errors: typeof fieldErrors = {}
         if (!habitatName.trim()) {
             errors.habitatName = "Le nom de l'habitat est requis."
-        } else if (habitatName.length < 10) {
-            errors.habitatName = "Le nom doit faire plus de 10 caractères."
+        } else if (habitatName.length < 2) {
+            errors.habitatName = "Le nom doit faire plus de 2 caractères."
+        } else if (habitatName.length > 36) {
+            errors.habitatName = "Le nom ne doit pas dépasser 36 caractères."
         }
         if (habitatDescription.trim() && habitatDescription.length < 10) {
             errors.habitatDescription = "La description doit faire plus de 10 caractères."
