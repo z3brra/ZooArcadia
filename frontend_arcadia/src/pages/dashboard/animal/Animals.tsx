@@ -18,6 +18,7 @@ import { CustomSelect, SelectOption } from "@components/form/CustomSelect"
 
 import { getRequest, postRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
+import { isValidDate } from "@utils/dateUtils"
 
 
 
@@ -58,10 +59,10 @@ export function Animals (): JSX.Element {
 
     const [fieldErrors, setFieldsErrors] = useState<{
         name?: string
-        isMale?: boolean
-        size?: number
-        weight?: number
-        isFertile?: boolean
+        isMale?: string
+        size?: string
+        weight?: string
+        isFertile?: string
         birthDate?: string
         arrivalDate?: string
         speciesUuid?: string
@@ -119,9 +120,7 @@ export function Animals (): JSX.Element {
                 const habitatResponse = await getRequest<HabitatAllResponse<HabitatAllList>>(
                     `${Endpoints.HABITAT}/all`
                 )
-                setHabitatOptions(
-                    habitatResponse.data.map((habitat) => ({ value: habitat.uuid, label: habitat.name}))
-                )
+                setHabitatOptions(habitatResponse.data.map((habitat) => ({ value: habitat.uuid, label: habitat.name})))
             } catch {
                 setHabitatOptionsError("Impossible de charger la liste des habitats")
             }
@@ -131,6 +130,50 @@ export function Animals (): JSX.Element {
 
     const validateFields = () => {
         const errors: typeof fieldErrors = {}
+        if (!animalName.trim()) {
+            errors.name = "Le nom de l'animal est requis."
+        } else if (animalName.length < 2) {
+            errors.name = "Le nom doit faire plus de 2 caractères."
+        } else if (animalName.length > 36) {
+            errors.name = "Le nom ne doit pas faire plus de 36 caractères."
+        }
+
+        if (animalIsMale === null) {
+            errors.isMale = "Le sexe de l'animal est requis."
+        }
+
+        if (animalSize === null) {
+            errors.size = "La taille est requise."
+        } else if (animalSize <= 0) {
+            errors.size = "La taille doit être un nombre positif"
+        }
+
+        if (animalWeight === null) {
+            errors.weight = "Le poids est requis."
+        } else if (animalWeight <= 0) {
+            errors.weight = "Le poids doit être un nombre positif"
+        }
+
+        if (animalIsFertile === null) {
+            errors.isFertile = "L'état de l'animal est requis."
+        }
+
+        if (!animalBirthDate) {
+            errors.birthDate = "La date de naissance est requise."
+        } else if (!isValidDate(animalBirthDate)) {
+            errors.birthDate = "Format de date invalide."
+        }
+
+        if (!animalArrivalDate) {
+            errors.arrivalDate = "La date d'arrivée est requise."
+        } else if (!isValidDate(animalArrivalDate)) {
+            errors.arrivalDate = "Format de date invalide."
+        }
+
+        if (!animalSpeciesUuid.trim()) {
+            errors.speciesUuid = "L'espèce est requise."
+        }
+
         setFieldsErrors(errors)
         return Object.keys(errors).length === 0
     }
@@ -159,7 +202,6 @@ export function Animals (): JSX.Element {
                 `${Endpoints.ANIMAL}/create`,
                 payload
             )
-            setCurrentPage(1)
             setAnimalName("")
             setAnimalIsMale(null)
             setAnimalSize(null)
@@ -169,13 +211,15 @@ export function Animals (): JSX.Element {
             setAnimalArrivalDate("")
             setAnimalSpeciesUuid("")
             setAnimalHabitatUuid("")
+
+            setCurrentPage(1)
             await fetchAnimals()
+            setShowCreate(false)
         } catch (errorResponse) {
             console.error("Error when creating animal ", errorResponse)
             setError("Impossible de créer l'animal")
         } finally {
             setLoading(false)
-            setShowCreate(false)
         }
     }
 
@@ -250,17 +294,24 @@ export function Animals (): JSX.Element {
                     </div>
 
                     <div className="modal-form-field">
-                        <CustomSelect
-                            label="Espèce"
-                            placeholder="Selectionner l'espèce"
-                            options={speciesOptions}
-                            value={animalSpeciesUuid}
-                            onChange={setAnimalSpeciesUuid}
-                        />
-                        { fieldErrors.speciesUuid && (
-                            <div className="modal-form-field-error text-small">
-                                {fieldErrors.speciesUuid}
-                            </div>
+                        { speciesOptionsError ? (
+                            <MessageBox variant="error" message={speciesOptionsError} onClose={() => setSpeciesOptionsError(null)} />
+                        ) : (
+                            <>
+                            <CustomSelect
+                                label="Espèce"
+                                placeholder={speciesOptions.length === 0 ? "Aucune espèce" : "Selectionner l'espèce"}
+                                options={speciesOptions}
+                                value={animalSpeciesUuid}
+                                onChange={setAnimalSpeciesUuid}
+                                disabled={speciesOptions.length === 0}
+                            />
+                            { fieldErrors.speciesUuid && (
+                                <div className="modal-form-field-error text-small">
+                                    {fieldErrors.speciesUuid}
+                                </div>
+                            )}
+                            </>
                         )}
                     </div>
 
@@ -355,18 +406,26 @@ export function Animals (): JSX.Element {
                     </div>
 
                     <div className="modal-form-field">
-                        <CustomSelect
-                            label="Habitat"
-                            placeholder="Selectionner l'habitat"
-                            options={habitatOptions}
-                            value={animalHabitatUuid}
-                            onChange={setAnimalHabitatUuid}
-                        />
-                        { fieldErrors.habitatUuid && (
-                            <div className="modal-form-field-error text-small">
-                                {fieldErrors.habitatUuid}
-                            </div>
+                        { habitatOptionsError ? (
+                            <MessageBox variant="error" message={habitatOptionsError} onClose={() => setHabitatOptionsError(null)}/>
+                        ) : (
+                            <>
+                                <CustomSelect
+                                    label="Habitat"
+                                    placeholder={habitatOptions.length === 0 ? "Aucun habitat" : "Selectionner l'habitat"}
+                                    options={habitatOptions}
+                                    value={animalHabitatUuid}
+                                    onChange={setAnimalHabitatUuid}
+                                    disabled={habitatOptions.length === 0}
+                                />
+                                { fieldErrors.habitatUuid && (
+                                    <div className="modal-form-field-error text-small">
+                                        {fieldErrors.habitatUuid}
+                                    </div>
+                                )}
+                            </>
                         )}
+
                     </div>
                 </form>
             </CreateModal>

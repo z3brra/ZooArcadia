@@ -54,7 +54,7 @@ export function CustomSelect({
             )}
             <div
                 id={id}
-                className={`select-input-field ${isOpen ? "open" : ""} ${disabled ? "disabled" : ""}`}
+                className={`select-input-field ${isOpen ? "open" : ""} ${disabled ? "select-input-disabled" : ""}`}
                 onClick={() => !disabled && setIsOpen(open => !open)}
             >
                 <span className={`select-input-value text-small ${!selected ? "text-silent" : "text-primary"}`}>
