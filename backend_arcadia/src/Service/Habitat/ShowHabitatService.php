@@ -44,6 +44,20 @@ class ShowHabitatService
 
         return $animalsDTOs;
     }
+
+    public function showAllHabitat(): array {
+        $habitats = $this->habitatRepository->findAll();
+
+        $habitatsDTOs = [];
+        foreach ($habitats as $habitat) {
+            $habitatsDTOs[] = HabitatReadDTO::fromEntity($habitat);
+        }
+
+        return [
+            "data" => $habitatsDTOs,
+            "total" => count($habitatsDTOs)
+        ];
+    }
 }
 
 

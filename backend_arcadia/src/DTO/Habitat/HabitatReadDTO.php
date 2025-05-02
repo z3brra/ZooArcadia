@@ -11,10 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class HabitatReadDTO
 {
-    #[Groups(['habitat:read', 'habitat:list'])]
+    #[Groups(['habitat:read', 'habitat:list', 'habitat:all'])]
     public string $uuid;
 
-    #[Groups(['habitat:read', 'habitat:list'])]
+    #[Groups(['habitat:read', 'habitat:list', 'habitat:all'])]
     public string $name;
 
     #[Groups(['habitat:read', 'habitat:list'])]

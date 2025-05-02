@@ -76,6 +76,33 @@ final class HabitatController extends AbstractController
         }
     }
 
+    #[Route('/all', name: 'show_all', methods: 'GET')]
+    public function showAll(
+        ShowHabitatService $showHabitatService
+    ): JsonResponse {
+        try {
+            $habitatReadDTO = $showHabitatService->showAllHabitat();
+
+            $responseData = $this->serializer->serialize(
+                data: $habitatReadDTO,
+                format: 'json',
+                context: ['groups' => ['habitat:all']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                headers: [],
+                json: true
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     #[Route('/{uuid}', name: 'show', methods: 'GET')]
     public function show(
         string $uuid,
