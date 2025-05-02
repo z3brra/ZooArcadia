@@ -46,6 +46,21 @@ class ShowSpeciesService
 
         return $animalsDTOs;
     }
+
+    public function showAllSpecies(): array {
+        $species = $this->speciesRepository->findAll();
+
+        $speciesDTOs = [];
+        foreach ($species as $specie) {
+            $speciesDTOs[] = SpeciesReadDTO::fromEntity($specie);
+        }
+
+        // return $speciesDTOs;
+        return [
+            "data" => $speciesDTOs,
+            "total" => count($speciesDTOs)
+        ];
+    }
 }
 
 

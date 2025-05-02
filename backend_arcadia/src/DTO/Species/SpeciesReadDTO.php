@@ -8,10 +8,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class SpeciesReadDTO
 {
-    #[Groups(['species:read', 'species:list'])]
+    #[Groups(['species:read', 'species:list', 'species:all'])]
     public string $uuid;
 
-    #[Groups(['species:read', 'species:list'])]
+    #[Groups(['species:read', 'species:list', 'species:all'])]
     public string $commonName;
 
     #[Groups(['species:read', 'species:list'])]
