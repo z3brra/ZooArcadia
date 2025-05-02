@@ -2,7 +2,7 @@ import { JSX, useState, useRef, useEffect, useId } from "react"
 import { ChevronDown, ChevronUp } from "lucide-react"
 
 export type SelectOption = {
-    value: string
+    value: any
     label: string
     disabled?: boolean
 }
@@ -11,9 +11,9 @@ export type CustomSelectProps = {
     label?: string
     placeholder?: string
     options: SelectOption[]
-    value?: string
+    value?: any
     disabled?: boolean
-    onChange: (value: string) => void
+    onChange: (value: any) => void
 }
 
 export function CustomSelect({
@@ -73,7 +73,7 @@ export function CustomSelect({
                         return (
                             <li
                                 key={option.value}
-                                className={`select-input-option text-small ${isSelected ? "selected text-secondary" : ""} ${isDisabled ? "disabled" : ""}`}
+                                className={`select-input-option text-small ${isSelected ? "selected text-secondary" : "text-primary"} ${isDisabled ? "disabled" : ""}`}
                                 onClick={() => {
                                     if (!isDisabled) {
                                         onChange(option.value)

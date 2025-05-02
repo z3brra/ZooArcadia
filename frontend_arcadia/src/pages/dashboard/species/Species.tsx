@@ -199,9 +199,9 @@ export function Species (): JSX.Element {
                             value={specieScientificName}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSpecieScientificName(event.currentTarget.value)}
                         />
-                        { fieldErrors.commonName && (
+                        { fieldErrors.scientificName && (
                             <div className="modal-form-field-error text-small">
-                                {fieldErrors.commonName}
+                                {fieldErrors.scientificName}
                             </div>
                         )}
                     </div>
@@ -214,9 +214,9 @@ export function Species (): JSX.Element {
                             value={specieLifespan}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSpecieLifespan(event.currentTarget.value)}
                         />
-                        { fieldErrors.commonName && (
+                        { fieldErrors.lifespan && (
                             <div className="modal-form-field-error text-small">
-                                {fieldErrors.commonName}
+                                {fieldErrors.lifespan}
                             </div>
                         )}
                     </div>
@@ -229,9 +229,9 @@ export function Species (): JSX.Element {
                             value={specieDiet}
                             onChange={setSpecieDiet}
                         />
-                        { fieldErrors.commonName && (
+                        { fieldErrors.diet && (
                             <div className="modal-form-field-error text-small">
-                                {fieldErrors.commonName}
+                                {fieldErrors.diet}
                             </div>
                         )}
                     </div>

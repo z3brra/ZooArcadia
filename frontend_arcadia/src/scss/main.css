@@ -435,6 +435,16 @@
   resize: vertical;
   max-height: 20rem;
 }
+.text-input input[type=number]::-webkit-outer-spin-button,
+.text-input input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.text-input input[type=number] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+          appearance: none;
+}
 
 .button {
   display: flex;
@@ -508,6 +518,9 @@
 .select-input {
   position: relative;
   width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .select-input-field {
   display: flex;

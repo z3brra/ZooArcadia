@@ -22,3 +22,13 @@ export interface HabitatListItem {
     animalCount: number
     pictures: Picture[] | null
 }
+
+export interface HabitatAllList {
+    uuid: string
+    name: string
+}
+
+export interface HabitatAllResponse<T> {
+    data: T[]
+    total: number
+}

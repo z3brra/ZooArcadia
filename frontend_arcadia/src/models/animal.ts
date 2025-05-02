@@ -18,6 +18,18 @@ export interface Animal {
     pictures: Picture[] | null
 }
 
+export interface AnimalCreate {
+    name: string
+    isMale: boolean
+    size: number
+    weight: number
+    isFertile: boolean
+    birthDate: string
+    arrivalDate: string
+    speciesUuid: string
+    habitatUuid: string | null
+}
+
 export interface AnimalListItem {
     uuid: string
     name: string

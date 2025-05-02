@@ -24,3 +24,13 @@ export interface SpeciesListItem {
     scientificName: string
     animalCount: number
 }
+
+export interface SpeciesAllList {
+    uuid: string
+    commonName: string
+}
+
+export interface SpeciesAllResponse<T> {
+    data: T[]
+    total: number
+}
