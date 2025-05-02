@@ -17,6 +17,11 @@ export interface ActivityListItem {
     pictures: Picture[] | null
 }
 
+export interface ActivityCreate {
+    name: string
+    description: string | null
+}
+
 export interface Rate {
     uuid: string
     title: string
