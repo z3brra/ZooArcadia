@@ -10,6 +10,14 @@ export interface Specie {
     animalCount: number
 }
 
+export interface SpecieCreate {
+    commonName: string
+    scientificName: string
+    lifespan: string
+    diet: string
+    description: string
+}
+
 export interface SpeciesListItem {
     uuid: string
     commonName: string

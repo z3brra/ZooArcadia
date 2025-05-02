@@ -408,7 +408,6 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 5px;
-  font-family: "Roboto", sans-serif;
   width: 300px;
 }
 .text-input-label {
@@ -504,6 +503,59 @@
 }
 .button-white:active:not(.button-disabled) {
   background-color: #E5DED8;
+}
+
+.select-input {
+  position: relative;
+  width: 300px;
+}
+.select-input-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  background: #E5DED8;
+  border: 1px solid #BCB8B8;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.select-input-field.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.select-input-icon {
+  pointer-events: none;
+}
+.select-input-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  list-style: none;
+  background-color: #E5DED8;
+  border: 1px solid #BCB8B8;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+.select-input-option {
+  padding: 0.6rem 0.8rem;
+  background-color: #E5DED8;
+  cursor: pointer;
+}
+.select-input-option:hover {
+  background-color: #5A7C17;
+  color: #F9F9F2;
+}
+.select-input-option.selected {
+  font-weight: bold;
+}
+.select-input-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .dashboard-side-menu {

@@ -78,11 +78,6 @@ export function Habitats (): JSX.Element {
     }
 
     const handleSubmit = async () => {
-        if (!habitatName.trim()) {
-            console.log("Ajouter une erreur manque nom habitat")
-            return
-        }
-
         setError(null)
 
         if (!validateFields()) {

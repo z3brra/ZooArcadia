@@ -1,0 +1,60 @@
+.select-input {
+    position: relative;
+    width: 300px;
+
+    &-field {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.6rem 0.8rem;
+        background: $background-darker;
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+        cursor: pointer;
+
+        &.open {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+
+    &-icon {
+        pointer-events: none;
+    }
+
+    &-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin: 0;
+        list-style: none;
+        background-color: $background-darker;
+        border: 1px solid $border-color;
+        border-bottom-right-radius: $border-radius;
+        border-bottom-left-radius: $border-radius;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+    }
+
+    &-option {
+        padding: 0.6rem 0.8rem;
+        background-color: $background-darker;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $primary;
+            color: $background;
+        }
+
+        &.selected {
+            font-weight: bold;
+        }
+
+        &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
