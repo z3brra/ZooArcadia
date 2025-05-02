@@ -64,7 +64,7 @@ export const DASHBOARD_ROUTES = {
     },
 
     ACTIVITES: {
-        TO: "/dashboard/activites" as const,
+        TO: "/dashboard/activities" as const,
         REL: "activities" as const,
         DETAIL: ":uuid" as const,
     },

@@ -1,5 +1,7 @@
 import { JSX, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import { DASHBOARD_ROUTES } from '@routes/paths'
 
 import {
     LandPlot,
@@ -19,13 +21,15 @@ import { MessageBox } from '@components/common/MessageBox'
 import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
 
-import { getRequest } from '@api/request'
+import { deleteRequest, getRequest } from '@api/request'
 import { Endpoints } from '@api/endpoints'
 
 import placeholderPicture from "@assets/common/placeholder.png"
 
 export function ActivityDetail(): JSX.Element {
     const { uuid } = useParams<{ uuid: string }>()
+
+    const navigate = useNavigate()
 
     const [showDelete, setShowDelete] = useState<boolean>(false)
 
@@ -58,6 +62,23 @@ export function ActivityDetail(): JSX.Element {
             fetchActivity()
         }
     }, [uuid])
+
+    const handleDelete = async () => {
+        setLoading(true)
+        setError(null)
+        try {
+            await deleteRequest<void>(
+                `${Endpoints.ACTIVITY}/${uuid}`
+            )
+            setShowDelete(false)
+            navigate(DASHBOARD_ROUTES.ACTIVITES.TO)
+        } catch (errorResponse) {
+            console.error("Error when delete activity ", errorResponse)
+            setError("Impossible de supprimer l'activité")
+        } finally {
+            setLoading(false)
+        }
+    }
 
 
     return (
@@ -142,8 +163,9 @@ export function ActivityDetail(): JSX.Element {
                 isOpen={showDelete}
                 title="Êtes-vous sûr de vouloir supprimer l'activité ?"
                 message="Cette action est irréversible. Cela supprimera l'activité et toutes les données associées."
-                onConfirm={() => console.log("Confirm delete")}
+                onConfirm={handleDelete}
                 onCancel={() => setShowDelete(false)}
+                disabled={loading}
             />
 
         </>
