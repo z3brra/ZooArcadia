@@ -77,7 +77,41 @@ export function Species (): JSX.Element {
 
     const validateFields = () => {
         const errors: typeof fieldErrors = {}
-        
+
+        if (!specieCommonName.trim()) {
+            errors.commonName = "Le nom commun est requis."
+        } else if (specieCommonName.length < 2) {
+            errors.commonName = "Le nom commun doit faire plus de 2 caractères."
+        } else if (specieCommonName.length > 255) {
+            errors.commonName = "Le nom commun ne doit pas dépasser 255 caractères."
+        }
+
+        if (!specieScientificName.trim()) {
+            errors.scientificName = "Le nom scientifique est requis."
+        } else if (specieScientificName.length < 2) {
+            errors.scientificName = "Le nom scientifique doit faire plus de 2 caratères."
+        } else if (specieScientificName.length > 255) {
+            errors.scientificName = "Le nom scientifique ne doit pas dépasser 255 caractères."
+        }
+
+        if (!specieLifespan.trim()) {
+            errors.lifespan = "La durée de vie est requise."
+        } else if (specieLifespan.length < 2) {
+            errors.lifespan = "La durée de vie doit faire plus de 2 caractères."
+        } else if (specieLifespan.length > 255) {
+            errors.lifespan = "La durée de vie ne doit ps dépasser 255 caractères."
+        }
+
+        if (!specieDiet.trim()) {
+            errors.diet = "Le régime alimentaire est requis."
+        }
+
+        if (!specieDescription.trim()) {
+            errors.description = "La description est requise."
+        } else if (specieDescription.length < 10) {
+            errors.description = "La description doit faire plus de 10 caractères."
+        }
+
         setFieldErrors(errors)
         return Object.keys(errors).length === 0
     }
@@ -102,19 +136,21 @@ export function Species (): JSX.Element {
                 `${Endpoints.SPECIES}/create`,
                 payload
             )
-            setCurrentPage(1)
+            
             setSpecieCommonName("")
             setSpecieScientificName("")
             setSpecieLifespan("")
             setSpecieDiet("")
             setSpecieDescription("")
+
+            setCurrentPage(1)
             await fetchSpecies()
+            setShowCreate(false)
         } catch (errorResponse) {
             console.error("Error when creating species", errorResponse)
             setError("Impossible de créer l'espèce animale.")
         } finally {
             setLoading(false)
-            setShowCreate(false)
         }
     }
 
