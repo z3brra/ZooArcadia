@@ -1,11 +1,8 @@
-$placeholder-col: #999;
-$focus-shadow: #5a7c1727;
-
 .text-input {
     display: flex;
     flex-direction: column;
     margin-bottom: 5px;
-    width: 300px;
+    width: inherit;
 
     @include mobile {
         max-width: 100%;

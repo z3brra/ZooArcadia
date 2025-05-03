@@ -62,6 +62,7 @@
     &-form-field {
         display: flex;
         flex-direction: column;
+        width: 300px;
 
         &-error {
             color: $red-label-fg;

@@ -15,6 +15,11 @@ export interface HabitatCreate {
     description: string | null
 }
 
+export interface HabitatUpdate {
+    name: string
+    description: string | null
+}
+
 export interface HabitatListItem {
     uuid: string
     name: string

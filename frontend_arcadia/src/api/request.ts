@@ -18,6 +18,15 @@ export async function postRequest <B, T> (
     return data
 }
 
+export async function putRequest <B, T> (
+    endpoint: string,
+    body: B,
+    config?: AxiosRequestConfig
+): Promise<T> {
+    const { data } = await apiClient.put<T>(endpoint, body, config)
+    return data
+}
+
 export async function deleteRequest<T>(
     endpoint: string,
     config?: AxiosRequestConfig

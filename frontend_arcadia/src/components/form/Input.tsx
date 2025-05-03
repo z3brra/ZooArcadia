@@ -3,6 +3,7 @@ import React, { JSX, useId } from "react"
 export type InputProps = {
     type?: React.HTMLInputTypeAttribute | 'textarea'
     label?: string
+    textSize?: string
 } & (
     | React.InputHTMLAttributes<HTMLInputElement>
     | React.TextareaHTMLAttributes<HTMLTextAreaElement>
@@ -11,6 +12,7 @@ export type InputProps = {
 export function Input ({
     type = 'text',
     label,
+    textSize,
     ...props
 }: InputProps): JSX.Element {
     const id = useId()
@@ -26,7 +28,7 @@ export function Input ({
                 <textarea
                     id={id}
                     {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
-                    className="text-input-field text-small text-primary"
+                    className={`text-input-field ${textSize ? textSize : "text-small"} text-primary`}
                 />
             </div>
         )
@@ -43,7 +45,7 @@ export function Input ({
                 id={id}
                 type={type}
                 {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
-                className="text-input-field text-small text-primary"
+                className={`text-input-field ${textSize ? textSize : "text-small"} text-primary`}
             />
         </div>
     )
