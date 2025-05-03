@@ -7,6 +7,10 @@ $focus-shadow: #5a7c1727;
     margin-bottom: 5px;
     width: 300px;
 
+    @include mobile {
+        max-width: 100%;
+    }
+
     &-label {
         margin-bottom: 0.6rem;
         font-weight: 600;
@@ -43,6 +47,18 @@ $focus-shadow: #5a7c1727;
     input[type=number] {
         -moz-appearance: textfield;
         appearance: none;
+    }
+
+    input[type=date] {
+        width: 300px;
+        box-sizing: border-box;
+
+        @include mobile {
+            max-width: 100%;
+        }
+        // width: ;
+        // -webkit-appearance: none;
+        // appearance: none;
     }
 
 }

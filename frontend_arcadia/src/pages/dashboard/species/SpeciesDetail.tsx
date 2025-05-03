@@ -183,24 +183,26 @@ export function SpeciesDetail(): JSX.Element {
                             <CardHeader className="text-bigcontent text-primary">Animaux de cette espèce</CardHeader>
                             <CardContent className="text-small text-silent">{`Animaux : ${specie.animalCount}`}</CardContent>
                         </div>
-                        <Dropdown triggerText="Voir les animaux">
-                            { animalsError && (
-                                <MessageBox variant="error" message={animalsError} onClose={() => setAnimalsError(null)} />
-                            )}
+                        { !animalsLoading && !animalsError && animals.length > 0 && (
+                            <Dropdown triggerText="Voir les animaux">
+                                { animalsError && (
+                                    <MessageBox variant="error" message={animalsError} onClose={() => setAnimalsError(null)} />
+                                )}
 
-                            { !animalsLoading && !animalsError && animals.map(animal => (
-                                <div key={animal.uuid} className="dropdown-item">
-                                    <DropdownItem
-                                        leftItems={[
-                                            { icon: <PawPrint size={20} />, text: animal.name, itemClassName: "text-content text-primary"},
-                                            { icon: <PencilRuler size={20} />, text: animal.speciesName, itemClassName: "text-content text-silent"}
-                                        ]}
-                                    />
-                                    <DropdownLabel variant="grey" label='Aucun statut' />
-                                </div>
-                            ))}
-                            <CommonLink to={DASHBOARD_ROUTES.ANIMALS.TO} text="Voir tout les animaux" />
-                        </Dropdown>
+                                { !animalsLoading && !animalsError && animals.map(animal => (
+                                    <div key={animal.uuid} className="dropdown-item">
+                                        <DropdownItem
+                                            leftItems={[
+                                                { icon: <PawPrint size={20} />, text: animal.name, itemClassName: "text-content text-primary"},
+                                                { icon: <PencilRuler size={20} />, text: animal.speciesName, itemClassName: "text-content text-silent"}
+                                            ]}
+                                        />
+                                        <DropdownLabel variant="grey" label='Aucun statut' />
+                                    </div>
+                                ))}
+                                <CommonLink to={DASHBOARD_ROUTES.ANIMALS.TO} text="Voir tout les animaux" />
+                            </Dropdown>
+                        )}
                     </Card>
                 </DashboardSection>
             )}

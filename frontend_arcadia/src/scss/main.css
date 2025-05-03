@@ -239,7 +239,7 @@
 .dropdown-item-left-pair {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 .dropdown-item-right {
   display: flex;
@@ -255,6 +255,13 @@
 .dropdown-item-label {
   padding: 0.5rem 0.75rem;
   border-radius: 20px;
+}
+@media (max-width: 667px) {
+  .dropdown-item-label {
+    padding: 0.25rem 0.5rem;
+    text-align: center;
+    text-wrap-mode: nowrap;
+  }
 }
 .dropdown-item-label.label-red {
   background-color: #FEE2E2;
@@ -355,12 +362,18 @@
 .modal {
   background: #F9F9F2;
   border-radius: 10px;
-  max-height: 800px;
+  max-height: 90dvh;
   max-width: 500px;
   display: flex;
   flex-direction: column;
   padding: 1rem;
   gap: 1rem;
+}
+@media (max-width: 667px) {
+  .modal {
+    max-width: 90dvw;
+    max-height: 90dvh;
+  }
 }
 .modal-header {
   display: flex;
@@ -411,6 +424,11 @@
   margin-bottom: 5px;
   width: 300px;
 }
+@media (max-width: 667px) {
+  .text-input {
+    max-width: 100%;
+  }
+}
 .text-input-label {
   margin-bottom: 0.6rem;
   font-weight: 600;
@@ -445,6 +463,15 @@
   -moz-appearance: textfield;
   -webkit-appearance: none;
           appearance: none;
+}
+.text-input input[type=date] {
+  width: 300px;
+  box-sizing: border-box;
+}
+@media (max-width: 667px) {
+  .text-input input[type=date] {
+    max-width: 100%;
+  }
 }
 
 .button {
@@ -523,6 +550,11 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 5px;
+}
+@media (max-width: 667px) {
+  .select-input {
+    max-width: 100%;
+  }
 }
 .select-input-field {
   display: flex;
