@@ -198,16 +198,16 @@ final class HabitatController extends AbstractController
                 format: 'json',
                 context: ['groups' => ['habitat:read']]
             );
-            $location = $this->urlGenerator->generate(
-                name: 'app_api_habitat_show',
-                parameters: ['uuid' => $uuid],
-                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            // $location = $this->urlGenerator->generate(
+            //     name: 'app_api_habitat_show',
+            //     parameters: ['uuid' => $uuid],
+            //     referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            // );
 
             return new JsonResponse(
-                data: $responseData,
+                data: null,
                 status: JsonResponse::HTTP_OK,
-                headers: ['Location' => $location],
+                // headers: ['Location' => $location],
                 json: true
             );
 
