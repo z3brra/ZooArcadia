@@ -75,7 +75,10 @@ export const DASHBOARD_ROUTES = {
     ACTIVITES: {
         TO: "/dashboard/activities" as const,
         REL: "activities" as const,
-        DETAIL: ":uuid" as const,
+        DETAIL_PATTERN: ":uuid" as const,
+        DETAIL: (uuid: string) => `${DASHBOARD_ROUTES.ACTIVITES.TO}/${uuid}` as const,
+        EDIT_PATTERN: ":uuid/edit" as const,
+        EDIT: (uuid: string) => `${DASHBOARD_ROUTES.ACTIVITES.TO}/${uuid}/edit` as const,
     },
 
     REVIEWS: {

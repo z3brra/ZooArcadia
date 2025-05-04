@@ -31,12 +31,14 @@ import { AnimalsFeed } from '@pages/dashboard/animal/AnimalsFeed'
 
 import { Activities } from '@pages/dashboard/activity/Activities'
 import { ActivityDetail } from '@pages/dashboard/activity/ActivityDetail'
+import { ActivityEdit } from '@pages/dashboard/activity/ActivityEdit'
 
 import { Reviews } from '@pages/dashboard/Reviews'
 
 import { Employee } from '@pages/dashboard/Users'
 
 import { Statistics } from '@pages/dashboard/Statistics'
+
 
 export const router = createBrowserRouter([
     {
@@ -98,7 +100,8 @@ export const router = createBrowserRouter([
                         path: DASHBOARD_ROUTES.ACTIVITES.REL,
                         children: [
                             { index: true, element: <Activities /> },
-                            { path: DASHBOARD_ROUTES.ACTIVITES.DETAIL, element: <ActivityDetail /> }
+                            { path: DASHBOARD_ROUTES.ACTIVITES.DETAIL_PATTERN, element: <ActivityDetail /> },
+                            { path: DASHBOARD_ROUTES.ACTIVITES.EDIT_PATTERN, element: <ActivityEdit />},
                         ]
                     },
                     { path: DASHBOARD_ROUTES.REVIEWS.REL, element: <Reviews /> },

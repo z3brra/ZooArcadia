@@ -22,6 +22,11 @@ export interface ActivityCreate {
     description: string | null
 }
 
+export interface ActivityUpdate {
+    name: string
+    description: string | null
+}
+
 export interface Rate {
     uuid: string
     title: string

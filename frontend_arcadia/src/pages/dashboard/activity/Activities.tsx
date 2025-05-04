@@ -114,7 +114,7 @@ export function Activities (): JSX.Element {
             await fectchActivities()
         } catch (errorResponse) {
             console.error("Error when creating activity ", errorResponse)
-            setError("Impossible de créer l'habitat.")
+            setError("Impossible de créer l'activité.")
         } finally {
             setLoading(false)
         }

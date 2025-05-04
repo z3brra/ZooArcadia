@@ -94,9 +94,9 @@ export function ActivityDetail(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
+                    to={DASHBOARD_ROUTES.ACTIVITES.EDIT(uuid!)}
                     variant="white"
                     icon={<SquarePen size={20} />}
-                    onClick={() => console.log('Modifier')}
                     className="text-content"
                 >
                     Modifier
