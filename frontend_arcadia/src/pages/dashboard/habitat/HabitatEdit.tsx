@@ -1,9 +1,9 @@
-import { JSX, useCallback, useEffect, useState } from "react"
+import { JSX, useCallback, useEffect, useState, useRef } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { DASHBOARD_ROUTES } from "@routes/paths"
 
-import { Leaf, XCircle, Save } from "lucide-react"
+import { Leaf, XCircle, Save, Image } from "lucide-react"
 
 import { Habitat, HabitatUpdate } from "@models/habitat"
 
@@ -15,7 +15,7 @@ import { MessageBox } from "@components/common/MessageBox"
 import { Button } from '@components/form/Button'
 import { Input } from "@components/form/Input"
 
-import { getRequest, putRequest } from "@api/request"
+import { getRequest, putRequest, postFormRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 
 import placeholderPicture from "@assets/common/placeholder.png"
@@ -35,6 +35,8 @@ export function HabitatEdit(): JSX.Element {
         habitatName?: string
         habitatDescription?: string
     }>({})
+
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const fetchHabitat = useCallback(async () => {
         const fetchHabitat = async () => {
@@ -108,6 +110,50 @@ export function HabitatEdit(): JSX.Element {
         }
     }
 
+    const onClickChangePicture = () => {
+        fileInputRef.current?.click()
+    }
+
+    const onFilechange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (!file || !uuid) {
+            return
+        }
+        const allowed = /\.(jpe?g|png|webp)$/i
+        if (!allowed.test(file.name)) {
+            setError("Format d'image non supporté (jpg, png, webp).")
+            return
+        }
+
+        const form = new FormData()
+        form.append("image", file)
+
+        setLoading(true)
+        setError(null)
+
+        try {
+            if (habitat?.pictures?.[0]?.uuid) {
+                await postFormRequest<void>(
+                    `${Endpoints.HABITAT}/${uuid}/change-picture?pictureUuid=${habitat.pictures[0].uuid}`,
+                    form
+                )
+            } else {
+                await postFormRequest<void>(
+                    `${Endpoints.HABITAT}/${uuid}/add-picture`,
+                    form
+                )
+            }
+            await fetchHabitat()
+        } catch {
+            setError("Impossible d'uploader l'image.")
+        } finally {
+            setLoading(false)
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ""
+            }
+        }
+    }
+
     return (
         <>
             <DashboardPageHeader
@@ -149,6 +195,23 @@ export function HabitatEdit(): JSX.Element {
                             <CardMedia
                                 src={habitat.pictures && habitat.pictures.length > 0 ? habitat.pictures[0].path : placeholderPicture}
                                 className="media-filled-rectangle"
+                                overlay={
+                                    <Button
+                                        variant="white"
+                                        icon={<Image size={20} />}
+                                        onClick={onClickChangePicture}
+                                        className="text-small"
+                                    >
+                                        {habitat.pictures?.length ? "Modifier" : "Ajouter"}
+                                    </Button>
+                                }
+                            />
+                            <input
+                                type="file"
+                                accept=".jpg,.jpeg,.png,.webp"
+                                ref={fileInputRef}
+                                style={{ display: "none" }}
+                                onChange={onFilechange}
                             />
 
                             <form noValidate className="dashboard-card-item">

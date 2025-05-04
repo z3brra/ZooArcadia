@@ -261,7 +261,8 @@ final class HabitatController extends AbstractController
                 data: ['error' => $e->getMessage()],
                 status: JsonResponse::HTTP_BAD_REQUEST
             );
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
             return new JsonResponse(
                 data: ['error' => "An internal server error as occured"],
                 status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR

@@ -624,6 +624,7 @@
   padding: 1.5rem 0 1.5rem;
   padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
   transition: transform 0.3s ease;
+  z-index: 1000;
 }
 @media (min-width: 668px) and (max-width: 1024px) {
   .dashboard-side-menu {
@@ -851,12 +852,19 @@
 }
 .dashboard-card-media {
   flex: 0 0 auto;
+  position: relative;
 }
 .dashboard-card-media img {
   display: block;
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 10px;
+}
+.dashboard-card-media-overlay-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
 }
 .dashboard-card-header {
   font-weight: 700;

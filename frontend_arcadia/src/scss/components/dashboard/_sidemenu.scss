@@ -12,6 +12,7 @@
     padding: 1.5rem 0 1.5rem;
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
     transition: transform 0.3s ease;
+    z-index: 1000;
 
     @include tablet {
         transform: translateX(-100%);

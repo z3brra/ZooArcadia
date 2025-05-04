@@ -1,4 +1,4 @@
-import apiClient from "./client";
+import apiClient, { apiFormClient } from "./client";
 import type { AxiosRequestConfig } from "axios";
 
 export async function getRequest<T>(
@@ -32,5 +32,14 @@ export async function deleteRequest<T>(
     config?: AxiosRequestConfig
 ): Promise<T> {
     const { data } = await apiClient.delete<T>(endpoint, config);
+    return data
+}
+
+export async function postFormRequest<T>(
+    endpoint: string,
+    formData: FormData,
+    config?: AxiosRequestConfig
+): Promise<T> {
+    const { data } = await apiFormClient.post<T>(endpoint, formData, config)
     return data
 }

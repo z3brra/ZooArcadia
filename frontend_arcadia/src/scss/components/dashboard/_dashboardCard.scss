@@ -22,10 +22,18 @@
 
     &-media {
         flex: 0 0 auto;
+        position: relative;
         img {
             display: block;
             object-fit: cover;
             border-radius: $border-radius;
+        }
+
+        &-overlay-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            z-index: 1;
         }
     }
 

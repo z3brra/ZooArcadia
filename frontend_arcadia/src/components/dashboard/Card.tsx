@@ -10,6 +10,7 @@ export type CardMediaProps = {
     src: string
     alt?: string
     className?: string
+    overlay?: React.ReactNode
 }
 
 export type CardHeaderProps = {
@@ -47,11 +48,17 @@ export function Card({
 export function CardMedia({
     src,
     alt,
-    className = ""
+    className = "",
+    overlay
 }: CardMediaProps): JSX.Element {
     return (
         <div className={`dashboard-card-media ${className}`}>
-            <img src={src} alt={alt || ''} />
+            <img src={src} alt={alt || ""} />
+            { overlay && (
+                <div className="dashboard-card-media-overlay-button">
+                    {overlay}
+                </div>
+            )}
         </div>
     )
 }
