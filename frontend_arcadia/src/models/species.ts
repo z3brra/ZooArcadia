@@ -18,6 +18,14 @@ export interface SpecieCreate {
     description: string
 }
 
+export interface SpecieUpdate {
+    commonName: string
+    scientificName: string
+    lifespan: string
+    diet: string
+    description: string
+}
+
 export interface SpeciesListItem {
     uuid: string
     commonName: string

@@ -136,7 +136,7 @@ export function Species (): JSX.Element {
                 `${Endpoints.SPECIES}/create`,
                 payload
             )
-            
+
             setSpecieCommonName("")
             setSpecieScientificName("")
             setSpecieLifespan("")
@@ -179,7 +179,7 @@ export function Species (): JSX.Element {
                     Ajouter
                 </Button>
             </DashboardSection>
-            
+
             { error && (
                 <MessageBox variant="error" message={error} onClose={() => setError(null)} />
             )}

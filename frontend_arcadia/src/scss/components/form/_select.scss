@@ -1,6 +1,7 @@
 .select-input {
     position: relative;
-    width: 300px;
+    // width: 300px;
+    width: inherit;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

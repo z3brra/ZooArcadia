@@ -20,6 +20,8 @@ import { HabitatsReport } from '@pages/dashboard/HabitatsReport'
 
 import { Species } from '@pages/dashboard/species/Species'
 import { SpeciesDetail } from '@pages/dashboard/species/SpeciesDetail'
+import { SpeciesEdit } from '@pages/dashboard/species/SpeciesEdit'
+
 
 import { Animals } from '@pages/dashboard/animal/Animals'
 import { AnimalDetail } from '@pages/dashboard/animal/AnimalDetail'
@@ -77,7 +79,8 @@ export const router = createBrowserRouter([
                         path: DASHBOARD_ROUTES.SPECIES.REL,
                         children: [
                             { index: true, element: <Species /> },
-                            { path: DASHBOARD_ROUTES.SPECIES.DETAIL, element: <SpeciesDetail /> }
+                            { path: DASHBOARD_ROUTES.SPECIES.DETAIL_PATTERN, element: <SpeciesDetail /> },
+                            { path: DASHBOARD_ROUTES.SPECIES.EDIT_PATTERN, element: <SpeciesEdit />}
                         ]
                     },
                     { 
