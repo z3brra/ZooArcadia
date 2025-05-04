@@ -87,7 +87,7 @@ final class ActivityController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $activityReadDTO,
                 format: 'json',
-                context: ['groups' => ['activity:read', 'activity:with-rates']]
+                context: ['groups' => ['activity:read', 'activity:with-rates', 'entity-with-picture:read']]
             );
 
             return new JsonResponse(
