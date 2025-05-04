@@ -142,16 +142,16 @@ final class AnimalController extends AbstractController
                 context: ['groups' => ['animal:read']]
             );
 
-            $location = $this->urlGenerator->generate(
-                name: 'app_api_animal_show',
-                parameters: ['uuid' => $uuid],
-                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            // $location = $this->urlGenerator->generate(
+            //     name: 'app_api_animal_show',
+            //     parameters: ['uuid' => $uuid],
+            //     referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            // );
 
             return new JsonResponse(
                 data: $responseData,
                 status: JsonResponse::HTTP_OK,
-                headers: ['Location' => $location],
+                // headers: ['Location' => $location],
                 json: true
             );
 

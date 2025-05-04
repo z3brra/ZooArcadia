@@ -133,16 +133,16 @@ final class RatesController extends AbstractController
                 format: 'json',
                 context: ['groups' => ['rates:read']]
             );
-            $location = $this->urlGenerator->generate(
-                name: 'app_api_rates_show',
-                parameters: ['uuid' => $uuid],
-                referenceType: UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            // $location = $this->urlGenerator->generate(
+            //     name: 'app_api_rates_show',
+            //     parameters: ['uuid' => $uuid],
+            //     referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+            // );
 
             return new JsonResponse(
                 data: $responseData,
                 status: JsonResponse::HTTP_OK,
-                headers: ['Location' => $location],
+                // headers: ['Location' => $location],
                 json: true
             );
 
