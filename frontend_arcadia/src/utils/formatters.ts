@@ -40,3 +40,7 @@ export function formatDate(dateString: string): string {
 
     return `${day} ${month} ${year}`
 }
+
+export function formatDateForInput(backendDate: string | Date): string {
+    return new Date(backendDate).toISOString().split('T')[0]
+}

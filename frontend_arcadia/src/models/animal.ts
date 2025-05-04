@@ -30,6 +30,18 @@ export interface AnimalCreate {
     habitatUuid: string | null
 }
 
+export interface AnimalUpdate {
+    name: string
+    isMale: boolean
+    size: number
+    weight: number
+    isFertile: boolean
+    birthDate: string
+    arrivalDate: string
+    speciesUuid: string
+    habitatUuid: string | null
+}
+
 export interface AnimalListItem {
     uuid: string
     name: string

@@ -25,6 +25,7 @@ import { SpeciesEdit } from '@pages/dashboard/species/SpeciesEdit'
 
 import { Animals } from '@pages/dashboard/animal/Animals'
 import { AnimalDetail } from '@pages/dashboard/animal/AnimalDetail'
+import { AnimalEdit } from '@pages/dashboard/animal/AnimalsEdit'
 import { AnimalsReport } from '@pages/dashboard/animal/AnimalsReport'
 import { AnimalsFeed } from '@pages/dashboard/animal/AnimalsFeed'
 
@@ -87,7 +88,8 @@ export const router = createBrowserRouter([
                         path: DASHBOARD_ROUTES.ANIMALS.REL,
                         children: [
                             { index: true, element: <Animals /> },
-                            { path: DASHBOARD_ROUTES.ANIMALS.DETAIL, element: <AnimalDetail /> }
+                            { path: DASHBOARD_ROUTES.ANIMALS.DETAIL_PATTERN, element: <AnimalDetail /> },
+                            { path: DASHBOARD_ROUTES.ANIMALS.EDIT_PATTERN, element: <AnimalEdit />}
                         ]
                     },
                     { path: DASHBOARD_ROUTES.ANIMALS_REPORT.REL, element: <AnimalsReport /> },

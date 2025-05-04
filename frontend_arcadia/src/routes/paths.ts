@@ -56,7 +56,10 @@ export const DASHBOARD_ROUTES = {
     ANIMALS: {
         TO: "/dashboard/animals" as const,
         REL: "animals" as const,
-        DETAIL: ":uuid" as const,
+        DETAIL_PATTERN: ":uuid" as const,
+        DETAIL: (uuid: string) => `${DASHBOARD_ROUTES.ANIMALS.TO}/${uuid}` as const,
+        EDIT_PATTERN: ":uuid/edit" as const,
+        EDIT: (uuid: string) => `${DASHBOARD_ROUTES.ANIMALS.TO}/${uuid}/edit` as const,
     },
 
     ANIMALS_REPORT: {

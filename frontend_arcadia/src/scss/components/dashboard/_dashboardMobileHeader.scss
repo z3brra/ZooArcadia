@@ -2,6 +2,7 @@
     display: none;
     background: $menu-background;
     padding: 0 1rem;
+    z-index: 1000;
 
     &-container {
         display: flex;
