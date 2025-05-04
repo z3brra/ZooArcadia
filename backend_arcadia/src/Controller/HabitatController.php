@@ -196,7 +196,7 @@ final class HabitatController extends AbstractController
             $responseData = $this->serializer->serialize(
                 data: $habitatReadDTO,
                 format: 'json',
-                context: ['groups' => ['habitat:read']]
+                context: ['groups' => ['habitat:read', 'habitat:with-animalCount', 'entity-with-picture:read']]
             );
             // $location = $this->urlGenerator->generate(
             //     name: 'app_api_habitat_show',
@@ -205,7 +205,7 @@ final class HabitatController extends AbstractController
             // );
 
             return new JsonResponse(
-                data: null,
+                data: $responseData,
                 status: JsonResponse::HTTP_OK,
                 // headers: ['Location' => $location],
                 json: true
