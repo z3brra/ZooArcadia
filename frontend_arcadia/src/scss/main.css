@@ -422,7 +422,6 @@
 .text-input {
   display: flex;
   flex-direction: column;
-  margin-bottom: 5px;
   width: inherit;
 }
 @media (max-width: 667px) {
@@ -954,6 +953,41 @@
   justify-content: center;
   gap: 1rem;
   margin-top: 1.5rem;
+}
+
+.rate-editor {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  gap: 1rem;
+}
+.rate-editor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+.rate-editor-item {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  flex-direction: row;
+}
+.rate-editor-item-field-section {
+  display: flex;
+  gap: 0.5rem;
+}
+@media (max-width: 667px) {
+  .rate-editor-item-field-section {
+    flex-direction: column;
+  }
+}
+.rate-editor-item-button-section {
+  display: flex;
+}
+.rate-editor .button-secondary {
+  align-self: flex-start;
 }
 
 .login-container {

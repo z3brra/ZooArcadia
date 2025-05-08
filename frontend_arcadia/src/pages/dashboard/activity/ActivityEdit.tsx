@@ -5,17 +5,18 @@ import { DASHBOARD_ROUTES } from "@routes/paths"
 
 import { LandPlot, XCircle, Save, Image } from "lucide-react"
 
-import { Activity, ActivityUpdate } from "@models/activity"
+import { Activity, ActivityUpdate, Rate, RateCreate, RateUpdate } from "@models/activity"
 
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 import { DashboardSection } from '@components/dashboard/DashboardSection'
-import { Card, CardMedia } from "@components/dashboard/Card"
+import { Card, CardMedia, CardHeader } from "@components/dashboard/Card"
+import { RateEditor, DraftRate } from "@components/dashboard/activity/RatesEditor"
 
 import { MessageBox } from "@components/common/MessageBox"
 import { Button } from '@components/form/Button'
 import { Input } from "@components/form/Input"
 
-import { getRequest, putRequest, postFormRequest } from "@api/request"
+import { getRequest, putRequest, postFormRequest, postRequest, deleteRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 
 import placeholderPicture from "@assets/common/placeholder.png"
@@ -36,6 +37,9 @@ export function ActivityEdit(): JSX.Element {
         description?: string
     }>({})
 
+    const [originalRates, setOriginalRates] = useState<Rate[]>([])
+    const [draftRates, setDraftRates] = useState<DraftRate[]>([])
+
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const fetchActivity = useCallback( async () => {
@@ -52,6 +56,10 @@ export function ActivityEdit(): JSX.Element {
                 }
                 setActivityName(activityResponse.name)
                 setActivityDescription(activityResponse.description ? activityResponse.description : "")
+
+                setOriginalRates(activityResponse.rates ?? [])
+                setDraftRates((activityResponse.rates ?? []).map(rate => ({ ...rate, status: "unchanged" })))
+
             } catch (errorResponse) {
                 console.error("Error when fetching activity ", errorResponse)
                 setError("Impossible de charger l'activité")
@@ -85,6 +93,8 @@ export function ActivityEdit(): JSX.Element {
         return Object.keys(errors).length === 0
     }
 
+
+
     const handleSubmit = async () => {
         setError(null)
 
@@ -102,6 +112,40 @@ export function ActivityEdit(): JSX.Element {
                 `${Endpoints.ACTIVITY}/${uuid}`,
                 payload
             )
+
+            for (const rate of draftRates) {
+                switch (rate.status) {
+                    case "new":
+                        const rateCreatePayload: RateCreate = {
+                            title: rate.title,
+                            price: rate.price,
+                            activityUuid: uuid!
+                        }
+                        await postRequest<RateCreate, Rate>(
+                            `${Endpoints.RATES}/create`,
+                            rateCreatePayload
+                        )
+                        break
+
+                    case "updated":
+                        const rateUpdatePayload: RateUpdate = {
+                            title: rate.title,
+                            price: rate.price
+                        }
+                        await putRequest<RateUpdate, Rate>(
+                            `${Endpoints.RATES}/${rate.uuid}`,
+                            rateUpdatePayload
+                        )
+                        break
+
+                    case "deleted":
+                        await deleteRequest<void>(
+                            `${Endpoints.RATES}/${rate.uuid}`
+                        )
+                        break
+                }
+            }
+
             navigate(DASHBOARD_ROUTES.ACTIVITES.DETAIL(uuid!))
         } catch (errorResponse) {
             console.error("Error when updating activity ", errorResponse)
@@ -242,6 +286,13 @@ export function ActivityEdit(): JSX.Element {
                                     </div>
                                 )}
                             </form>
+                            <div className="dashboard-card-item">
+                                <CardHeader className="text-bigcontent text-primary">Tarifs</CardHeader>
+                                <RateEditor
+                                    initialRates={originalRates}
+                                    onChange={setDraftRates}
+                                />
+                            </div>
                         </div>
                     </Card>
                 </DashboardSection>

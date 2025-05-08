@@ -8,6 +8,7 @@ export const Endpoints = {
     SPECIES: "/species",
     ANIMAL: "/animal",
     ACTIVITY: "/activity",
+    RATES: "/rates",
 
 } as const
 

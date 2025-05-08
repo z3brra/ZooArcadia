@@ -34,3 +34,20 @@ export interface Rate {
     createdAt: Date
     updatedAt: Date | null
 }
+
+export interface RateCreate {
+    title: string
+    price: number
+    activityUuid: string
+}
+
+export interface RateUpdate {
+    title: string
+    price: number
+}
+
+export interface DraftRateCreate {
+    uuid: string
+    title: string
+    price: number
+}
