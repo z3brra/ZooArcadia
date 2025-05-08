@@ -16,6 +16,7 @@ export default defineConfig({
       "@components" : fileURLToPath(new URL('./src/components', import.meta.url)),
       "@hook" : fileURLToPath(new URL('./src/hook', import.meta.url)),
       "@api" : fileURLToPath(new URL('./src/api', import.meta.url)),
+      "@services" : fileURLToPath(new URL('./src/services', import.meta.url)),
       "@utils": fileURLToPath(new URL('./src/utils', import.meta.url)),
       "@form": fileURLToPath(new URL('./src/components/form', import.meta.url)),
     }
