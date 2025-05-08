@@ -1,5 +1,4 @@
-import { JSX, useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { JSX, useState } from 'react'
 
 import { DASHBOARD_ROUTES } from '@routes/paths'
 
@@ -11,110 +10,51 @@ import {
     PencilRuler
 } from "lucide-react"
 
-import { Habitat } from '@models/habitat'
-import { AnimalListItem } from '@models/animal'
-
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 import { DashboardSection } from '@components/dashboard/DashboardSection'
-import { 
-    Card,
-    CardMedia,
-    CardHeader,
-    CardContent
-} from '@components/dashboard/Card'
+import { Card, CardMedia, CardHeader, CardContent } from '@components/dashboard/Card'
 
 import { DeleteModal } from '@components/common/DeleteModal'
 import { MessageBox } from "@components/common/MessageBox"
 import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
 
-import { getRequest, deleteRequest } from '@api/request'
-import { Endpoints } from '@api/endpoints'
-
 import { Dropdown, DropdownItem, DropdownLabel } from '@components/common/Dropdown'
 import { CommonLink } from '@components/common/CommonLink'
 
 import placeholderPicture from "@assets/common/placeholder.png"
+import { useHabitatDetail } from "@hook/habitat/useHabitatDetail"
 
 
 export function HabitatDetail(): JSX.Element {
-    const { uuid } = useParams<{ uuid: string }>()
-    const navigate = useNavigate()
+    const {
+        habitat,
+        loading,
+        error,
+        setError,
+        animals,
+        animalsLoading,
+        animalsError,
+        removeHabitat
+    } = useHabitatDetail()
 
     const [showDelete, setShowDelete] = useState<boolean>(false)
 
-    const [habitat, setHabitat] = useState<Habitat | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const [showEmptyInfo, setShowEmptyInfo] = useState<boolean>(false)
-
-    const [animals, setAnimals] = useState<AnimalListItem[]>([])
-    const [animalsLoading, setAnimalsLoading] = useState<boolean>(false)
-    const [animalsError, setAnimalsError] = useState<string | null>(null)
-
-    useEffect(() => {
-        const fetchHabitat = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const habitatResponse = await getRequest<Habitat>(
-                    `${Endpoints.HABITAT}/${uuid}`
-                )
-                setHabitat(habitatResponse)
-                if (!habitatResponse) {
-                    setShowEmptyInfo(true)
-                }
-            } catch (errorResponse) {
-                console.error("Error when fetching habitat ", errorResponse)
-                setError("Impossible de charger l'habitat")
-            } finally {
-                setLoading(false)
-            }
-        }
-        if (uuid) {
-            fetchHabitat()
-        }
-    }, [uuid])
-
-    useEffect(() => {
-        if (!habitat) {
-            return
-        }
-        const fetchAnimals = async () => {
-            setAnimalsLoading(true)
-            setAnimalsError(null)
-            try {
-                const animalsResponse = await getRequest<AnimalListItem[]>(
-                    `${Endpoints.HABITAT}/${uuid}/animals?limit=4`
-                )
-                setAnimals(animalsResponse)
-            } catch (errorResponse) {
-                console.error("Error when fetching animals ", errorResponse)
-                setAnimalsError("Impossible de charger les animaux")
-            } finally {
-                setAnimalsLoading(false)
-            }
-        }
-        if (habitat) {
-            fetchAnimals()
-        }
-    }, [habitat, uuid])
-
-    const handleDelete = async () => {
-        setLoading(true)
-        setError(null)
-        try {
-            await deleteRequest<void>(
-                `${Endpoints.HABITAT}/${uuid}`
+    // A retirer / modifier quand j'aurais ajouter les spinners, et la page 404 (pour l'instant ça suffit)
+    if (!habitat) {
+        if (loading) {
+            return (
+                <MessageBox variant="info" message="Chargement..." onClose={() => {}}/>
             )
-        } catch (errorResponse) {
-            console.error("Error when delete habitat ", errorResponse)
-            setError("Impossible de supprimer l'habitat.")
-        } finally {
-            setLoading(false)
-            setShowDelete(false)
-            navigate(DASHBOARD_ROUTES.HABITATS.TO)
         }
+        return (
+            <>
+                <DashboardSection>
+                    <ReturnButton />
+                </DashboardSection>
+                <MessageBox message="Aucun habitat trouvé" variant="warning" onClose={() => {}}/>
+            </>
+        )
     }
 
     return (
@@ -130,7 +70,7 @@ export function HabitatDetail(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
-                    to={DASHBOARD_ROUTES.HABITATS.EDIT(uuid!)}
+                    to={DASHBOARD_ROUTES.HABITATS.EDIT(habitat!.uuid)}
                     variant="white"
                     icon={<SquarePen size={20} />}
                     className="text-content"
@@ -149,10 +89,6 @@ export function HabitatDetail(): JSX.Element {
 
             { error && (
                 <MessageBox variant="error" message={error} onClose={() => setError(null)} />
-            )}
-
-            { !loading && !error && showEmptyInfo && (
-                <MessageBox variant="info" message="Aucun habitat trouvé" onClose={() => setShowEmptyInfo(false)} />
             )}
 
             { !loading && !error && habitat && (
@@ -178,7 +114,7 @@ export function HabitatDetail(): JSX.Element {
                         { !animalsLoading && !animalsError && animals.length > 0 && (
                             <Dropdown triggerText="Voir les animaux">
                                 { animalsError && (
-                                    <MessageBox variant="error" message={animalsError} onClose={() => setAnimalsError(null)} />
+                                    <MessageBox variant="error" message={animalsError} onClose={() => {}} />
                                 )}
 
                                 { !animalsLoading && !animalsError && animals.map(animal => (
@@ -207,7 +143,10 @@ export function HabitatDetail(): JSX.Element {
                 isOpen={showDelete}
                 title="Êtes-vous sûr de vouloir supprimer l'habitat ?"
                 message="Cette action est irréversible. Cela supprimera l'habitat et toutes les données associées."
-                onConfirm={handleDelete}
+                onConfirm={async () => {
+                    await removeHabitat()
+                    setShowDelete(false)
+                }}
                 onCancel={() => setShowDelete(false)}
                 disabled={loading}
             />
