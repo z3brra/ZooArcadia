@@ -1,5 +1,4 @@
-import { JSX, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { JSX, useState } from 'react'
 
 import { DASHBOARD_ROUTES } from '@routes/paths'
 
@@ -10,16 +9,9 @@ import {
     PawPrint
 } from "lucide-react"
 
-import { Specie } from '@models/species'
-import { AnimalListItem } from '@models/animal'
-
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 import { DashboardSection } from '@components/dashboard/DashboardSection'
-import { 
-    Card,
-    CardHeader,
-    CardContent
-} from '@components/dashboard/Card'
+import { Card, CardHeader, CardContent } from '@components/dashboard/Card'
 
 import { DeleteModal } from '@components/common/DeleteModal'
 import { MessageBox } from "@components/common/MessageBox"
@@ -28,89 +20,37 @@ import { Button } from '@components/form/Button'
 import { Dropdown, DropdownItem, DropdownLabel } from '@components/common/Dropdown'
 import { CommonLink } from '@components/common/CommonLink'
 
-import { getRequest, deleteRequest } from '@api/request'
-import { Endpoints } from '@api/endpoints'
-
 import { formatDiet } from '@utils/formatters'
+import { useSpecieDetail } from '@hook/specie/useSpecieDetail'
 
 export function SpeciesDetail(): JSX.Element {
-    const { uuid } = useParams<{ uuid: string }>()
-    const navigate = useNavigate()
-
     const [showDelete, setShowDelete] = useState<boolean>(false)
 
-    const [specie, setSpecie] = useState<Specie | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const [showEmptyInfo, setShowEmptyInfo] = useState<boolean>(false)
+    const {
+        specie,
+        loading,
+        error,
+        setError,
+        animals,
+        animalsLoading,
+        animalsError,
+        removeSpecie
+    } = useSpecieDetail()
 
-    const [animals, setAnimals] = useState<AnimalListItem[]>([])
-    const [animalsLoading, setAnimalsLoading] = useState<boolean>(false)
-    const [animalsError, setAnimalsError] = useState<string | null>(null)
-
-    useEffect(() => {
-        const fetchSpecie = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const specieResponse = await getRequest<Specie>(
-                    `${Endpoints.SPECIES}/${uuid}`
-                )
-                setSpecie(specieResponse)
-                if (!specieResponse) {
-                    setShowEmptyInfo(true)
-                }
-            } catch (errorResponse) {
-                console.error("Error when fetching specie ", errorResponse)
-                setError("Impossible de charger l'espèce")
-            } finally {
-                setLoading(false)
-            }
-        }
-        if (uuid) {
-            fetchSpecie()
-        }
-    }, [uuid])
-
-    useEffect(() => {
-        if (!specie) {
-            return
-        }
-        const fetchAnimals = async () => {
-            setAnimalsLoading(true)
-            setAnimalsError(null)
-            try {
-                const animalsResponse = await getRequest<AnimalListItem[]>(
-                    `${Endpoints.SPECIES}/${uuid}/animals?limit=4`
-                )
-                setAnimals(animalsResponse)
-            } catch (errorResponse) {
-                console.error("Error when fetching animals ", errorResponse)
-                setAnimalsError("Impossible de charger les animaux")
-            } finally {
-                setAnimalsLoading(false)
-            }
-        }
-        if (specie) {
-            fetchAnimals()
-        }
-    }, [specie, uuid])
-
-    const handleDelete = async () => {
-        setLoading(true)
-        setError(null)
-        try {
-            await deleteRequest<void>(
-                `${Endpoints.SPECIES}/${uuid}`
+    if (!specie) {
+        if (loading) {
+            return (
+                <MessageBox variant="info" message="Chargement..." onClose={() => {}}/>
             )
-        } catch (errorResponse) {
-            console.error("Error when delete habitat ", errorResponse)
-            setError("Impossible de supprimer l'espèce animale.")
-        } finally {
-            setLoading(false)
-            setShowDelete(false)
-            navigate(DASHBOARD_ROUTES.SPECIES.TO)
         }
+        return (
+            <>
+                <DashboardSection>
+                    <ReturnButton />
+                </DashboardSection>
+                <MessageBox message="Aucune espèce trouvée" variant="warning" onClose={() => {}}/>
+            </>
+        )
     }
 
     return (
@@ -126,7 +66,7 @@ export function SpeciesDetail(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
-                    to={DASHBOARD_ROUTES.SPECIES.EDIT(uuid!)}
+                    to={DASHBOARD_ROUTES.SPECIES.EDIT(specie.uuid)}
                     variant="white"
                     icon={<SquarePen size={20} />}
                     className="text-content"
@@ -145,10 +85,6 @@ export function SpeciesDetail(): JSX.Element {
 
             { error && (
                 <MessageBox variant="error" message={error} onClose={() => setError(null)} />
-            )}
-
-            { !loading && !error && showEmptyInfo && (
-                <MessageBox variant="info" message="Aucune espèce trouvée" onClose={() => setShowEmptyInfo(false)} />
             )}
 
             { !loading && !error && specie && (
@@ -186,7 +122,7 @@ export function SpeciesDetail(): JSX.Element {
                         { !animalsLoading && !animalsError && animals.length > 0 && (
                             <Dropdown triggerText="Voir les animaux">
                                 { animalsError && (
-                                    <MessageBox variant="error" message={animalsError} onClose={() => setAnimalsError(null)} />
+                                    <MessageBox variant="error" message={animalsError} onClose={() => {}} />
                                 )}
 
                                 { !animalsLoading && !animalsError && animals.map(animal => (
@@ -211,7 +147,10 @@ export function SpeciesDetail(): JSX.Element {
                 isOpen={showDelete}
                 title="Êtes-vous sûr de vouloir supprimer l'espèce animale ?"
                 message="Cette action est irréversible. Cela supprimera l'espèce animale et toutes les données associées."
-                onConfirm={handleDelete}
+                onConfirm={async () => {
+                    await removeSpecie()
+                    setShowDelete(false)
+                }}
                 onCancel={() => setShowDelete(false)}
                 disabled={loading}
             />
