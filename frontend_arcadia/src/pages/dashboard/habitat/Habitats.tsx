@@ -5,7 +5,7 @@ import { DashboardSection } from "@components/dashboard/DashboardSection"
 import { DashboardPagination } from "@components/dashboard/DashboardPagination"
 
 import { HabitatsList } from "@components/dashboard/habitat/HabitatList"
-import { HabitatCreate } from "@models/habitat"
+// import { HabitatCreate } from "@models/habitat"
 
 import { CreateModal } from "@components/common/CreateModal"
 import { MessageBox } from "@components/common/MessageBox"
@@ -13,8 +13,6 @@ import { Button } from "@components/form/Button"
 import { Input } from "@components/form/Input"
 
 import { useHabitats } from "@hook/habitat/useHabitat"
-import { validateHabitat } from "@utils/validation"
-
 
 export function Habitats (): JSX.Element {
 
@@ -22,10 +20,6 @@ export function Habitats (): JSX.Element {
 
     const [habitatName, setHabitatName] = useState<string>("")
     const [habitatDescription, setHabitatDescription] = useState<string>("")
-    const [fieldErrors, setFieldErrors] = useState<{
-        habitatName?: string
-        habitatDescription?: string
-    }>({})
 
     const {
         habitats,
@@ -34,26 +28,15 @@ export function Habitats (): JSX.Element {
         loading,
         error,
         setCurrentPage,
-        addHabitat
+        fieldErrors,
+        submitCreation
     } = useHabitats()
 
-    const handleSubmit = () => {
-        const errors = validateHabitat(habitatName, habitatDescription)
-        setFieldErrors({
-            habitatName: errors.name,
-            habitatDescription: errors.description
-        })
-        if (Object.keys(errors).length) {
+    const handleSubmit = async () => {
+        const isCreated = await submitCreation(habitatName, habitatDescription)
+        if (!isCreated) {
             return
         }
-
-        const payload: HabitatCreate = {
-            name: habitatName.trim(),
-            description: habitatDescription.trim() || null
-        }
-        addHabitat(payload)
-        setHabitatName("")
-        setHabitatDescription("")
         setShowCreate(false)
     }
 
