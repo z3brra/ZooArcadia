@@ -41,8 +41,8 @@ export function useHabitats(initialPage = 1) {
         try {
             await createHabitat(payload)
             setCurrentPage(1)
-            setHabitatName("");
-            setHabitatDescription("");
+            setHabitatName("")
+            setHabitatDescription("")
             await loadHabitats()
         } catch {
             setError("Impossible de créer l'habitat")

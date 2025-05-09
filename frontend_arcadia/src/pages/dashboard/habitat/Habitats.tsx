@@ -5,7 +5,6 @@ import { DashboardSection } from "@components/dashboard/DashboardSection"
 import { DashboardPagination } from "@components/dashboard/DashboardPagination"
 
 import { HabitatsList } from "@components/dashboard/habitat/HabitatList"
-// import { HabitatCreate } from "@models/habitat"
 
 import { CreateModal } from "@components/common/CreateModal"
 import { MessageBox } from "@components/common/MessageBox"
@@ -18,15 +17,16 @@ export function Habitats (): JSX.Element {
 
     const [showCreate, setShowCreate] = useState<boolean>(false)
 
-    const [habitatName, setHabitatName] = useState<string>("")
-    const [habitatDescription, setHabitatDescription] = useState<string>("")
-
     const {
         habitats,
         currentPage,
         totalPages,
         loading,
         error,
+        habitatName,
+        setHabitatName,
+        habitatDescription,
+        setHabitatDescription,
         setCurrentPage,
         fieldErrors,
         submitCreation
