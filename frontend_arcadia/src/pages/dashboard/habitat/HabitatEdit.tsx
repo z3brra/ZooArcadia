@@ -1,157 +1,66 @@
-import { JSX, useCallback, useEffect, useState, useRef } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { JSX, useRef } from "react"
 
 import { DASHBOARD_ROUTES } from "@routes/paths"
 
 import { Leaf, XCircle, Save, Image } from "lucide-react"
-
-import { Habitat, HabitatUpdate } from "@models/habitat"
 
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 import { DashboardSection } from '@components/dashboard/DashboardSection'
 import { Card, CardMedia } from "@components/dashboard/Card"
 
 import { MessageBox } from "@components/common/MessageBox"
+import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
 import { Input } from "@components/form/Input"
 
-import { getRequest, putRequest, postFormRequest } from "@api/request"
-import { Endpoints } from "@api/endpoints"
-
 import placeholderPicture from "@assets/common/placeholder.png"
+import { useHabitatEdit } from "@hook/habitat/useHabitatEdit"
 
 export function HabitatEdit(): JSX.Element {
-    const { uuid } = useParams<{ uuid: string }>()
-    const navigate = useNavigate()
-
-    const [habitat, setHabitat] = useState<Habitat | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const [showEmptyInfo, setShowEmptyInfo] = useState<boolean>(false)
-
-    const [habitatName, setHabitatName] = useState<string>("")
-    const [habitatDescription, setHabitatDescription] = useState<string>("")
-    const [fieldErrors, setFieldErrors] = useState<{
-        habitatName?: string
-        habitatDescription?: string
-    }>({})
+    const {
+        habitat,
+        loading,
+        error,
+        setError,
+        habitatName,
+        setHabitatName,
+        habitatDescription,
+        setHabitatDescription,
+        fieldErrors,
+        submitChange,
+        uploadPicture
+    } = useHabitatEdit()
 
     const fileInputRef = useRef<HTMLInputElement>(null)
-
-    const fetchHabitat = useCallback(async () => {
-        const fetchHabitat = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const habitatResponse = await getRequest<Habitat>(
-                    `${Endpoints.HABITAT}/${uuid}`
-                )
-                setHabitat(habitatResponse)
-                if (!habitatResponse) {
-                    setShowEmptyInfo(true)
-                }
-                setHabitatName(habitatResponse.name)
-                setHabitatDescription(habitatResponse.description ? habitatResponse.description : "")
-            } catch (errorResponse) {
-                console.error("Error when fetching habitat ", errorResponse)
-                setError("Impossible de charger l'habitat.")
-            } finally {
-                setLoading(false)
-            }
-        }
-        if (uuid) {
-            fetchHabitat()
-        }
-    }, [uuid])
-
-    useEffect(() => {
-        fetchHabitat()
-    }, [fetchHabitat])
-
-    const validateFields = () => {
-        const errors: typeof fieldErrors = {}
-        if (!habitatName.trim()) {
-            errors.habitatName = "Le nom de l'habitat est requis."
-        } else if (habitatName.length < 2) {
-            errors.habitatName = "Le nom doit faire plus de 2 caractères."
-        } else if (habitatName.length > 36) {
-            errors.habitatName = "Le nom ne doit pas dépasser 36 caractères."
-        }
-        if (habitatDescription.trim() && habitatDescription.length < 10) {
-            errors.habitatDescription = "La description doit faire plus de 10 caractères."
-        }
-        setFieldErrors(errors)
-        return Object.keys(errors).length === 0
-    }
-
-    const handleSubmit = async () => {
-        setError(null)
-
-        if (!validateFields()) {
-            return
-        }
-
-        setLoading(true)
-        try {
-            const payload: HabitatUpdate = {
-                name: habitatName.trim(),
-                description: habitatDescription.trim() || null
-            }
-            await putRequest<HabitatUpdate, Habitat>(
-                `${Endpoints.HABITAT}/${uuid}`,
-                payload
-            )
-            navigate(DASHBOARD_ROUTES.HABITATS.DETAIL(uuid!))
-        } catch (errorResponse) {
-            console.error("Error when updating habitat ", errorResponse)
-            setError("Impossible de modifier l'habitat.")
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const onClickChangePicture = () => {
         fileInputRef.current?.click()
     }
 
-    const onFilechange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onFilechange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
-        if (!file || !uuid) {
-            return
+        if (file) {
+            uploadPicture(file)
         }
-        const allowed = /\.(jpe?g|png|webp)$/i
-        if (!allowed.test(file.name)) {
-            setError("Format d'image non supporté (jpg, png, webp).")
-            return
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ""
         }
+    }
 
-        const form = new FormData()
-        form.append("image", file)
-
-        setLoading(true)
-        setError(null)
-
-        try {
-            if (habitat?.pictures?.[0]?.uuid) {
-                await postFormRequest<void>(
-                    `${Endpoints.HABITAT}/${uuid}/change-picture?pictureUuid=${habitat.pictures[0].uuid}`,
-                    form
-                )
-            } else {
-                await postFormRequest<void>(
-                    `${Endpoints.HABITAT}/${uuid}/add-picture`,
-                    form
-                )
-            }
-            await fetchHabitat()
-        } catch {
-            setError("Impossible d'uploader l'image.")
-        } finally {
-            setLoading(false)
-            if (fileInputRef.current) {
-                fileInputRef.current.value = ""
-            }
+    if (!habitat) {
+        if (loading) {
+            return (
+                <MessageBox variant="info" message="Chargement..." onClose={() => {}}/>
+            )
         }
+        return (
+            <>
+                <DashboardSection>
+                    <ReturnButton />
+                </DashboardSection>
+                <MessageBox message="Aucun habitat trouvé" variant="warning" onClose={() => {}}/>
+            </>
+        )
     }
 
     return (
@@ -163,7 +72,7 @@ export function HabitatEdit(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
-                    to={DASHBOARD_ROUTES.HABITATS.DETAIL(uuid!)}
+                    to={DASHBOARD_ROUTES.HABITATS.DETAIL(habitat.uuid!)}
                     variant="white"
                     icon={<XCircle size={20} />}
                     className="text-content"
@@ -173,7 +82,8 @@ export function HabitatEdit(): JSX.Element {
                 <Button
                     variant="primary"
                     icon={<Save size={20} />}
-                    onClick={() => handleSubmit()}
+                    disabled={loading}
+                    onClick={submitChange}
                     className="text-content"
                 >
                     Enregistrer
@@ -182,10 +92,6 @@ export function HabitatEdit(): JSX.Element {
 
             { error && (
                 <MessageBox variant="error" message={error} onClose={() => setError(null)} />
-            )}
-
-            { !loading && !error && showEmptyInfo && (
-                <MessageBox variant="info" message="Aucun habitat trouvé" onClose={() => setShowEmptyInfo(false)} />
             )}
 
             { !loading && !error && habitat && (

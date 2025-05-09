@@ -1,6 +1,6 @@
 import { PaginatedResponse } from "@components/dashboard/DashboardPagination"
-import { Habitat, HabitatListItem, HabitatCreate } from "@models/habitat"
-import { getRequest, postRequest, deleteRequest } from "@api/request"
+import { Habitat, HabitatListItem, HabitatCreate, HabitatUpdate } from "@models/habitat"
+import { getRequest, postRequest, deleteRequest, putRequest, postFormRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 import { AnimalListItem } from "@models/animal"
 
@@ -38,10 +38,41 @@ export async function createHabitat(
     )
 }
 
+export async function updateHabitat(
+    uuid: string,
+    payload: HabitatUpdate
+): Promise<Habitat> {
+    return putRequest<HabitatUpdate, Habitat>(
+        `${Endpoints.HABITAT}/${uuid}`,
+        payload
+    )
+}
+
 export async function deleteHabitat(
     uuid: string
 ): Promise<void> {
     return deleteRequest<void>(
         `${Endpoints.HABITAT}/${uuid}`
     )
+}
+
+export async function updateHabitatPicture(
+    uuid: string,
+    file: File,
+    existingPictureUuid?: string
+): Promise<void> {
+    const form = new FormData()
+    form.append("image", file)
+
+    if (existingPictureUuid) {
+        return postFormRequest<void>(
+            `${Endpoints.HABITAT}/${uuid}/change-picture?pictureUuid=${existingPictureUuid}`,
+            form
+        )
+    } else {
+        return postFormRequest<void>(
+            `${Endpoints.HABITAT}/${uuid}/add-picture`,
+            form
+        )
+    }
 }
