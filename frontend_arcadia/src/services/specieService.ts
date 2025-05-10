@@ -1,5 +1,5 @@
 import { PaginatedResponse } from "@components/dashboard/DashboardPagination";
-import { Specie, SpeciesListItem, SpecieCreate, SpecieUpdate } from "@models/species";
+import { Specie, SpeciesListItem, SpecieCreate, SpecieUpdate, SpeciesAllResponse, SpeciesAllList } from "@models/species";
 import { getRequest, postRequest, putRequest, deleteRequest } from "@api/request";
 import { Endpoints } from "@api/endpoints";
 import { AnimalListItem } from "@models/animal";
@@ -9,6 +9,12 @@ export async function fetchSpecies(
 ): Promise<PaginatedResponse<SpeciesListItem>> {
     return getRequest<PaginatedResponse<SpeciesListItem>>(
         `${Endpoints.SPECIES}?page=${page}`
+    )
+}
+
+export async function fetchAllSpecies(): Promise<SpeciesAllResponse<SpeciesAllList>>{
+    return getRequest<SpeciesAllResponse<SpeciesAllList>>(
+        `${Endpoints.SPECIES}/all`
     )
 }
 
@@ -31,8 +37,8 @@ export async function fetchSpecieAnimals(
 
 export function createSpecie(
     payload: SpecieCreate
-): Promise<SpeciesListItem> {
-    return postRequest<SpecieCreate, SpeciesListItem>(
+): Promise<Specie> {
+    return postRequest<SpecieCreate, Specie>(
         `${Endpoints.SPECIES}/create`,
         payload
     )

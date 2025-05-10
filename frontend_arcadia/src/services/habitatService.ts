@@ -1,5 +1,5 @@
 import { PaginatedResponse } from "@components/dashboard/DashboardPagination"
-import { Habitat, HabitatListItem, HabitatCreate, HabitatUpdate } from "@models/habitat"
+import { Habitat, HabitatListItem, HabitatCreate, HabitatUpdate, HabitatAllResponse, HabitatAllList } from "@models/habitat"
 import { getRequest, postRequest, deleteRequest, putRequest, postFormRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 import { AnimalListItem } from "@models/animal"
@@ -9,6 +9,12 @@ export async function fetchHabitats(
 ): Promise<PaginatedResponse<HabitatListItem>> {
     return getRequest<PaginatedResponse<HabitatListItem>>(
         `${Endpoints.HABITAT}?page=${page}`
+    )
+}
+
+export async function fetchAllHabitats(): Promise<HabitatAllResponse<HabitatAllList>>{
+    return getRequest<HabitatAllResponse<HabitatAllList>>(
+        `${Endpoints.HABITAT}/all`
     )
 }
 
@@ -31,8 +37,8 @@ export async function fetchHabitatAnimals(
 
 export async function createHabitat(
     payload: HabitatCreate
-): Promise<HabitatListItem> {
-    return postRequest<HabitatCreate, HabitatListItem>(
+): Promise<Habitat> {
+    return postRequest<HabitatCreate, Habitat>(
         `${Endpoints.HABITAT}/create`,
         payload
     )
