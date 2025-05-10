@@ -1,15 +1,8 @@
-import { JSX, useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { JSX, useState } from 'react'
 
 import { DASHBOARD_ROUTES } from '@routes/paths'
 
-import {
-    LandPlot,
-    SquarePen,
-    Trash2,
-} from "lucide-react"
-
-import { Activity } from '@models/activity'
+import { LandPlot, SquarePen, Trash2, } from "lucide-react"
 
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
 import { DashboardSection } from '@components/dashboard/DashboardSection'
@@ -21,65 +14,34 @@ import { MessageBox } from '@components/common/MessageBox'
 import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from '@components/form/Button'
 
-import { deleteRequest, getRequest } from '@api/request'
-import { Endpoints } from '@api/endpoints'
-
 import placeholderPicture from "@assets/common/placeholder.png"
+import { useActivityDetail } from '@hook/activity/useActivityDetail'
 
 export function ActivityDetail(): JSX.Element {
-    const { uuid } = useParams<{ uuid: string }>()
-
-    const navigate = useNavigate()
-
     const [showDelete, setShowDelete] = useState<boolean>(false)
 
-    const [activity, setActivity] = useState<Activity | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const [showEmptyInfo, setShowEmptyInfo] = useState<boolean>(false)
+    const {
+        activity,
+        loading,
+        error, setError,
+        removeActivity
+    } = useActivityDetail()
 
-
-    useEffect(() => {
-        const fetchActivity = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const activityResponse = await getRequest<Activity>(
-                    `${Endpoints.ACTIVITY}/${uuid}`
-                )
-                setActivity(activityResponse)
-                if (!activityResponse) {
-                    setShowEmptyInfo(true)
-                }
-            } catch (errorResponse) {
-                console.error("Error when fetching activity ", errorResponse)
-                setError("Impossible de charger l'activité")
-            } finally {
-                setLoading(false)
-            }
-        }
-        if (uuid) {
-            fetchActivity()
-        }
-    }, [uuid])
-
-    const handleDelete = async () => {
-        setLoading(true)
-        setError(null)
-        try {
-            await deleteRequest<void>(
-                `${Endpoints.ACTIVITY}/${uuid}`
+    if (!activity) {
+        if (loading) {
+            return (
+                <MessageBox variant="info" message="Chargement..." onClose={() => {}}/>
             )
-            setShowDelete(false)
-            navigate(DASHBOARD_ROUTES.ACTIVITES.TO)
-        } catch (errorResponse) {
-            console.error("Error when delete activity ", errorResponse)
-            setError("Impossible de supprimer l'activité")
-        } finally {
-            setLoading(false)
         }
+        return (
+            <>
+                <DashboardSection>
+                    <ReturnButton />
+                </DashboardSection>
+                <MessageBox message="Aucune activité trouvée" variant="warning" onClose={() => {}}/>
+            </>
+        )
     }
-
 
     return (
         <>
@@ -94,7 +56,7 @@ export function ActivityDetail(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
-                    to={DASHBOARD_ROUTES.ACTIVITES.EDIT(uuid!)}
+                    to={DASHBOARD_ROUTES.ACTIVITES.EDIT(activity.uuid)}
                     variant="white"
                     icon={<SquarePen size={20} />}
                     className="text-content"
@@ -104,6 +66,7 @@ export function ActivityDetail(): JSX.Element {
                 <Button
                     variant="delete"
                     icon={<Trash2 size={20} />}
+                    disabled={loading}
                     onClick={() => setShowDelete(true)}
                     className="text-content"
                 >
@@ -113,10 +76,6 @@ export function ActivityDetail(): JSX.Element {
 
             { error && (
                 <MessageBox variant="error" message={error} onClose={() => setError(null)} />
-            )}
-
-            { !loading && !error && showEmptyInfo && (
-                <MessageBox variant="info" message="Aucune activité trouvée" onClose={() => setShowEmptyInfo(false)} />
             )}
 
             { !loading && !error && activity && (
@@ -158,16 +117,17 @@ export function ActivityDetail(): JSX.Element {
                 </DashboardSection>
             )}
 
-
             <DeleteModal
                 isOpen={showDelete}
                 title="Êtes-vous sûr de vouloir supprimer l'activité ?"
                 message="Cette action est irréversible. Cela supprimera l'activité et toutes les données associées."
-                onConfirm={handleDelete}
+                onConfirm={async () => {
+                    await removeActivity(),
+                    setShowDelete(false)
+                }}
                 onCancel={() => setShowDelete(false)}
                 disabled={loading}
             />
-
         </>
     )
 }
