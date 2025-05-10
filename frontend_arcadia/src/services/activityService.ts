@@ -46,6 +46,33 @@ export async function deleteActivity(
     )
 }
 
+export async function createRate(
+    payload: RateCreate
+): Promise<Rate> {
+    return postRequest<RateCreate, Rate>(
+        `${Endpoints.RATES}/create`,
+        payload
+    )
+}
+
+export async function updateRate(
+    uuid: string,
+    payload: RateUpdate
+): Promise<Rate> {
+    return putRequest<RateUpdate, Rate>(
+        `${Endpoints.RATES}/${uuid}`,
+        payload
+    )
+}
+
+export async function deleteRate(
+    uuid: string
+): Promise<void> {
+    return deleteRequest<void>(
+        `${Endpoints.RATES}/${uuid}`
+    )
+}
+
 export async function updateActivityPicture(
     uuid: string,
     file: File,
