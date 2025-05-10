@@ -1,14 +1,8 @@
-import { JSX, useEffect, useState, useRef, useCallback } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { JSX, useRef } from 'react'
 
 import { DASHBOARD_ROUTES } from '@routes/paths'
 
 import { PawPrint, XCircle, Save, Image} from 'lucide-react'
-
-import { Animal, AnimalUpdate } from '@models/animal'
-import { SpeciesAllList, SpeciesAllResponse } from "@models/species"
-import { HabitatAllList, HabitatAllResponse } from "@models/habitat"
-
 
 import { DashboardPageHeader } from '@components/dashboard/DashboardPageHeader'
 import { DashboardSection } from '@components/dashboard/DashboardSection'
@@ -16,259 +10,81 @@ import { DashboardSection } from '@components/dashboard/DashboardSection'
 import { Card, CardMedia } from '@components/dashboard/Card'
 
 import { MessageBox } from '@components/common/MessageBox'
+import { ReturnButton } from '@components/common/ReturnLink'
 import { Button } from "@components/form/Button"
 import { Input } from "@components/form/Input"
 import { CustomSelect, SelectOption } from "@components/form/CustomSelect"
 
-import { getRequest, putRequest, postFormRequest} from "@api/request"
-import { Endpoints } from "@api/endpoints"
-import { isValidDate } from "@utils/dateUtils"
-import { formatDateForInput } from '@utils/formatters'
-
 import placeholderPicture from "@assets/common/placeholder.png"
+import { useAnimalEdit } from '@hook/animal/useAnimalEdit'
 
 export function AnimalEdit(): JSX.Element {
-    const { uuid } = useParams<{ uuid: string }>()
-    const navigate = useNavigate()
+    const {
+        animal,
+        loading,
+        error, setError,
 
-    const [animal, setAnimal] = useState<Animal | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const [showEmptyInfo, setShowEmptyInfo] = useState<boolean>(false)
+        animalName, setAnimalName,
+        animalIsMale, setAnimalIsMale,
+        animalSize, setAnimalSize,
+        animalWeight, setAnimalWeight,
+        animalIsFertile, setAnimalIsFertile,
+        animalBirthDate, setAnimalBirthDate,
+        animalArrivalDate, setAnimalArrivalDate,
+        animalSpeciesUuid, setAnimalSpeciesUuid,
+        speciesOptions,
+        speciesOptionsError, setSpeciesOptionsError,
+        animalHabitatUuid, setAnimalHabitatUuid,
+        habitatOptions,
+        habitatOptionsError, setHabitatOptionsError,
 
-    const [animalName, setAnimalName] = useState<string>("")
-    const [animalIsMale, setAnimalIsMale] = useState<boolean | null>(null)
+        fieldErrors,
+
+        submitChange,
+        uploadPicture
+    } = useAnimalEdit()
+
     const SEX: SelectOption[] = [
         { value: true, label: "Mâle"},
         { value: false, label: "Femelle"},
     ]
-    const [animalSize, setAnimalSize] = useState<number | null>(null)
-    const [animalWeight, setAnimalWeight] = useState<number | null>(null)
-    const [animalIsFertile, setAnimalIsFertile] = useState<boolean | null>(null)
     const FERTILE: SelectOption[] = [
         { value: true, label: "Non" },
         { value: false, label: "Oui" },
     ]
-    const [animalBirthDate, setAnimalBirthDate] = useState<string>("")
-    const [animalArrivalDate, setAnimalArrivalDate] = useState<string>("")
-
-    const [animalSpeciesUuid, setAnimalSpeciesUuid] = useState<string>("")
-    const [speciesOptions, setSpeciesOptions] = useState<SelectOption[]>([])
-    const [speciesOptionsError, setSpeciesOptionsError] = useState<string | null>(null)
-
-    const [animalHabitatUuid, setAnimalHabitatUuid] = useState<string | null>(null)
-    const [habitatOptions, setHabitatOptions] = useState<SelectOption[]>([])
-    const [habitatOptionsError, setHabitatOptionsError] = useState<string | null>(null)
-
-    const [fieldErrors, setFieldsErrors] = useState<{
-        name?: string
-        isMale?: string
-        size?: string
-        weight?: string
-        isFertile?: string
-        birthDate?: string
-        arrivalDate?: string
-        speciesUuid?: string
-        habitatUuid?: string
-    }>({})
 
     const fileInputRef = useRef<HTMLInputElement>(null)
-
-    const fetchAnimal = useCallback( async () => {
-        const fectchAnimal = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const animalResponse = await getRequest<Animal>(
-                    `${Endpoints.ANIMAL}/${uuid}`
-                )
-                setAnimal(animalResponse)
-                if (!animalResponse) {
-                    setShowEmptyInfo(true)
-                }
-                setAnimalName(animalResponse.name)
-                setAnimalIsMale(animalResponse.isMale)
-                setAnimalSize(animalResponse.size)
-                setAnimalWeight(animalResponse.weight)
-                setAnimalIsFertile(animalResponse.isFertile)
-                setAnimalBirthDate(formatDateForInput(animalResponse.birthDate))
-                setAnimalArrivalDate(formatDateForInput(animalResponse.arrivalDate))
-                setAnimalSpeciesUuid(animalResponse.speciesUuid)
-                setAnimalHabitatUuid(animalResponse.habitatUuid)
-
-            } catch (errorResponse) {
-                console.error("Error when fetching animal ", errorResponse)
-                setError("Impossible de charger l'animal")
-            } finally {
-                setLoading(false)
-            }
-        }
-        if (uuid) {
-            fectchAnimal()
-        }
-    }, [uuid])
-
-    useEffect(() => {
-        fetchAnimal()
-    }, [fetchAnimal])
-
-    useEffect(() => {
-        const loadSpecies = async () => {
-            setSpeciesOptionsError(null)
-            try {
-                const speciesResponse = await getRequest<SpeciesAllResponse<SpeciesAllList>>(
-                    `${Endpoints.SPECIES}/all`
-                )
-                setSpeciesOptions(
-                    speciesResponse.data.map((specie) => ({ value: specie.uuid, label: specie.commonName}))
-                )
-            } catch {
-                setSpeciesOptionsError("Impossible de charger la liste des espèces")
-            }
-        }
-        loadSpecies()
-    }, [])
-
-    useEffect(() => {
-        const loadHabitat = async () => {
-            setHabitatOptionsError(null)
-            try {
-                const habitatResponse = await getRequest<HabitatAllResponse<HabitatAllList>>(
-                    `${Endpoints.HABITAT}/all`
-                )
-                setHabitatOptions(habitatResponse.data.map((habitat) => ({ value: habitat.uuid, label: habitat.name})))
-            } catch {
-                setHabitatOptionsError("Impossible de charger la liste des habitats")
-            }
-        }
-        loadHabitat()
-    }, [])
-
-    const validateFields = () => {
-        const errors: typeof fieldErrors = {}
-        if (!animalName.trim()) {
-            errors.name = "Le nom de l'animal est requis."
-        } else if (animalName.length < 2) {
-            errors.name = "Le nom doit faire plus de 2 caractères."
-        } else if (animalName.length > 36) {
-            errors.name = "Le nom ne doit pas faire plus de 36 caractères."
-        }
-
-        if (animalIsMale === null) {
-            errors.isMale = "Le sexe de l'animal est requis."
-        }
-
-        if (animalSize === null) {
-            errors.size = "La taille est requise."
-        } else if (animalSize <= 0) {
-            errors.size = "La taille doit être un nombre positif"
-        }
-
-        if (animalWeight === null) {
-            errors.weight = "Le poids est requis."
-        } else if (animalWeight <= 0) {
-            errors.weight = "Le poids doit être un nombre positif"
-        }
-
-        if (animalIsFertile === null) {
-            errors.isFertile = "L'état de l'animal est requis."
-        }
-
-        if (!animalBirthDate) {
-            errors.birthDate = "La date de naissance est requise."
-        } else if (!isValidDate(animalBirthDate)) {
-            errors.birthDate = "Format de date invalide."
-        }
-
-        if (!animalArrivalDate) {
-            errors.arrivalDate = "La date d'arrivée est requise."
-        } else if (!isValidDate(animalArrivalDate)) {
-            errors.arrivalDate = "Format de date invalide."
-        }
-
-        if (!animalSpeciesUuid.trim()) {
-            errors.speciesUuid = "L'espèce est requise."
-        }
-
-        setFieldsErrors(errors)
-        return Object.keys(errors).length === 0
-    }
-
-    const handleSubmit = async () => {
-        setError(null)
-
-        if (!validateFields()) {
-            return
-        }
-
-        setLoading(true)
-        try {
-            const payload: AnimalUpdate = {
-                name: animalName.trim(),
-                isMale: animalIsMale!,
-                size: animalSize!,
-                weight: animalWeight!,
-                isFertile: animalIsFertile!,
-                birthDate: animalBirthDate.trim(),
-                arrivalDate: animalArrivalDate.trim(),
-                speciesUuid: animalSpeciesUuid.trim(),
-                habitatUuid: animalHabitatUuid ? animalHabitatUuid.trim() : null
-            }
-            await putRequest<AnimalUpdate, Animal>(
-                `${Endpoints.ANIMAL}/${uuid}`,
-                payload
-            )
-            navigate(DASHBOARD_ROUTES.ANIMALS.DETAIL(uuid!))
-        } catch (errorResponse) {
-            console.error("Error when creating animal ", errorResponse)
-            setError("Impossible de créer l'animal")
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const onClickChangePicture = () => {
         fileInputRef.current?.click()
     }
 
-    const onFilechange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onFilechange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
-        if (!file || !uuid) {
-            return
+        if (file) {
+            uploadPicture(file)
         }
-        const allowed = /\.(jpe?g|png|webp)$/i
-        if (!allowed.test(file.name)) {
-            setError("Format d'image non supporté (jpg, png, webp).")
-            return
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ""
         }
+    }
 
-        const form = new FormData()
-        form.append("image", file)
-
-        setLoading(true)
-        setError(null)
-
-        try {
-            if (animal?.pictures?.[0]?.uuid) {
-                await postFormRequest<void>(
-                    `${Endpoints.ANIMAL}/${uuid}/change-picture?pictureUuid=${animal.pictures[0].uuid}`,
-                    form
-                )
-            } else {
-                await postFormRequest<void>(
-                    `${Endpoints.ANIMAL}/${uuid}/add-picture`,
-                    form
+    if (!animal) {
+        if (loading) {
+            if (loading) {
+                return (
+                    <MessageBox variant="info" message="Chargement..." onClose={() => {}}/>
                 )
             }
-            await fetchAnimal()
-        } catch {
-            setError("Impossible d'uploader l'image.")
-        } finally {
-            setLoading(false)
-            if (fileInputRef.current) {
-                fileInputRef.current.value = ""
-            }
         }
+        return (
+            <>
+                <DashboardSection>
+                    <ReturnButton />
+                </DashboardSection>
+                <MessageBox message="Aucun habitat trouvé" variant="warning" onClose={() => {}}/>
+            </>
+        )
     }
 
     return (
@@ -280,7 +96,7 @@ export function AnimalEdit(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
-                    to={DASHBOARD_ROUTES.ANIMALS.DETAIL(uuid!)}
+                    to={DASHBOARD_ROUTES.ANIMALS.DETAIL(animal.uuid)}
                     variant="white"
                     icon={<XCircle size={20} />}
                     className="text-content"
@@ -290,7 +106,8 @@ export function AnimalEdit(): JSX.Element {
                 <Button
                     variant="primary"
                     icon={<Save size={20} />}
-                    onClick={() => handleSubmit()}
+                    disabled={loading}
+                    onClick={submitChange}
                     className="text-content"
                 >
                     Enregistrer
@@ -299,10 +116,6 @@ export function AnimalEdit(): JSX.Element {
 
             { error && (
                 <MessageBox variant="error" message={error} onClose={() => setError(null)} />
-            )}
-
-            { !loading && !error && showEmptyInfo && (
-                <MessageBox variant="info" message="Aucun animal trouvé" onClose={() => setShowEmptyInfo(false)} />
             )}
 
             { !loading && !error && animal && (
@@ -340,9 +153,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalName}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAnimalName(event.currentTarget.value)}
                             />
-                            { fieldErrors.name && (
+                            { fieldErrors.animalName && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.name}
+                                    {fieldErrors.animalName}
                                 </div>
                             )}
 
@@ -358,9 +171,9 @@ export function AnimalEdit(): JSX.Element {
                                     onChange={setAnimalSpeciesUuid}
                                     disabled={speciesOptions.length === 0}
                                 />
-                                { fieldErrors.speciesUuid && (
+                                { fieldErrors.animalSpeciesUuid && (
                                     <div className="modal-form-field-error text-small">
-                                        {fieldErrors.speciesUuid}
+                                        {fieldErrors.animalSpeciesUuid}
                                     </div>
                                 )}
                                 </>
@@ -373,9 +186,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalIsMale}
                                 onChange={setAnimalIsMale}
                             />
-                            { fieldErrors.isMale && (
+                            { fieldErrors.animalIsMale && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.isMale}
+                                    {fieldErrors.animalIsMale}
                                 </div>
                             )}
 
@@ -386,9 +199,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalSize!}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAnimalSize(event.currentTarget.valueAsNumber)}
                             />
-                            { fieldErrors.size && (
+                            { fieldErrors.animalSize && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.size}
+                                    {fieldErrors.animalSize}
                                 </div>
                             )}
 
@@ -399,9 +212,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalWeight!}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAnimalWeight(event.currentTarget.valueAsNumber)}
                             />
-                            { fieldErrors.weight && (
+                            { fieldErrors.animalWeight && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.weight}
+                                    {fieldErrors.animalWeight}
                                 </div>
                             )}
 
@@ -412,9 +225,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalIsFertile}
                                 onChange={setAnimalIsFertile}
                             />
-                            { fieldErrors.isFertile && (
+                            { fieldErrors.animalIsFertile && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.isFertile}
+                                    {fieldErrors.animalIsFertile}
                                 </div>
                             )}
 
@@ -425,9 +238,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalBirthDate}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAnimalBirthDate(event.currentTarget.value)}
                             />
-                            { fieldErrors.birthDate && (
+                            { fieldErrors.animalBirthDate && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.birthDate}
+                                    {fieldErrors.animalBirthDate}
                                 </div>
                             )}
 
@@ -438,9 +251,9 @@ export function AnimalEdit(): JSX.Element {
                                 value={animalArrivalDate}
                                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAnimalArrivalDate(event.currentTarget.value)}
                             />
-                            { fieldErrors.arrivalDate && (
+                            { fieldErrors.animalArrivalDate && (
                                 <div className="modal-form-field-error text-small">
-                                    {fieldErrors.arrivalDate}
+                                    {fieldErrors.animalArrivalDate}
                                 </div>
                             )}
 
@@ -456,21 +269,17 @@ export function AnimalEdit(): JSX.Element {
                                         onChange={setAnimalHabitatUuid}
                                         disabled={habitatOptions.length === 0}
                                     />
-                                    { fieldErrors.habitatUuid && (
+                                    { fieldErrors.animalHabitatUuid && (
                                         <div className="modal-form-field-error text-small">
-                                            {fieldErrors.habitatUuid}
+                                            {fieldErrors.animalHabitatUuid}
                                         </div>
                                     )}
                                 </>
                             )}
-
                         </form>
                     </Card>
                 </DashboardSection>
             )}
-
-
         </>
     )
-
 }
