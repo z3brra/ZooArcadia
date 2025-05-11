@@ -46,12 +46,22 @@ class Habitat
     #[ORM\OneToMany(targetEntity: HabitatPicture::class, mappedBy: 'habitat', orphanRemoval: true, cascade: ['remove'])]
     private Collection $habitatPictures;
 
+    /**
+     * @var Collection<int, HabitatReport>
+     */
+    #[ORM\OneToMany(targetEntity: HabitatReport::class, mappedBy: 'habitat', orphanRemoval: true)]
+    private Collection $habitatReports;
+
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $lastState = null;
+
 
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->animals = new ArrayCollection();
         $this->habitatPictures = new ArrayCollection();
+        $this->habitatReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +185,48 @@ class Habitat
                 $habitatPicture->setHabitat(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HabitatReport>
+     */
+    public function getHabitatReports(): Collection
+    {
+        return $this->habitatReports;
+    }
+
+    public function addHabitatReport(HabitatReport $habitatReport): static
+    {
+        if (!$this->habitatReports->contains($habitatReport)) {
+            $this->habitatReports->add($habitatReport);
+            $habitatReport->setHabitat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHabitatReport(HabitatReport $habitatReport): static
+    {
+        if ($this->habitatReports->removeElement($habitatReport)) {
+            // set the owning side to null (unless already changed)
+            if ($habitatReport->getHabitat() === $this) {
+                $habitatReport->setHabitat(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLastState(): ?string
+    {
+        return $this->lastState;
+    }
+
+    public function setLastState(?string $lastState): static
+    {
+        $this->lastState = $lastState;
 
         return $this;
     }

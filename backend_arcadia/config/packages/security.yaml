@@ -49,6 +49,9 @@ security:
         - { path: ^/api/habitat/create, roles: ROLE_ADMIN }
         - { path: ^/api/habitat, roles: ROLE_ADMIN, methods: [DELETE, PUT] }
 
+        - { path: ^/api/habitat-report/create, roles: [ROLE_ADMIN, ROLE_VET] }
+        - { path: ^/api/habitat-report, roles: [ROLE_ADMIN, ROLE_VET], methods: [DELETE, PUT] }
+
         - { path: ^/api/activity/create, roles: ROLE_ADMIN }
         - { path: ^/api/activity, roles: ROLE_ADMIN, methods: [DELETE, PUT] }
 

@@ -5,7 +5,7 @@ namespace App\Service\Habitat;
 use App\Repository\HabitatRepository;
 use App\DTO\Habitat\HabitatReadDTO;
 use App\DTO\Animal\AnimalReadDTO;
-
+use App\DTO\HabitatReport\HabitatReportReadDTO;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ShowHabitatService
@@ -43,6 +43,27 @@ class ShowHabitatService
         }
 
         return $animalsDTOs;
+    }
+
+    public function showHabitatReports(string $uuid, ?int $limit): array
+    {
+        $habitat = $this->habitatRepository->findOneByUuid($uuid);
+        if (!$habitat) {
+            throw new NotFoundHttpException("Habitat not found or does not exist");
+        }
+
+        if ($limit === null) {
+            $reports = $habitat->getHabitatReports();
+        } else {
+            $reports = $habitat->getHabitatReports()->slice(0, $limit);
+        }
+        $reportsDTOs = [];
+
+        foreach ($reports as $report) {
+            $reportsDTOs[] = HabitatReportReadDTO::fromEntity($report);
+        }
+
+        return $reportsDTOs;
     }
 
     public function showAllHabitat(): array {

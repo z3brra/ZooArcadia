@@ -174,6 +174,42 @@ final class HabitatController extends AbstractController
         }
     }
 
+    #[Route('/{uuid}/reports', name: 'show_reports', methods: 'GET')]
+    public function showReports(
+        string $uuid,
+        Request $request,
+        ShowHabitatService $showHabitatService
+    ): JsonResponse {
+        try {
+            $limit = $request->query->get('limit', null);
+
+            $reports = $showHabitatService->showHabitatReports($uuid, $limit);
+
+            $responseData = $this->serializer->serialize(
+                data: $reports,
+                format: 'json',
+                context: ['groups' => 'habitat-report:list']
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                json: true
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     #[Route('/{uuid}', name: 'update', methods: 'PUT')]
     public function update(
         string $uuid,

@@ -21,6 +21,9 @@ class HabitatReadDTO
     public ?string $description;
 
     #[Groups(['habitat:read'])]
+    public ?string $lastState;
+
+    #[Groups(['habitat:read'])]
     public DateTimeImmutable $createdAt;
 
     #[Groups(['habitat:read'])]
@@ -36,6 +39,7 @@ class HabitatReadDTO
         string $uuid,
         string $name,
         ?string $description = null,
+        ?string $lastState = null,
         DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt = null,
         ?int $animalCount = null,
@@ -44,6 +48,7 @@ class HabitatReadDTO
         $this->uuid = $uuid;
         $this->name = $name;
         $this->description = $description;
+        $this->lastState = $lastState;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
         $this->animalCount = $animalCount;
@@ -62,6 +67,7 @@ class HabitatReadDTO
             uuid: $habitat->getUuid(),
             name: $habitat->getName(),
             description: $habitat->getDescription(),
+            lastState: $habitat->getLastState(),
             createdAt: $habitat->getCreatedAt(),
             updatedAt: $habitat->getUpdatedAt(),
             animalCount: null,

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -55,11 +57,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $apiToken = null;
 
+    /**
+     * @var Collection<int, HabitatReport>
+     */
+    #[ORM\OneToMany(targetEntity: HabitatReport::class, mappedBy: 'createdBy')]
+    private Collection $habitatReports;
+
     /** @throws Exception */
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->apiToken = bin2hex(random_bytes(20));
+        $this->habitatReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,6 +226,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setApiToken(string $apiToken): static
     {
         $this->apiToken = $apiToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HabitatReport>
+     */
+    public function getHabitatReports(): Collection
+    {
+        return $this->habitatReports;
+    }
+
+    public function addHabitatReport(HabitatReport $habitatReport): static
+    {
+        if (!$this->habitatReports->contains($habitatReport)) {
+            $this->habitatReports->add($habitatReport);
+            $habitatReport->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHabitatReport(HabitatReport $habitatReport): static
+    {
+        if ($this->habitatReports->removeElement($habitatReport)) {
+            // set the owning side to null (unless already changed)
+            if ($habitatReport->getCreatedBy() === $this) {
+                $habitatReport->setCreatedBy(null);
+            }
+        }
 
         return $this;
     }
