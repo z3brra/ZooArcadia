@@ -62,11 +62,21 @@ class Animal
     #[ORM\OneToMany(targetEntity: AnimalPicture::class, mappedBy: 'animal', orphanRemoval: true, cascade: ['remove'])]
     private Collection $animalPictures;
 
+    /**
+     * @var Collection<int, AnimalReport>
+     */
+    #[ORM\OneToMany(targetEntity: AnimalReport::class, mappedBy: 'animal', orphanRemoval: true)]
+    private Collection $animalReports;
+
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $lastState = null;
+
     /** @throws Exception */
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->animalPictures = new ArrayCollection();
+        $this->animalReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -244,6 +254,48 @@ class Animal
                 $animalPicture->setAnimal(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnimalReport>
+     */
+    public function getAnimalReports(): Collection
+    {
+        return $this->animalReports;
+    }
+
+    public function addAnimalReport(AnimalReport $animalReport): static
+    {
+        if (!$this->animalReports->contains($animalReport)) {
+            $this->animalReports->add($animalReport);
+            $animalReport->setAnimal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnimalReport(AnimalReport $animalReport): static
+    {
+        if ($this->animalReports->removeElement($animalReport)) {
+            // set the owning side to null (unless already changed)
+            if ($animalReport->getAnimal() === $this) {
+                $animalReport->setAnimal(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLastState(): ?string
+    {
+        return $this->lastState;
+    }
+
+    public function setLastState(?string $lastState): static
+    {
+        $this->lastState = $lastState;
 
         return $this;
     }

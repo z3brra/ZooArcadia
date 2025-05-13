@@ -117,6 +117,69 @@ final class AnimalController extends AbstractController
         }
     }
 
+    #[Route('/all', name: 'show_all', methods: 'GET')]
+    public function showAll(
+        ShowAnimalService $showAnimalService
+    ): JsonResponse {
+        try {
+            $animalReadDTO = $showAnimalService->showAllAnimal();
+
+            $responseData = $this->serializer->serialize(
+                data: $animalReadDTO,
+                format: 'json',
+                context: ['groups' => ['animal:all']]
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                json: true
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    #[Route('/{uuid}/reports/', name: 'show_reports', methods: 'GET')]
+    public function showReports(
+        string $uuid,
+        Request $request,
+        ShowAnimalService $showAnimalService
+    ): JsonResponse {
+        try {
+            $limit = $request->query->get('limit', null);
+
+            $reports = $showAnimalService->showAnimalReports($uuid, $limit);
+
+            $responseData = $this->serializer->serialize(
+                data: $reports,
+                format: 'json',
+                context: ['groups' => 'animal-report:list']
+            );
+
+            return new JsonResponse(
+                data: $responseData,
+                status: JsonResponse::HTTP_OK,
+                json: true
+            );
+
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(
+                data: ['error' => $e->getMessage()],
+                status: JsonResponse::HTTP_NOT_FOUND
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                data: ['error' => "An internal server error as occured"],
+                status: JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+
     #[Route('/{uuid}', name: 'update', methods: 'PUT')]
     public function update(
         string $uuid,

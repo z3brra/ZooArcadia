@@ -63,12 +63,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: HabitatReport::class, mappedBy: 'createdBy')]
     private Collection $habitatReports;
 
+    /**
+     * @var Collection<int, AnimalReport>
+     */
+    #[ORM\OneToMany(targetEntity: AnimalReport::class, mappedBy: 'createdBy')]
+    private Collection $animalReports;
+
     /** @throws Exception */
     public function __construct()
     {
         $this->uuid = Uuid::uuid7()->toString();
         $this->apiToken = bin2hex(random_bytes(20));
         $this->habitatReports = new ArrayCollection();
+        $this->animalReports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -254,6 +261,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($habitatReport->getCreatedBy() === $this) {
                 $habitatReport->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnimalReport>
+     */
+    public function getAnimalReports(): Collection
+    {
+        return $this->animalReports;
+    }
+
+    public function addAnimalReport(AnimalReport $animalReport): static
+    {
+        if (!$this->animalReports->contains($animalReport)) {
+            $this->animalReports->add($animalReport);
+            $animalReport->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnimalReport(AnimalReport $animalReport): static
+    {
+        if ($this->animalReports->removeElement($animalReport)) {
+            // set the owning side to null (unless already changed)
+            if ($animalReport->getCreatedBy() === $this) {
+                $animalReport->setCreatedBy(null);
             }
         }
 

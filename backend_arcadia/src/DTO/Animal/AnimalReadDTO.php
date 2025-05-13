@@ -12,10 +12,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 class AnimalReadDTO
 {
-    #[Groups(['animal:read', 'animal:list'])]
+    #[Groups(['animal:read', 'animal:list', 'animal:all'])]
     public string $uuid;
 
-    #[Groups(['animal:read', 'animal:list', 'species:with-animals'])]
+    #[Groups(['animal:read', 'animal:list', 'animal:all', 'species:with-animals'])]
     public string $name;
 
     #[Groups(['animal:read', 'species:with-animals'])]
@@ -35,6 +35,9 @@ class AnimalReadDTO
 
     #[Groups(['animal:read'])]
     public DateTimeInterface $arrivalDate;
+
+    #[Groups(['animal:read', 'animal:list'])]
+    public ?string $lastState;
 
     #[Groups(['animal:read'])]
     public DateTimeImmutable $createdAt;
@@ -67,6 +70,7 @@ class AnimalReadDTO
         bool $isFertile,
         DateTimeInterface $birthDate,
         DateTimeInterface $arrivalDate,
+        ?string $lastState,
         DateTimeImmutable $createdAt,
         ?DateTimeImmutable $updatedAt = null,
         string $speciesUuid,
@@ -83,6 +87,7 @@ class AnimalReadDTO
         $this->isFertile = $isFertile;
         $this->birthDate = $birthDate;
         $this->arrivalDate = $arrivalDate;
+        $this->lastState = $lastState;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
         $this->speciesUuid = $speciesUuid;
@@ -101,21 +106,22 @@ class AnimalReadDTO
         }
 
         return new self(
-            $animal->getUuid(),
-            $animal->getName(),
-            $animal->isMale(),
-            $animal->getSize(),
-            $animal->getWeight(),
-            $animal->isFertile(),
-            $animal->getBirthDate(),
-            $animal->getArrivalDate(),
-            $animal->getCreatedAt(),
-            $animal->getUpdatedAt(),
-            $animal->getSpecies()->getUuid(),
-            $animal->getSpecies()->getCommonName(),
-            $animal->getHabitat() ? $animal->getHabitat()->getUuid() : null,
-            $animal->getHabitat() ? $animal->getHabitat()->getName() : null,
-            count($picturesDTOs) > 0 ? $picturesDTOs : null
+            uuid: $animal->getUuid(),
+            name: $animal->getName(),
+            isMale: $animal->isMale(),
+            size: $animal->getSize(),
+            weight: $animal->getWeight(),
+            isFertile: $animal->isFertile(),
+            birthDate: $animal->getBirthDate(),
+            arrivalDate: $animal->getArrivalDate(),
+            lastState: $animal->getLastState(),
+            createdAt: $animal->getCreatedAt(),
+            updatedAt: $animal->getUpdatedAt(),
+            speciesUuid: $animal->getSpecies()->getUuid(),
+            speciesName: $animal->getSpecies()->getCommonName(),
+            habitatUuid: $animal->getHabitat() ? $animal->getHabitat()->getUuid() : null,
+            habitatName: $animal->getHabitat() ? $animal->getHabitat()->getName() : null,
+            pictures: count($picturesDTOs) > 0 ? $picturesDTOs : null
         );
     }
 }
