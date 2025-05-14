@@ -28,6 +28,12 @@ export type CardActionsProps = {
     className?: string
 }
 
+export type LabelVariant = "red" | "yellow" | "blue" | "green" | "grey"
+export type CardLabelProps = {
+    label: string
+    variant: LabelVariant
+}
+
 export function Card({
     children,
     className = "",
@@ -92,6 +98,17 @@ export function CardActions({
     return (
         <div className={`dashboard-card-actions ${className}`}>
             {children}
+        </div>
+    )
+}
+
+export function CardLabel({
+    label,
+    variant
+}: CardLabelProps): JSX.Element {
+    return (
+        <div className={`dashboard-card-label label-${variant} text-small`}>
+            {label}
         </div>
     )
 }

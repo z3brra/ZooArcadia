@@ -1,5 +1,6 @@
 export * from "./picture"
 export * from "./habitat"
+export * from "./habitatReport"
 export * from "./animal"
 export * from "./species"
 export * from "./activity"

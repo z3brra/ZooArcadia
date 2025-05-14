@@ -17,7 +17,11 @@
         }
     }
 
-    &.habitats-list, &.species-list, &.animals-list, &.activities-list {
+    &.habitats-list,
+    &.habitat-reports-list,
+    &.species-list,
+    &.animals-list,
+    &.activities-list {
         flex-direction: column;
         align-items: center;
         flex: 1;

@@ -818,7 +818,7 @@
     justify-content: space-between;
   }
 }
-.dashboard-section.habitats-list, .dashboard-section.species-list, .dashboard-section.animals-list, .dashboard-section.activities-list {
+.dashboard-section.habitats-list, .dashboard-section.habitat-reports-list, .dashboard-section.species-list, .dashboard-section.animals-list, .dashboard-section.activities-list {
   flex-direction: column;
   align-items: center;
   flex: 1;
@@ -888,6 +888,39 @@
 }
 .dashboard-card-ellipsis:hover {
   color: #333333;
+}
+.dashboard-card-label {
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+@media (max-width: 667px) {
+  .dashboard-card-label {
+    padding: 0.25rem 0.5rem;
+    text-align: center;
+    text-wrap-mode: nowrap;
+  }
+}
+.dashboard-card-label.label-red {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+.dashboard-card-label.label-yellow {
+  background-color: #FEF9C3;
+  color: #854D0E;
+}
+.dashboard-card-label.label-blue {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+.dashboard-card-label.label-green {
+  background-color: #DCFCE7;
+  color: #166534;
+}
+.dashboard-card-label.label-grey {
+  background-color: #ececec;
+  color: #767675;
 }
 
 .media-rounded img {

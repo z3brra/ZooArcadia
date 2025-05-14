@@ -4,6 +4,7 @@ export const Endpoints = {
     ME: "/auth/me",
 
     HABITAT: "/habitat",
+    HABITAT_REPORT: "/habitat-report",
 
     SPECIES: "/species",
     ANIMAL: "/animal",

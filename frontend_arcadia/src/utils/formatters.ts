@@ -1,3 +1,5 @@
+import { LabelVariant } from "@components/dashboard/Card"
+
 export function formatDiet(diet: string): string {
     switch (diet) {
         case "HERBIVOROUS":
@@ -43,4 +45,30 @@ export function formatDate(dateString: string): string {
 
 export function formatDateForInput(backendDate: string | Date): string {
     return new Date(backendDate).toISOString().split('T')[0]
+}
+
+export function formatStateLabelVariant(state: string): LabelVariant {
+    switch (state) {
+        case "GOOD":
+            return "green"
+        case "MEDIUM":
+            return "yellow"
+        case "BAD":
+            return "red"
+        default:
+            return "grey"
+    }
+}
+
+export function formatStateLabel(state: string): string {
+    switch (state) {
+        case "GOOD":
+            return "Excellent"
+        case "MEDIUM":
+            return "Correct"
+        case "BAD":
+            return "Mauvais"
+        default:
+            return "Aucun statut"
+    }
 }
