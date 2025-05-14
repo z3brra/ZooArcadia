@@ -41,15 +41,12 @@ export function useHabitatReportDetail() {
         if (!habitatReport) {
             return
         }
-        setLoading(true)
         setError(null)
         try {
             const habitatResponse = await fetchOneHabitat(habitatReport.habitatUuid)
             setHabitatAnimalCount(habitatResponse.animalCount)
         } catch {
             setError("Impossible de charger l'habitat")
-        } finally {
-            setLoading(false)
         }
     }, [habitatReport])
 
