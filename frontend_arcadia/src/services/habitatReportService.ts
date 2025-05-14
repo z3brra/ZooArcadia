@@ -1,6 +1,6 @@
 import { PaginatedResponse } from "@components/dashboard/DashboardPagination"
-import { HabitatReportListItem } from "@models/habitatReport"
-import { getRequest } from "@api/request"
+import { HabitatReport, HabitatReportListItem } from "@models/habitatReport"
+import { getRequest, deleteRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 
 export async function fetchHabitatReports(
@@ -8,5 +8,22 @@ export async function fetchHabitatReports(
 ): Promise<PaginatedResponse<HabitatReportListItem>> {
     return getRequest<PaginatedResponse<HabitatReportListItem>>(
         `${Endpoints.HABITAT_REPORT}?page=${page}`
+    )
+}
+
+export async function fetchOneHabitatReport(
+    uuid: string
+): Promise<HabitatReport> {
+    return getRequest<HabitatReport>(
+        `${Endpoints.HABITAT_REPORT}/${uuid}`
+    )
+}
+
+
+export function deleteHabitatReport(
+    uuid: string
+): Promise<void> {
+    return deleteRequest<void>(
+        `${Endpoints.HABITAT_REPORT}/${uuid}`
     )
 }

@@ -42,6 +42,8 @@ export const DASHBOARD_ROUTES = {
     HABITATS_REPORT: {
         TO: "/dashboard/habitats-report" as const,
         REL: "habitats-report" as const,
+        DETAIL_PATTERN: ":uuid" as const,
+        DETAIL: (uuid: string) => `${DASHBOARD_ROUTES.HABITATS_REPORT.TO}/${uuid}` as const
     },
 
     SPECIES: {

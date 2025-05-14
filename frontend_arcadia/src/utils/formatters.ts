@@ -16,10 +16,10 @@ export function formatDiet(diet: string): string {
     }
 }
 
-export function formatDate(dateString: string): string {
+export function formatDate(dateString: string | Date): string {
     const newDate = new Date(dateString)
     if (isNaN(newDate.getTime())) {
-        return dateString
+        return String(dateString)
     }
 
     const day = String(newDate.getDate()).padStart(2, "0")
@@ -41,6 +41,18 @@ export function formatDate(dateString: string): string {
     const year = newDate.getFullYear()
 
     return `${day} ${month} ${year}`
+}
+
+export function formatTime(dateString: string | Date): string {
+    const newDate = new Date(dateString)
+    if (isNaN(newDate.getTime())) {
+        return String(dateString)
+    }
+
+    const hours = String(newDate.getHours()).padStart(2, "0")
+    const minutes = String(newDate.getMinutes()).padStart(2, "0")
+
+    return `${hours}h${minutes}`
 }
 
 export function formatDateForInput(backendDate: string | Date): string {

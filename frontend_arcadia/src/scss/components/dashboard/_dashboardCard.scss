@@ -176,4 +176,10 @@
         flex-direction: column;
         gap: 0.5rem;
     }
+
+    .dashboard-card-pair-horizontal {
+        display: inline-flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
 }

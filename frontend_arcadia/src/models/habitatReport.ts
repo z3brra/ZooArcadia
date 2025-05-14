@@ -17,5 +17,5 @@ export interface HabitatReportListItem {
     userLastName: string
     userFirstName: string
     state: string
-    createdAt: string
+    createdAt: Date
 }
