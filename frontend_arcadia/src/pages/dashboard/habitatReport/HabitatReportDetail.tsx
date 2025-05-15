@@ -58,11 +58,10 @@ export function HabitatReportDetail(): JSX.Element {
 
             <DashboardSection className="button-section">
                 <Button
-                    // to={DASHBOARD_ROUTES}
+                    to={DASHBOARD_ROUTES.HABITATS_REPORT.EDIT(habitatReport.uuid)}
                     variant="white"
                     icon={<SquarePen size={20} />}
                     className="text-content"
-                    onClick={() => {console.log("modifier")}}
                 >
                     Modifier
                 </Button>

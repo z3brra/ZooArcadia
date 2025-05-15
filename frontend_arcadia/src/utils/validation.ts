@@ -169,3 +169,30 @@ export function validateActivity(
 
     return errors
 }
+
+type ValidateHabitatReportProps = {
+    habitatUuid?: string
+    state?: string
+    comment?: string
+}
+export function validateHabitatReport(
+    habitatUuid: string,
+    state: string,
+    comment: string
+): ValidateHabitatReportProps {
+    const errors: ValidateHabitatReportProps = {}
+
+    if (!habitatUuid.trim()) {
+        errors.habitatUuid = "L'habitat est requis."
+    }
+
+    if (!state.trim()) {
+        errors.state = "L'état est requis."
+    }
+
+    if (comment.trim() && comment.length < 10) {
+        errors.comment = "Le coommentaire doit faire plus de 10 caractères."
+    }
+
+    return errors
+}

@@ -6,9 +6,20 @@ export interface HabitatReport {
     userLastName: string
     userFirstName: string
     state: string
-    comment: string
+    comment: string | null
     createdAt: Date
     updatedAt: Date | null
+}
+
+export interface HabitatReportCreate {
+    habitatUuid: string
+    state: string
+    comment: string | null
+}
+
+export interface HabitatReportUpdate {
+    state: string
+    comment: string | null
 }
 
 export interface HabitatReportListItem {

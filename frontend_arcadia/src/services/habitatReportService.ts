@@ -1,6 +1,6 @@
 import { PaginatedResponse } from "@components/dashboard/DashboardPagination"
-import { HabitatReport, HabitatReportListItem } from "@models/habitatReport"
-import { getRequest, deleteRequest } from "@api/request"
+import { HabitatReport, HabitatReportListItem, HabitatReportUpdate } from "@models/habitatReport"
+import { getRequest, deleteRequest, putRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 
 export async function fetchHabitatReports(
@@ -19,6 +19,15 @@ export async function fetchOneHabitatReport(
     )
 }
 
+export function updateHabitatReport(
+    uuid: string,
+    payload: HabitatReportUpdate
+): Promise<HabitatReport> {
+    return putRequest<HabitatReportUpdate, HabitatReport>(
+        `${Endpoints.HABITAT_REPORT}/${uuid}`,
+        payload
+    )
+}
 
 export function deleteHabitatReport(
     uuid: string
