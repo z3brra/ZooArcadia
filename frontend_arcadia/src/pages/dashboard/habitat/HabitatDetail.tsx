@@ -7,7 +7,9 @@ import {
     SquarePen,
     Trash2,
     PawPrint,
-    PencilRuler
+    PencilRuler,
+    CalendarDays,
+    User
 } from "lucide-react"
 
 import { DashboardPageHeader } from "@components/dashboard/DashboardPageHeader"
@@ -25,6 +27,7 @@ import { CommonLink } from '@components/common/CommonLink'
 import placeholderPicture from "@assets/common/placeholder.png"
 import { useHabitatDetail } from "@hook/habitat/useHabitatDetail"
 
+import { formatDate, formatStateLabel, formatStateLabelVariant } from "@utils/formatters"
 
 export function HabitatDetail(): JSX.Element {
     const {
@@ -35,6 +38,9 @@ export function HabitatDetail(): JSX.Element {
         animals,
         animalsLoading,
         animalsError,
+        reports,
+        reportsLoading,
+        reportsError,
         removeHabitat
     } = useHabitatDetail()
 
@@ -134,7 +140,29 @@ export function HabitatDetail(): JSX.Element {
                     </Card>
 
                     <Card orientation="vertical" className="habitat-content-infos">
-                        <CardHeader className="text-bigcontent text-primary">Rapports d'habitat</CardHeader>
+                        <div className="dashboard-card-item">
+                            <CardHeader className="text-bigcontent text-primary">Rapports d'habitat</CardHeader>
+                        </div>
+                        { !reportsLoading && !reportsError && reports.length > 0 && (
+                            <Dropdown triggerText="Voir les rapports">
+                                { reportsError && (
+                                    <MessageBox variant="error" message={reportsError} onClose={() => {}} />
+                                )}
+
+                                { !reportsLoading && !reportsError && reports.map(report => (
+                                    <div key={report.uuid} className="dropdown-item">
+                                        <DropdownItem
+                                            leftItems={[
+                                                { icon: <CalendarDays size={20} />, text: formatDate(report.createdAt), itemClassName: "text-content text-primary"},
+                                                { icon: <User size={20} />, text: `${report.userFirstName} ${report.userLastName}`, itemClassName: "text-content text-silent"}
+                                            ]}
+                                        />
+                                        <DropdownLabel variant={formatStateLabelVariant(report.state)} label={formatStateLabel(report.state)} />
+                                    </div>
+                                ))}
+                                <CommonLink to={DASHBOARD_ROUTES.HABITATS_REPORT.TO} text="Voir tout les rapports" />
+                            </Dropdown>
+                        )}
                     </Card>
                 </DashboardSection>
             )}

@@ -5,7 +5,8 @@ import { DASHBOARD_ROUTES } from "@routes/paths"
 
 import { Habitat } from "@models/habitat"
 import { AnimalListItem } from "@models/animal"
-import { fetchHabitatAnimals, fetchOneHabitat, deleteHabitat } from "@services/habitatService"
+import { fetchHabitatAnimals, fetchOneHabitat, deleteHabitat, fetchHabitatReports } from "@services/habitatService"
+import { HabitatReportListItem } from "@models/habitatReport"
 
 export function useHabitatDetail() {
     const { uuid } = useParams<{ uuid: string }>()
@@ -19,6 +20,10 @@ export function useHabitatDetail() {
     const [animals, setAnimals] = useState<AnimalListItem[]>([])
     const [animalsLoading, setAnimalsLoading] = useState<boolean>(false)
     const [animalsError, setAnimalsError] = useState<string | null>(null)
+
+    const [reports, setReports] = useState<HabitatReportListItem[]>([])
+    const [reportsLoading, setReportsLoading] = useState<boolean>(false)
+    const [reportsError, setReportsError] = useState<string | null>(null)
 
     const loadHabitat = useCallback(async () => {
         if (!uuid) {
@@ -55,6 +60,22 @@ export function useHabitatDetail() {
         }
     }, [uuid])
 
+    const loadReports = useCallback(async () => {
+        if (!uuid) {
+            return
+        }
+        setReportsLoading(true)
+        setReportsError(null)
+        try {
+            const reportsList = await fetchHabitatReports(uuid)
+            setReports(reportsList)
+        } catch {
+            setReportsError("Impossible de charger les rapports")
+        } finally {
+            setReportsLoading(false)
+        }
+    }, [uuid])
+
     const removeHabitat = useCallback(async () => {
         if (!uuid) {
             return
@@ -78,8 +99,9 @@ export function useHabitatDetail() {
     useEffect(() => {
         if (habitat) {
             loadAnimals()
+            loadReports()
         }
-    }, [habitat, loadAnimals])
+    }, [habitat, loadAnimals, loadReports])
 
     return {
         habitat,
@@ -90,6 +112,9 @@ export function useHabitatDetail() {
         animals,
         animalsLoading,
         animalsError,
+        reports,
+        reportsLoading,
+        reportsError,
         removeHabitat
     }
 }

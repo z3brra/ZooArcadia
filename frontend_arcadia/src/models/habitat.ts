@@ -4,6 +4,7 @@ export interface Habitat {
     uuid: string
     name: string
     description: string| null
+    lastState: string | null
     createdAt: Date
     updatedAt: Date | null
     animalCount: number

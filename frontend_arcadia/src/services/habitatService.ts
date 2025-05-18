@@ -3,6 +3,7 @@ import { Habitat, HabitatListItem, HabitatCreate, HabitatUpdate, HabitatAllRespo
 import { getRequest, postRequest, deleteRequest, putRequest, postFormRequest } from "@api/request"
 import { Endpoints } from "@api/endpoints"
 import { AnimalListItem } from "@models/animal"
+import { HabitatReportListItem } from "@models/habitatReport"
 
 export async function fetchHabitats(
     page: number
@@ -32,6 +33,15 @@ export async function fetchHabitatAnimals(
 ): Promise<AnimalListItem[]> {
     return getRequest<AnimalListItem[]>(
         `${Endpoints.HABITAT}/${uuid}/animals?limit=${limit ? limit : 4}`
+    )
+}
+
+export async function fetchHabitatReports(
+    uuid: string,
+    limit?: number
+): Promise<HabitatReportListItem[]> {
+    return getRequest<HabitatReportListItem[]>(
+        `${Endpoints.HABITAT}/${uuid}/reports?limit=${limit ? limit : 4}`
     )
 }
 
