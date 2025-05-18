@@ -8,7 +8,7 @@ import { formatDate, formatStateLabelVariant, formatStateLabel } from "@utils/fo
 export type HabitatReportItemProps = {
     uuid: string
     habitatName: string
-    reportDate: string
+    reportDate: Date
     state: string
 }
 
